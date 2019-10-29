@@ -1,0 +1,1 @@
+Source: https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7

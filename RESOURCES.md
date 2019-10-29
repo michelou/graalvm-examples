@@ -1,0 +1,53 @@
+# <span id="top">GraalVM Resources</span>
+
+<table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
+  <tr>
+  <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
+  <td style="border:0;padding:0;vertical-align:text-top;">This document gathers <a href="https://www.graalvm.org/">GraalVM</a> resources.
+  </td>
+  </tr>
+</table>
+
+## Blogs
+
+- [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
+- [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, Nov 22, 2018.
+- [My first impressions about Graal VM](https://blog.frankel.ch/first-impressions-graalvm/) by Nicolas Fränkel, April 2018.
+- [Add Graal JIT Compilation to Your JVM Language in 5 Easy Steps](https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/) by Stefan Marr, November 2015.
+
+## Books
+
+
+## News
+
+- [GraalVM on Medium](https://medium.com/graalvm)
+- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), Jul 16, 2018.
+
+## Online Tools
+
+- [VM Options Explorer - GraalVM CE 19](https://chriswhocodes.com/graalvm_ce_19_options.html).
+
+## Papers
+
+- [*An Experimental Study of the Influence of DynamicCompiler Optimizations on Scala Performance*](http://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf) by Lukas Stadler, Gilles Duboscq, Hanspeter Mössenböck.
+- [*An Empirical Study on Deoptimization in the Graal Compiler*](https://core.ac.uk/download/pdf/84869007.pdf) by Yudi Zheng, Lubomír Bulej, and Walter Binder,  ECOOP 2017.
+
+## Talks
+
+- [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, Jul 21, 2019.
+- [Understanding How Graal Works - a Java JIT Compiler Written in Java](https://chrisseaton.com/truffleruby/jokerconf17/) by Chris Seaton, JokerConf 2017, Nov 3, 2017.
+- [Polyglot on the JVM with Graal](https://www.slideshare.net/akihironishikawa/polyglot-on-the-jvm-with-graal-english) by Akihiro Nishikawa, JJUG CCC 2017, May 21, 2017.
+
+<!--
+## Footnotes
+
+<a name="footnote_01">[1]</a> ***2 GraalVM editions*** [↩](#anchor_01)
+
+<p style="margin:0 0 1em 20px;">
+<a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_232</a>.
+</p>
+-->
+***
+
+*[mics](http://lampwww.epfl.ch/~michelou/)/October 2019* [**&#9650;**](#top)
+<span id="bottom">&nbsp;</span>
