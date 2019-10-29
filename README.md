@@ -44,8 +44,9 @@ bin\graal\build.bat
 docs\
 examples\
 graal\        <i>(Git submodule)</i>
+graaljs\      <i>(created by )</i>
 mx\           <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_222-jvmci-19.3-b03</a>\  <i>(created by </i><b><code>build.bat</code></b><i>)</i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_232-jvmci-19.3-b04</a>\  <i>(created by </i><b><code>build.bat</code></b><i>)</i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>
 README.md
 RESOURCES.md
 setenv.bat
@@ -86,19 +87,20 @@ We distinguish different sets of batch commands:
       Subcommands:
         help        display this help message</pre>
 
-2. [**`bin\graal\build.bat`**](bin/graalsqueak/build.bat) - This batch command generates the [GraalVM](https://www.graalvm.org/) software archive.
+2. [**`bin\graal\build.bat`**](bin/graal/build.bat) - This batch command generates the [GraalVM](https://www.graalvm.org/) software archive.
 
    <pre style="font-size:80%;">
    <b>&gt; build help</b>
    Usage: build { options | subcommands }
      Options:
-       -debug      show commands executed by this script
-       -verbose    display progress messages
+       -debug       show commands executed by this script
+       -timer       display total elapsed time
+       -verbose     display progress messages
      Subcommands:
-       clean       delete generated files
-       dist        generate the GraalSqueak component
-       help        display this help message
-       install     add component to Graal installation directory</pre>
+       clean        delete generated files
+       dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
+       help         display this help message
+       update       fetch/merge local directories graal/mx</pre>
 
 ## Usage examples
 
@@ -143,13 +145,13 @@ Tool paths:
 
 #### `graal\build.bat`
 
-Directory **`graal\`** contains our checkout of the [`oracle/graal`](https://github.com/oracle/graal) repository; it is setup as follows:
+Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal](https://github.com/oracle/graal) repository; it is setup as follows:
 <pre style="font-size:80%;">
 <b>&gt; cp bin\graal\build.bat graal</b>
 <b>&gt; cd graal</b>
 </pre>
 
-Command [**`build help`**](bin/graal/build.bat) display the help message.
+Command [**`build help`**](bin/graal/build.bat) displays the help message.
 
 <pre style="font-size:80%;">
 <b>&gt; build help</b>
@@ -164,33 +166,15 @@ Usage: build { options | subcommands }
     help         display this help message
     update       fetch/merge local directories graal/mx</pre>
 
-Command [**`build.bat -verbose clean dist`**](bin/graal/build.bat) generates several archive files including the [GraalVM](https://) software archive.
-
-<pre style="font-size:80%;">
-<b>&gt; cd</b>
-G:\graal
-&nbsp;
-<b>&gt; build -verbose clean dist</b>
-
-</pre>
-
-The output directory 
-<pre style="font-size:80%;">>
-<b>&gt; dir vm\mxbuild\windows-amd64\dists | findstr /e zip</b>
-16.10.2019  21:11       373 459 024 graalvm-ce-java8-loc.zip
-16.10.2019  21:07       373 535 771 graalvm-unknown-java8-stage1.zip
-03.10.2019  20:54       341 053 147 graalvm-unknown-java8.zip
-19.09.2019  17:45       332 097 817 graalvm-unknown-stage1.zip
-19.09.2019  17:49       340 978 219 graalvm-unknown.zip
-</pre>
+Usage examples of command **`build.bat`** are presented in document [BUILD.md](BUILD.md).
 
 #### `examples\**\build.bat`
 
-See file [**`examples\README.md`**](examples/README.md).
+See document [**`examples\README.md`**](examples/README.md).
 
 ## Resources
 
-See file [**`RESOURCES.md`**](RESOURCES.md).
+We have collected [GraalVM](https://www.graalvm.org/) releated resources in document [**`RESOURCES.md`**](RESOURCES.md).
 
 ## Footnotes
 
@@ -200,10 +184,10 @@ See file [**`RESOURCES.md`**](RESOURCES.md).
 <a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_232</a>.
 </p>
 
-<a name="footnote_02">[2]</a> ***JVMCI** (Java based JVM compiler interface)* [↩](#anchor_02)
+<a name="footnote_02">[2]</a> ***JVMCI** (JVM compiler interface)* [↩](#anchor_02)
 
 <p style="margin:0 0 1em 20px;">
-The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with support for <a href="https://openjdk.java.net/jeps/243">JVMCI</a> for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
+The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
 </p>
 
 ***

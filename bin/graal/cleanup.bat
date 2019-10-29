@@ -38,6 +38,7 @@ rem ## Subroutines
 
 rem input parameter: %*
 :args
+set _HELP=0
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -83,7 +84,9 @@ set __N=0
 for /f %%f in ('dir /ad /b "%_ROOT_DIR%CompilationWrapper*" "%_ROOT_DIR%DumpPathTest*" 2^>NUL') do (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% rmdir /s /q %%f 1>&2
     rmdir /s /q %%f
-    if %ERRORLEVEL%==0 set /a __N=+1
+    if !ERRORLEVEL!==0 ( set /a __N=+1
+    ) else if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Failed to remove directory %%f 1>&2
+    )
 )
 if %_DEBUG%==1 if %__N% gtr 0 echo %_DEBUG_LABEL% Removed %__N% directories 1>&2
 goto :eof
@@ -93,7 +96,9 @@ set __N=0
 for /f %%f in ('dir /a-d /b "%_ROOT_DIR%hs_err_pid*.log" 2^>NUL') do (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% del /q %%f 1>&2
     del /q %%f
-    if %ERRORLEVEL%==0 set /a __N=+1
+    if !ERRORLEVEL!==0 ( set /a __N=+1
+    ) else if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Failed to remove file %%f 1>&2
+    )
 )
 if %_DEBUG%==1 if %__N% gtr 0 echo %_DEBUG_LABEL% Removed %__N% files 1>&2
 goto :eof
