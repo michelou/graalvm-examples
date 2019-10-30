@@ -9,6 +9,36 @@
   </tr>
 </table>
 
+
+## **`build`** command
+
+Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal). We specify option **`-verbose`** to print out the available build environments:
+
+<pre style="font-size:80%;">
+<b>&gt; cd</b>
+G:\graal
+&nbsp;
+<b>&gt; build -verbose help</b>
+Usage: build { options | subcommands }
+  Options:
+    -debug       show commands executed by this script
+    -timer       display total elapsed time
+    -verbose     display progress messages
+  Subcommands:
+    clean        delete generated files
+    dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
+    help         display this help message
+    update       fetch/merge local directories graal/mx
+  <b>Build environments:</b>
+    dist:1       JDK="jdk8" GATE="style,fullbuild" PRIMARY="substratevm"
+    dist:2       JDK="jdk8" GATE="build,test" PRIMARY="compiler"
+    dist:3       JDK="jdk8" GATE="build,test,helloworld" PRIMARY="substratevm"
+    dist:4       JDK="jdk8" GATE="build,bootstraplite" PRIMARY="compiler"
+    dist:5       JDK="jdk8" GATE="style,fullbuild,sulongBasic" PRIMARY="sulong"
+    dist:6       JDK="jdk8" GATE="build,sulong" PRIMARY="vm"
+                 DYNAMIC_IMPORTS="/sulong,/substratevm" DISABLE_POLYGLOT=true
+</pre>
+
 ## Usage examples
 
 #### `graal\build.bat`

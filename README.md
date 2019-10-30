@@ -11,7 +11,7 @@
 
 ## Project dependencies
 
-This project repository relies on the following external software for the **Microsoft Windows** plaform:
+This project relies on the following external software for the **Microsoft Windows** plaform:
 
 - [Git 2.23](https://git-scm.com/download/win) ([*release notes*](https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.23.0.txt))
 - [GraalVM Community Edition 19.2](https://github.com/oracle/graal/releases)<sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*](https://www.graalvm.org/docs/release-notes/19_2/))
@@ -21,11 +21,11 @@ This project repository relies on the following external software for the **Micr
 
 > **:mag_right:** Git for Windows provides a BASH emulation used to run [**`git`**](https://git-scm.com/docs/git) from the command line (as well as over 250 Unix commands like [**`awk`**](https://www.linux.org/docs/man1/awk.html), [**`diff`**](https://www.linux.org/docs/man1/diff.html), [**`file`**](https://www.linux.org/docs/man1/file.html), [**`grep`**](https://www.linux.org/docs/man1/grep.html), [**`more`**](https://www.linux.org/docs/man1/more.html), [**`mv`**](https://www.linux.org/docs/man1/mv.html), [**`rmdir`**](https://www.linux.org/docs/man1/rmdir.html), [**`sed`**](https://www.linux.org/docs/man1/sed.html) and [**`wc`**](https://www.linux.org/docs/man1/wc.html)).
 
-For instance our development environment looks as follows (*October 2019*):
+For instance our development environment looks as follows (*October 2019*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <pre style="font-size:80%;">
-C:\opt\graalvm-ce-19.2.1\                             <i>(362 MB)</i>
 C:\opt\Git-2.23.0\                                    <i>(271 MB)</i>
+C:\opt\graalvm-ce-19.2.1\                             <i>(362 MB)</i>
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -33,8 +33,9 @@ C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive](https://www.howtogeek.com/178146/htg-explains-everything-you-need-to-know-about-zipped-files/) rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`](http://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/opt.html) directory on Unix).
-
+<!--
 We further recommand using an advanced console emulator such as [ComEmu](https://conemu.github.io/) (or [Cmdr](http://cmder.net/)) which features [Unicode support](https://conemu.github.io/en/UnicodeSupport.html).
+-->
 
 ## Directory structure
 
@@ -43,10 +44,10 @@ This repository is organized as follows:
 bin\graal\build.bat
 docs\
 examples\
-graal\        <i>(Git submodule)</i>
-graaljs\      <i>(created by )</i>
-mx\           <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_232-jvmci-19.3-b04</a>\  <i>(created by </i><b><code>build.bat</code></b><i>)</i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>
+graal\                            <i>(Git submodule)</i>
+graaljs\                          <i>(created by )</i>
+mx\                               <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_232-jvmci-19.3-b04</a>\  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i><sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>
 README.md
 RESOURCES.md
 setenv.bat
@@ -56,7 +57,7 @@ where
 
 - file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch script for building [GraalVM](https://www.graalvm.org/) on a Windows machine.
 - directory [**`docs\`**](docs/) contains several [GraalVM](https://www.graalvm.org/) related papers/articles.
-- directory [**`examples\`**](examples/) contains [GraalVM](https://www.graalvm.org/) code examples (see [**`README.md`**](examples/README.md)).
+- directory [**`examples\`**](examples/) contains [GraalVM](https://www.graalvm.org/) code examples (see [**`examples\README.md`**](examples/README.md)).
 - directory **`graal\`** contains a copy of the [oracle/graal](https://github.com/oracle/graal) repository as a [Github submodule](.gitmodules).
 - file [**`README.md`**](README.md) is the Markdown document for this page.
 - file [**`RESOURCES.md`**](RESOURCES.md) is the Markdown document presenting external resources.
@@ -67,7 +68,7 @@ We also define a virtual drive **`G:`** in our working environment in order to r
 > **:mag_right:** We use the Windows external command [**`subst`**](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst) to create virtual drives; for instance:
 >
 > <pre style="font-size:80%;">
-> <b>&gt; subst G: %USERPROFILE%\workspace\graalvm\graalvm-examples</b>
+> <b>&gt; subst G: %USERPROFILE%\workspace\graalvm-examples</b>
 > </pre>
 
 In the next section we give a brief description of the batch files present in this project.
@@ -111,7 +112,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 2.7.17, mx 5.238.2
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.24.2.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.23.0.windows.1
 
@@ -126,7 +127,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; setenv -verbose</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 2.7.17, mx 5.238.2
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.242.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    nmake 10.00.40219.01, git 2.23.0.windows.1
 Tool paths:
@@ -184,7 +185,20 @@ We have collected [GraalVM](https://www.graalvm.org/) releated resources in docu
 <a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_232</a>.
 </p>
 
-<a name="footnote_02">[2]</a> ***JVMCI** (JVM compiler interface)* [↩](#anchor_02)
+<a name="footnote_02">[2]</a> ***Downloads*** [↩](#anchor_02)
+
+<p style="margin:0 0 1em 20px;">
+In our case we downloaded the following installation files (see <a href="#section_01">section 1</a>):
+</p>
+<pre style="margin:0 0 1em 20px; font-size:80%;">
+<a href="https://git-scm.com/download/win">PortableGit-2.23.0-64-bit.7z.exe</a>     <i>( 41 MB)</i>
+<a href="https://github.com/oracle/graal/releases">graalvm-ce-windows-amd64-19.2.1.zip</a>  <i>(171 MB)</i>
+<a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                   <i>(570 MB)</i>
+<a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>              <i>( 19 MB)</i>
+<a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>            <i>(121 MB)</i>
+</pre>
+
+<a name="footnote_03">[3]</a> ***JVMCI** (JVM compiler interface)* [↩](#anchor_03)
 
 <p style="margin:0 0 1em 20px;">
 The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
