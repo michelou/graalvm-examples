@@ -14,8 +14,8 @@
 This project relies on the following external software for the **Microsoft Windows** plaform:
 
 - [Git 2.23](https://git-scm.com/download/win) ([*release notes*](https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.23.0.txt))
-- [GraalVM Community Edition 19.2](https://github.com/oracle/graal/releases)<sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*](https://www.graalvm.org/docs/release-notes/19_2/))
-- [Microsoft Visual Studio 2019](https://visualstudio.microsoft.com/en/downloads/) ([*release notes*](https://docs.microsoft.com/en-us/visualstudio/releases/2019/release-notes))
+- [GraalVM Community Edition 19.2](https://github.com/oracle/graal/releases) <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*](https://www.graalvm.org/docs/release-notes/19_2/))
+- [Microsoft Visual C++ 2010 Service Pack 1 Compiler Update for the Windows SDK 7.1](https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422)
 - [Microsoft Windows SDK 7.1](https://www.microsoft.com/en-us/download/details.aspx?id=8279)
 - [Python 2.7](https://www.python.org/download/releases/2.7/)
 
