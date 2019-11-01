@@ -12,7 +12,9 @@
 
 ## **`build`** command
 
-Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal). We specify option **`-verbose`** to print out the available build environments:
+Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal).
+
+Command [**`build -verbose help`**](bin/graal/build.bat) prints out the available build environments:
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
@@ -132,7 +134,7 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 19.09.2019  16:49       340 978 219 graalvm-unknown.zip
 </pre>
 
-Archive file **`graalvm-ce-java8-loc.zip`** is the GraalVM software distribution; it contains the following command files:
+Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM](https://www.graalvm.org/) software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
 <b>&gt; unzip -l vm\mxbuild\windows-amd64\dists\graalvm-ce-java8-loc.zip | findstr cmd</b>
