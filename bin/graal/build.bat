@@ -181,19 +181,44 @@ echo     -verbose     display progress messages
 echo   Subcommands:
 echo     clean        delete generated files
 echo     dist[:^<n^>]   generate distribution with environment n=1-6 ^(default=2^)
-echo                    ^(see environment defnitions in file build.ini^)
+echo                  ^(see environment defnitions in file build.ini^)
 echo     help         display this help message
 echo     update       fetch/merge local directories graal/mx
 goto :eof
 
 :clean
 call :rmdir "%_TMP_DIR%"
+for /f %%d in ('dir /ad /b "%_GRAAL_PATH%\CompilationWrapperTest_*" 2^>NUL') do (
+    call :rmdir "%_GRAAL_PATH%\%%d"
+)
+for /f %%d in ('dir /ad /b "%_GRAAL_PATH%\DumpPathTest*" 2^>NUL') do (
+    call :rmdir "%_GRAAL_PATH%\%%d"
+)
+for /f %%f in ('dir /a-d /b "%_GRAAL_PATH%\hs_err_pid*.log" 2^>NUL') do (
+    call :del "%_GRAAL_PATH%\%%f"
+)
 goto :eof
 
 :rmdir
 set __DIR=%~1
 if not exist "%__DIR%\" goto :eof
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
+) else if %_VERBOSE%==1 ( echo Remove directory %__DIR% 1>&2
+)
 rmdir /s /q "%__DIR%"
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
+:del
+set __FILE=%~1
+if not exist "%__FILE%" goto :eof
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% del /q "%__FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Remove file %__FILE% 1>&2
+)
+del /q "%__FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
