@@ -15,6 +15,9 @@ for %%f in ("%~dp0..") do set _ROOT_DIR=%%~sf
 call :env
 if not %_EXITCODE%==0 goto end
 
+call :ini
+if not %_EXITCODE%==0 goto end
+
 call :args %*
 if not %_EXITCODE%==0 goto end
 if %_HELP%==1 call :help & exit /b %_EXITCODE%
@@ -81,12 +84,48 @@ rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
 goto :eof
 
+rem output parameters: _INI, _INI_N
+rem see https://en.wikipedia.org/wiki/INI_file
+rem - properties: name=value
+rem - sections  : [section]
+rem - comments  : ; commented text
+:ini
+set "__INI_FILE=%~dp0%_BASENAME%.ini"
+if not exist "%__INI_FILE%" goto :eof
+
+set _INI=
+set _INI_N=0
+set __SECTION=global
+for /f "delims=" %%f in (%__INI_FILE%) do (
+    set __LINE=%%f
+    if "!__LINE:~0,1!"==";" (
+        rem ignore comment
+    ) else if "!__LINE:~0,1!"=="[" (
+        if not "!__LINE:~-1!"=="]" (
+            echo %_ERROR_LABEL% Section name must end with ']' in .ini file 1>&2
+            set _EXITCODE=1
+        )
+        rem section start/end
+        set __SECTION=!__LINE:~1,-1!
+        set /a _INI_N+=1
+        set _INI[!_INI_N!]=!__SECTION!
+    ) else (
+        for /f "delims=^= tokens=1,*" %%i in ("!__LINE!") do (
+            set !__SECTION![%%i]=%%~j
+        )
+    )
+)
+rem properties defined outside a section are put into 'global'.
+set /a _INI_N+=1
+set _INI[%_INI_N%]=global
+goto :eof
+
 rem input parameter: %*
 rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _VERBOSE, _UPDATE
 :args
 set _CLEAN=0
 set _DIST=0
-set _DIST_ENV=2
+set _DIST_ENV=env2
 set _HELP=0
 set _TIMER=0
 set _VERBOSE=0
@@ -112,14 +151,14 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     rem subcommand
-    set /a __N=+1
+    set /a __N+=1
     if /i "%__ARG%"=="clean" ( set _CLEAN=1
     ) else if /i "%__ARG%"=="dist" ( set _DIST=1
     ) else if /i "%__ARG%"=="help" ( set _HELP=1
     ) else if /i "%__ARG%"=="update" ( set _UPDATE=1
     ) else if /i "%__ARG:~0,5%"=="dist:" (
         set _DIST=1
-        set "_DIST_ENV=%__ARG:~5,1%"
+        set "_DIST_ENV=env%__ARG:~5,1%"
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -134,7 +173,7 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _DIST=%_DIST% _DIST_ENV=%_DIS
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { options ^| subcommands }
+echo Usage: %_BASENAME% { option ^| subcommand }
 echo   Options:
 echo     -debug       show commands executed by this script
 echo     -timer       display total elapsed time
@@ -142,19 +181,9 @@ echo     -verbose     display progress messages
 echo   Subcommands:
 echo     clean        delete generated files
 echo     dist[:^<n^>]   generate distribution with environment n=1-6 ^(default=2^)
+echo                    ^(see environment defnitions in file build.ini^)
 echo     help         display this help message
 echo     update       fetch/merge local directories graal/mx
-set /a __MORE_HELP=_VERBOSE+_DEBUG
-if not %__MORE_HELP%==0 (
-    echo   Build environments:
-    echo     dist:1       JDK="jdk8" GATE="style,fullbuild" PRIMARY="substratevm"
-    echo     dist:2       JDK="jdk8" GATE="build,test" PRIMARY="compiler"
-    echo     dist:3       JDK="jdk8" GATE="build,test,helloworld" PRIMARY="substratevm"
-    echo     dist:4       JDK="jdk8" GATE="build,bootstraplite" PRIMARY="compiler"
-    echo     dist:5       JDK="jdk8" GATE="style,fullbuild,sulongBasic" PRIMARY="sulong"
-    echo     dist:6       JDK="jdk8" GATE="build,sulong" PRIMARY="vm"
-    echo                  DYNAMIC_IMPORTS="/sulong,/substratevm" DISABLE_POLYGLOT=true 
-)
 goto :eof
 
 :clean
@@ -384,7 +413,7 @@ endlocal
 goto :eof
 
 :dist_env
-call :dist_env%_DIST_ENV%
+call :dist_env_ini
 
 call :dist_env_msvc
 rem call :dist_env_msvc2019
@@ -409,6 +438,26 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% LIB=%LIB% 1>&2
     echo %_DEBUG_LABEL% LIBPATH=%LIBPATH% 1>&2
     echo %_DEBUG_LABEL% ========================================= 1>&2
+)
+goto :eof
+
+rem both _INI and _INI_N are defined in subroutine :ini
+:dist_env_ini
+for /l %%i in (1, 1, %_INI_N%) do (
+    set __SECTION=!_INI[%%i]!
+    if "!__SECTION!"=="%_DIST_ENV%" (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% _SECTION=!__SECTION!
+        for %%s in (!__SECTION!) do (
+            set JDK=!%%s[JDK]!
+            set GATE=!%%s[GATE]!
+            set PRIMARY=!%%s[PRIMARY]!
+            set DYNAMIC_IMPORTS=!%%s[DYNAMIC_IMPORTS]!
+            set LLVM_VERSION=!%%s[LLVM_VERSION]!
+            set DISABLE_POLYGLOT=!%%s[DISABLE_POLYGLOT]!
+            set DISABLE_LIBPOLYGLOT=!%%s[DISABLE_LIBPOLYGLOT]!
+            set NO_FEMBED_BITCODE=!%%s[NO_FEMBED_BITCODE]!
+        )
+    )
 )
 goto :eof
 
@@ -450,72 +499,6 @@ rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
 set INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
 set LIB=%__MSVC_2019%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
 set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_ARCH%;%__MSVC_2019%\lib%__MSVC_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
-goto :eof
-
-:dist_env1
-set JDK=jdk8
-set GATE=style,fullbuild
-set PRIMARY=substratevm
-set DYNAMIC_IMPORTS=
-set LLVM_VERSION=
-set DISABLE_POLYGLOT=
-set DISABLE_LIBPOLYGLOT=
-set NO_FEMBED_BITCODE=
-goto :eof
-
-:dist_env2
-set JDK=jdk8
-set GATE=build,test
-set PRIMARY=compiler
-set DYNAMIC_IMPORTS=
-set LLVM_VERSION=
-set DISABLE_POLYGLOT=
-set DISABLE_LIBPOLYGLOT=
-set NO_FEMBED_BITCODE=
-goto :eof
-
-:dist_env3
-set JDK=jdk8
-set GATE=build,test,helloworld
-set PRIMARY=substratevm
-set DYNAMIC_IMPORTS=
-set LLVM_VERSION=
-set DISABLE_POLYGLOT=
-set DISABLE_LIBPOLYGLOT=
-set NO_FEMBED_BITCODE=
-goto :eof
-
-:dist_env4
-set JDK=jdk8
-set GATE=build,bootstraplite
-set PRIMARY=compiler
-set DYNAMIC_IMPORTS=
-set LLVM_VERSION=
-set DISABLE_POLYGLOT=
-set DISABLE_LIBPOLYGLOT=
-set NO_FEMBED_BITCODE=
-goto :eof
-
-:dist_env5
-set JDK=jdk8
-set GATE=style,fullbuild,sulongBasic
-set PRIMARY=sulong
-set DYNAMIC_IMPORTS=
-set LLVM_VERSION=3.8
-set DISABLE_POLYGLOT=
-set DISABLE_LIBPOLYGLOT=
-set NO_FEMBED_BITCODE=true
-goto :eof
-
-:dist_env6
-set JDK=jdk8
-set GATE=build,sulong
-set PRIMARY=vm
-set DYNAMIC_IMPORTS=/sulong,/substratevm
-set LLVM_VERSION=6.0
-set DISABLE_POLYGLOT=true
-set DISABLE_LIBPOLYGLOT=true
-set NO_FEMBED_BITCODE=true
 goto :eof
 
 rem output parameter: _DURATION

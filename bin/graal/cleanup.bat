@@ -10,13 +10,10 @@ set _BASENAME=%~n0
 
 set _EXITCODE=0
 
-rem ANSI colors in standard Windows 10 shell
-rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
-
 for %%f in ("%~dp0") do set _ROOT_DIR=%%~sf
+
+call :env
+if not %_EXITCODE%==0 goto end
 
 call :args %*
 if not %_EXITCODE%==0 goto end
@@ -35,6 +32,15 @@ goto end
 
 rem ##########################################################################
 rem ## Subroutines
+
+rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+:env
+rem ANSI colors in standard Windows 10 shell
+rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+set _DEBUG_LABEL=[46m[%_BASENAME%][0m
+set _ERROR_LABEL=[91mError[0m:
+set _WARNING_LABEL=[93mWarning[0m:
+goto :eof
 
 rem input parameter: %*
 :args
@@ -71,7 +77,7 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% _DEBUG=%_DEBUG% _HELP=%_HELP% _VERBOSE=%_VERB
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { options ^| subcommands }
+echo Usage: %_BASENAME% { option ^| subcommand }
 echo   Options:
 echo     -debug      show commands executed by this script
 echo     -verbose    display environment settings
@@ -107,5 +113,6 @@ rem ##########################################################################
 rem ## Cleanups
 
 :end
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE%
 exit /b %_EXITCODE%
 endlocal

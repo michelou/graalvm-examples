@@ -11,16 +11,10 @@ set _BASENAME=%~n0
 
 set _EXITCODE=0
 
-rem ANSI colors in standard Windows 10 shell
-rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
-
 for %%f in ("%~dp0") do set _ROOT_DIR=%%~sf
 
-for %%f in ("%ProgramFiles%") do set _PROGRAM_FILES=%%~sf
-for %%f in ("%ProgramFiles(x86)%") do set _PROGRAM_FILES_X86=%%~sf
+call :env
+if not %_EXITCODE%==0 goto end
 
 call :args %*
 if not %_EXITCODE%==0 goto end
@@ -63,6 +57,19 @@ goto end
 rem ##########################################################################
 rem ## Subroutines
 
+rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+rem                    _PROGRAM_FILES, _PROGRAM_FILES_X86
+:env
+rem ANSI colors in standard Windows 10 shell
+rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+set _DEBUG_LABEL=[46m[%_BASENAME%][0m
+set _ERROR_LABEL=[91mError[0m:
+set _WARNING_LABEL=[93mWarning[0m:
+
+for %%f in ("%ProgramFiles%") do set _PROGRAM_FILES=%%~sf
+for %%f in ("%ProgramFiles(x86)%") do set _PROGRAM_FILES_X86=%%~sf
+goto :eof
+
 rem input parameter: %*
 :args
 set _HELP=0
@@ -83,7 +90,7 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     rem subcommand
-    set /a __N=!__N!+1
+    set /a __N+=1
     if /i "%__ARG%"=="help" ( set _HELP=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
@@ -98,7 +105,7 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _VERBOSE=%_VERBOSE% 1>&2
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { options ^| subcommands }
+echo Usage: %_BASENAME% { option ^| subcommand }
 echo   Options:
 echo     -debug      show commands executed by this script
 echo     -verbose    display environment settings

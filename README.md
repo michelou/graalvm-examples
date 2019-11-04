@@ -80,7 +80,7 @@ We distinguish different sets of batch commands:
 
     <pre style="font-size:80%;">
     <b>&gt; setenv help</b>
-    Usage: setenv { options | subcommands }
+    Usage: setenv { option | subcommand }
       Options:
         -debug      show commands executed by this script
         -verbose    display environment settings
@@ -91,7 +91,7 @@ We distinguish different sets of batch commands:
 
    <pre style="font-size:80%;">
    <b>&gt; build help</b>
-   Usage: build { options | subcommands }
+   Usage: build { option | subcommand }
      Options:
        -debug       show commands executed by this script
        -timer       display total elapsed time
@@ -162,7 +162,8 @@ Usage: build { options | subcommands }
     -verbose     display progress messages
   Subcommands:
     clean        delete generated files
-    dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=1)
+    dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
+                 (see envrionment definitions in file <b>build.ini</b>)
     help         display this help message
     update       fetch/merge local directories graal/mx</pre>
 
@@ -174,7 +175,7 @@ See document [**`examples\README.md`**](examples/README.md).
 
 ## Resources
 
-We have collected [GraalVM](https://www.graalvm.org/) releated resources in document [**`RESOURCES.md`**](RESOURCES.md).
+See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM](https://www.graalvm.org/) related resources.
 
 ## Footnotes
 

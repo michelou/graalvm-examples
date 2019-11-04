@@ -10,38 +10,27 @@
 </table>
 
 
-## **`build`** command
+## `build.bat` command
 
 Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal).
-
-Command [**`build -verbose help`**](bin/graal/build.bat) prints out the available build environments:
+Available build environments are defined in file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
 
 <pre style="font-size:80%;">
-<b>&gt; cd</b>
-G:\graal
-&nbsp;
-<b>&gt; build -verbose help</b>
-Usage: build { options | subcommands }
-  Options:
-    -debug       show commands executed by this script
-    -timer       display total elapsed time
-    -verbose     display progress messages
-  Subcommands:
-    clean        delete generated files
-    dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
-    help         display this help message
-    update       fetch/merge local directories graal/mx
-  <b>Build environments:</b>
-    dist:1       JDK="jdk8" GATE="style,fullbuild" PRIMARY="substratevm"
-    dist:2       JDK="jdk8" GATE="build,test" PRIMARY="compiler"
-    dist:3       JDK="jdk8" GATE="build,test,helloworld" PRIMARY="substratevm"
-    dist:4       JDK="jdk8" GATE="build,bootstraplite" PRIMARY="compiler"
-    dist:5       JDK="jdk8" GATE="style,fullbuild,sulongBasic" PRIMARY="sulong"
-    dist:6       JDK="jdk8" GATE="build,sulong" PRIMARY="vm"
-                 DYNAMIC_IMPORTS="/sulong,/substratevm" DISABLE_POLYGLOT=true
+<b>&gt; more build.ini</b>
+[env1]
+JDK=jdk8
+GATE=style,fullbuild
+PRIMARY=substratevm
+DYNAMIC_IMPORTS=
+LLVM_VERSION=
+DISABLE_POLYGLOT=
+DISABLE_LIBPOLYGLOT=
+NO_FEMBED_BITCODE=
+[env2]
+...
 </pre>
 
-## Usage examples
+## <span id="usage_examples">Usage examples</span>
 
 #### `graal\build.bat`
 
@@ -153,6 +142,8 @@ Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM](https://www.graalvm
 
 ## Troubleshooting
 
+Graal projects rely on the [**`mx`**](https://github.com/graalvm/mx) command-line tool to build, test, run, update, etc. [GraalVM](htts://www.graalvm.org) software.
+
 <pre style="font-size:80%;">
 <b>&gt; build -timer -verbose clean dist:1</b>
 [...]
@@ -174,7 +165,7 @@ Traceback (most recent call last):
 SystemExit: 1
 </pre>
 
-We observe that the MX configuration accepts a restricted set of **`pylint`** versions. In our case we choosed to install the latest supported version: version 1.9.2.
+We observe that the [**`mx`**](https://github.com/graalvm/mx) configuration accepts a restricted set of **`pylint`** versions. In our case we choosed to install the latest supported version, i.e. version 1.9.2.
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
@@ -193,3 +184,17 @@ pylint 1.9.2,
 astroid 1.6.6
 Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
 </pre>
+
+<!--
+## Footnotes
+
+<a name="footnote_01">[1]</a> ***2 GraalVM editions*** [↩](#anchor_01)
+
+<p style="margin:0 0 1em 20px;">
+</p>
+-->
+
+***
+
+*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
+<span id="bottom">&nbsp;</span>
