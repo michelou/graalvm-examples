@@ -9,6 +9,8 @@
   </tr>
 </table>
 
+[Dotty](https://github.com/michelou/dotty-examples), [GraalSqueak](https://github.com/michelou/graalsqueak-examples) and [LLVM](https://github.com/michelou/llvm-examples) are other topics we are currently investigating.
+
 ## Project dependencies
 
 This project relies on the following external software for the **Microsoft Windows** plaform:

@@ -3,15 +3,18 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document gathers <a href="https://www.graalvm.org/">GraalVM</a> resources.
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents our collection of <a href="https://www.graalvm.org/">GraalVM</a> related resources.
   </td>
   </tr>
 </table>
 
 ## Blogs
 
+- [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/), by Naoko, April 2019.
 - [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
-- [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, Nov 22, 2018.
+- [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
+- [GraalVM and Groovy - how to start?](https://e.printstacktrace.blog/graalvm-and-groovy-how-to-start/), October 2018.
+- [Intro to GraalVM](https://fedidat.com/510-intro-to-graal/) by [Ben Fedidat](https://fedidat.com/about/), October 2018.
 - [My first impressions about Graal VM](https://blog.frankel.ch/first-impressions-graalvm/) by Nicolas Fränkel, April 2018.
 - [Add Graal JIT Compilation to Your JVM Language in 5 Easy Steps](https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/) by Stefan Marr, November 2015.
 
@@ -21,7 +24,7 @@
 ## News
 
 - [GraalVM on Medium](https://medium.com/graalvm)
-- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), Jul 16, 2018.
+- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
 
 ## Online Tools
 
@@ -49,5 +52,5 @@
 -->
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/October 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
