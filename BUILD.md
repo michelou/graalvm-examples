@@ -13,7 +13,7 @@
 ## `build.bat` command
 
 Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal).
-Available build environments are defined in file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
+Available build environments are defined in configuration file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
 
 <pre style="font-size:80%;">
 <b>&gt; more build.ini</b>

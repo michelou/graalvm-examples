@@ -113,7 +113,7 @@ echo   Subcommands:
 echo     help        display this help message
 goto :eof
 
-rem output parameter(s): _GRAAL_HOME, _GRAAL_PATH
+rem output parameters: _GRAAL_HOME, _GRAAL_PATH
 :graal
 set _GRAAL_HOME=
 set _GRAAL_PATH=
@@ -151,7 +151,7 @@ rem Here we use trailing separator because it will be prepended to PATH
 set "_GRAAL_PATH=%_GRAAL_HOME%\bin;"
 goto :eof
 
-rem output parameter(s): _PYTHON_PATH
+rem output parameter: _PYTHON_PATH
 :python
 set _PYTHON_PATH=
 
@@ -232,7 +232,7 @@ if not exist "%__MX_HOME%\mx.cmd" (
 set "_MX_PATH=;%__MX_HOME%"
 goto :eof
 
-rem output parameter(s): _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
+rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
 rem Visual Studio 10
 :msvs
 set _MSVC_HOME=
@@ -386,7 +386,7 @@ set "_KIT_INC_DIR=%__KIT_HOME%\Include\%__KIT_VERSION%"
 set "_KIT_LIB_DIR=%__KIT_HOME%\Lib\%__KIT_VERSION%"
 goto :eof
 
-rem output parameter(s): _GIT_HOME, _GIT_PATH
+rem output parameters: _GIT_HOME, _GIT_PATH
 :git
 set _GIT_HOME=
 set _GIT_PATH=

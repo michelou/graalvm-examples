@@ -3,13 +3,22 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document presents our collection of <a href="https://www.graalvm.org/">GraalVM</a> related resources.
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/">GraalVM</a> related resources we collected so far.
   </td>
   </tr>
 </table>
 
-## Blogs
+## <span id="articles">Articles</span>
 
+- [Python application running on GraalVM and Polyglotting with JavaScript, R, Ruby and Java](https://technology.amis.nl/2019/10/30/python-application-running-on-graalvm-and-polyglotting-with-javascript-r-ruby-and-java/) by Lucas Jellema, October 30, 2019.
+- [Create a Native Image Binary Executable for a Polyglot Java Application using GraalVM](https://technology.amis.nl/2019/10/28/create-a-native-image-binary-executable-for-a-polyglot-java-application-using-graalvm/), by Lucas Jellema, October 28, 2019.
+- [Leverage NPM JavaScript Module from Java application using GraalVM](https://technology.amis.nl/2019/10/25/leverage-npm-javascript-module-from-java-application-using-graalvm/), by Lucas Jellema, October 25, 2019.
+- [Calling out from Java to JavaScript (with call back) – leveraging interoperability support of GraalVM](https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/), by Lucas Jellema, October 24, 2019.
+- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
+
+## <span id="blogs">Blogs</span>
+
+- [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
 - [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/), by Naoko, April 2019.
 - [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
 - [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
@@ -18,27 +27,19 @@
 - [My first impressions about Graal VM](https://blog.frankel.ch/first-impressions-graalvm/) by Nicolas Fränkel, April 2018.
 - [Add Graal JIT Compilation to Your JVM Language in 5 Easy Steps](https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/) by Stefan Marr, November 2015.
 
-## Books
-
-
-## News
-
-- [GraalVM on Medium](https://medium.com/graalvm)
-- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
-
-## Online Tools
+## <span id="tools">Online Tools</span>
 
 - [VM Options Explorer - GraalVM CE 19](https://chriswhocodes.com/graalvm_ce_19_options.html).
 
-## Papers
+## <span id="papers">Papers</span>
 
 - [*An Experimental Study of the Influence of DynamicCompiler Optimizations on Scala Performance*](http://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf) by Lukas Stadler, Gilles Duboscq, Hanspeter Mössenböck.
 - [*An Empirical Study on Deoptimization in the Graal Compiler*](https://core.ac.uk/download/pdf/84869007.pdf) by Yudi Zheng, Lubomír Bulej, and Walter Binder,  ECOOP 2017.
 
-## Talks
+## <span id="talks">Talks</span>
 
-- [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, Jul 21, 2019.
-- [Understanding How Graal Works - a Java JIT Compiler Written in Java](https://chrisseaton.com/truffleruby/jokerconf17/) by Chris Seaton, JokerConf 2017, Nov 3, 2017.
+- [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, July 21, 2019.
+- [Understanding How Graal Works - a Java JIT Compiler Written in Java](https://chrisseaton.com/truffleruby/jokerconf17/) by Chris Seaton, JokerConf 2017, November 3, 2017.
 - [Polyglot on the JVM with Graal](https://www.slideshare.net/akihironishikawa/polyglot-on-the-jvm-with-graal-english) by Akihiro Nishikawa, JJUG CCC 2017, May 21, 2017.
 
 <!--

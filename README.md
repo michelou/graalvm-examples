@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** plaform:
 
-- [Git 2.23](https://git-scm.com/download/win) ([*release notes*](https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.23.0.txt))
+- [Git 2.24](https://git-scm.com/download/win) ([*release notes*](https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.24.0.txt))
 - [GraalVM Community Edition 19.2](https://github.com/oracle/graal/releases) <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*](https://www.graalvm.org/docs/release-notes/19_2/))
 - [Microsoft Visual Studio 10](https://visualstudio.microsoft.com/vs/older-downloads/) ([*release notes*](https://docs.microsoft.com/en-us/visualstudio/releasenotes/vs2010-version-history))
 - [Microsoft Windows SDK 7.1](https://www.microsoft.com/en-us/download/details.aspx?id=8279)
@@ -26,7 +26,7 @@ This project relies on the following external software for the **Microsoft Windo
 For instance our development environment looks as follows (*November 2019*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <pre style="font-size:80%;">
-C:\opt\Git-2.23.0\                                    <i>(271 MB)</i>
+C:\opt\Git-2.24.0\                                    <i>(271 MB)</i>
 C:\opt\graalvm-ce-19.2.1\                             <i>(362 MB)</i>
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
@@ -113,9 +113,9 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.0
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.3
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.23.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
 
 <b>&gt; where cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -128,9 +128,9 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; setenv -verbose</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.0
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.3
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   nmake 10.00.40219.01, git 2.23.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-19.2.1\bin\javac.exe
    C:\opt\Python-2.7.17\python.exe
@@ -139,10 +139,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.23.0\usr\bin\link.exe
+   C:\opt\Git-2.24.0\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.23.0\bin\git.exe
-   C:\opt\Git-2.23.0\mingw64\bin\git.exe
+   C:\opt\Git-2.24.0\bin\git.exe
+   C:\opt\Git-2.24.0\mingw64\bin\git.exe
 </pre>
 
 #### `graal\build.bat`
@@ -157,7 +157,7 @@ Command [**`build help`**](bin/graal/build.bat) displays the help message.
 
 <pre style="font-size:80%;">
 <b>&gt; build help</b>
-Usage: build { options | subcommands }
+Usage: build { option | subcommand }
   Options:
     -debug       show commands executed by this script
     -timer       display total elapsed time
@@ -193,7 +193,7 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM](https://www.graalv
 In our case we downloaded the following installation files (see <a href="#section_01">section 1</a>):
 </p>
 <pre style="margin:0 0 1em 20px; font-size:80%;">
-<a href="https://git-scm.com/download/win">PortableGit-2.23.0-64-bit.7z.exe</a>     <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.24.0-64-bit.7z.exe</a>     <i>( 41 MB)</i>
 <a href="https://github.com/oracle/graal/releases">graalvm-ce-windows-amd64-19.2.1.zip</a>  <i>(171 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                   <i>(570 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>              <i>( 19 MB)</i>
