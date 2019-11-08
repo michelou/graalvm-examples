@@ -113,7 +113,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.3
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.247.1
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
 
@@ -128,7 +128,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; setenv -verbose</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.244.3
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.247.1
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
 Tool paths:
@@ -193,9 +193,9 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM](https://www.graalv
 In our case we downloaded the following installation files (see <a href="#section_01">section 1</a>):
 </p>
 <pre style="margin:0 0 1em 20px; font-size:80%;">
-<a href="https://git-scm.com/download/win">PortableGit-2.24.0-64-bit.7z.exe</a>     <i>( 41 MB)</i>
 <a href="https://github.com/oracle/graal/releases">graalvm-ce-windows-amd64-19.2.1.zip</a>  <i>(171 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                   <i>(570 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.24.0-64-bit.7z.exe</a>     <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>              <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>            <i>(121 MB)</i>
 </pre>

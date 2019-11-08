@@ -4,7 +4,7 @@
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/">GraalVM</a> examples coming from various websites and books.<br/>
-  It also includes several batch scripts for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on the <b>Microsoft Windows</b> platform.
+  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting">batch files</a> for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on a Windows machine.
   </td>
   </tr>
 </table>
@@ -16,6 +16,9 @@ Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](
 Available build environments are defined in configuration file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
 
 <pre style="font-size:80%;">
+<b>&gt; cd</b>
+G:\graal
+&nbsp;
 <b>&gt; more build.ini</b>
 [env1]
 JDK=jdk8
@@ -33,6 +36,8 @@ NO_FEMBED_BITCODE=
 ## <span id="usage_examples">Usage examples</span>
 
 #### `graal\build.bat`
+
+Command **`build .. clean dist:2`** generates the [GraalVM](https://www.graalvm.org/) build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
 
 <pre style="font-size:80%;">
 <b>&gt; build -timer -verbose clean dist:2</b>
@@ -165,7 +170,7 @@ Traceback (most recent call last):
 SystemExit: 1
 </pre>
 
-We observe that the [**`mx`**](https://github.com/graalvm/mx) configuration accepts a restricted set of **`pylint`** versions. In our case we choosed to install the latest supported version, i.e. version 1.9.2.
+We observe that the [**`mx`**](https://github.com/graalvm/mx) configuration accepts a restricted set of **`pylint`** versions. In our case we had to change back to version 1.9.2 (from version 2.3.1).
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
