@@ -105,10 +105,12 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _VERBOSE=%_VERBOSE% 1>&2
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { option ^| subcommand }
+echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
+echo.
 echo   Options:
 echo     -debug      show commands executed by this script
 echo     -verbose    display environment settings
+echo.
 echo   Subcommands:
 echo     help        display this help message
 goto :eof
@@ -159,12 +161,12 @@ set __PYTHON_HOME=
 set __PYTHON_EXE=
 for /f %%f in ('where python.exe 2^>NUL') do set __PYTHON_EXE=%%f
 if defined __PYTHON_EXE (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Python executable found in PATH
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Python executable found in PATH 1>&2
     rem keep _PYTHON_PATH undefined since executable already in path
     goto :eof
 ) else if defined PYTHON_HOME (
     set "__PYTHON_HOME=%PYTHON_HOME%"
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable PYTHON_HOME
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable PYTHON_HOME 1>&2
 ) else (
     set __PATH=C:\opt
     if exist "!__PATH!\Python\" ( set __PYTHON_HOME=!__PATH!\Python
@@ -189,7 +191,7 @@ if not exist "%__PYTHON_HOME%\Scripts\pylint.exe" (
 )
 rem path name of installation directory may contain spaces
 for /f "delims=" %%f in ("%__PYTHON_HOME%") do set __PYTHON_HOME=%%~sf
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %__PYTHON_HOME%
+if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %__PYTHON_HOME% 1>&2
 
 set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
 goto :eof

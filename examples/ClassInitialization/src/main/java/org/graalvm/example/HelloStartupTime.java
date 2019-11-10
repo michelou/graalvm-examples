@@ -1,4 +1,4 @@
-import java.util.Date;
+// import java.util.Date;
 
 public class HelloStartupTime {
   public static void main(String args[]) {

@@ -25,12 +25,15 @@ Command [**`build`**](ClassInitialization/build.bat) with no argument displays t
 
 <pre style="font-size:80%;">
 <b>&gt; build</b>
-Usage: build { options | subcommands }
+Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
+&nbsp;
   Options:
     -debug      show commands executed by this script
     -verbose    display progress messages
+&nbsp;
   Subcommands:
     clean       delete generated files
+    check       analyze Java source files with CheckStyle
     compile     generate executable
     help        display this help message
     run         run the generated executable
@@ -58,31 +61,71 @@ Command [**`build`**](CountUppercase/build.bat) with no argument displays the av
 
 <pre style="font-size:80%;">
 <b>&gt; build</b>
-Usage: build { options | subcommands }
-Options:
-  -debug      show commands executed by this script
-  -verbose    display progress messages
-Subcommands:
-  clean       delete generated files
-  compile     generate executable
-  help        display this help message
-  run         run executable
+Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
+&nbsp;
+  Options:
+    -debug      show commands executed by this script
+    -verbose    display progress messages
+&nbsp;
+  Subcommands:
+    clean       delete generated files
+    check       analyze Java source files with CheckStyle
+    compile     generate executable
+    help        display this help message
+    run         run executable
 </pre>
 
 Command [**`build clean run`**](CountUppercase/build.bat) produces the following output:
 
 <pre style="font-size:80%;">
 <b>&gt; build clean run</b>
+1 (1485 ms)
+2 (316 ms)
+3 (386 ms)
+4 (185 ms)
+5 (162 ms)
+6 (138 ms)
+7 (163 ms)
+8 (154 ms)
+9 (147 ms)
+total: 69999993 (3274 ms)
 </pre>
 
-<!--
+Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom CheckStyle configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
+
+<pre style="font-size:80%;">
+<b>&gt; build -verbose check</b>
+Analyze Java source files with CheckStyle configuration .graal\graal_checks.xml
+Starting audit...
+Audit done.
+</pre>
+
+> **:mag_right:** CheckStyle configuration file **`graal_checks.xml`** is stored in the user home directory:
+> <pre style="font-size:80%;">
+> <b>&gt; more %USERPROFILE%\.graal\graal_checks.xml</b>
+> &lt;?xml version="1.0"?&gt;
+> &lt;!DOCTYPE module PUBLIC
+>          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+>          "https://checkstyle.org/dtds/configuration_1_3.dtd"&gt;
+> &nbsp;
+> <b>&lt;module</b> name="Checker"&gt;
+>     <b>&lt;property</b> name="localeCountry" value="US"/&gt;
+>     <b>&lt;property</b> name="localeLanguage" value="en"/&gt;
+>     <b>&lt;property</b> name="severity" value="error"/&gt;
+> ...
+> </pre>
+
 ## <span id="footnotes">Footnotes</a>
 
-<a name="footnote_01">[1]</a> ***C++ Standards*** [↩](#anchor_01)
+<a name="footnote_01">[1]</a> ***CheckStyle configuration*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
+The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is available as a Java archive file <a href="https://github.com/checkstyle/checkstyle/releases/"><b><code>checkstyle-*-all.jar</code></b></a> which contains two example configuration files:
 </p>
--->
+<ul style="margin:0 0 1em 20px;">
+<li><code>sun_checks.xml</code> (<a href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConvTOC.doc.html">Sun Code Conventions</a>) and</li>
+<li><code>google_checks.xml</code> (<a href="https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html">Google Java Style</a>).</li> 
+</ul>
 
 ***
 
