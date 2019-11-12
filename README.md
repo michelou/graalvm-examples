@@ -4,7 +4,7 @@
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/">GraalVM</a> examples coming from various websites and books.<br/>
-  It also includes several batch scripts for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on the <b>Microsoft Windows</b> platform.
+  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting">batch files</a> for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on the <b>Microsoft Windows</b> platform.
   </td>
   </tr>
 </table>
@@ -57,7 +57,7 @@ setenv.bat
 where
 
 - file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch script for building [GraalVM](https://www.graalvm.org/) on a Windows machine.
-- directory [**`docs\`**](docs/) contains several [GraalVM](https://www.graalvm.org/) related papers/articles.
+- directory [**`docs\`**](docs/) contains [GraalVM](https://www.graalvm.org/) related papers/articles.
 - directory [**`examples\`**](examples/) contains [GraalVM](https://www.graalvm.org/) code examples (see [**`examples\README.md`**](examples/README.md)).
 - directory **`graal\`** contains a copy of the [oracle/graal](https://github.com/oracle/graal) repository as a [Github submodule](.gitmodules).
 - file [**`README.md`**](README.md) is the Markdown document for this page.
@@ -80,24 +80,28 @@ We distinguish different sets of batch commands:
 
 1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**](https://clang.llvm.org/docs/ClangCommandLineReference.html#introduction), [**`cl.exe`**](https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019), [**`git.exe`**](https://git-scm.com/docs/git), etc. directly available from the command prompt (see section [**Project dependencies**](#section_01)).
 
-    <pre style="font-size:80%;">
-    <b>&gt; setenv help</b>
-    Usage: setenv { option | subcommand }
-      Options:
-        -debug      show commands executed by this script
-        -verbose    display environment settings
-      Subcommands:
-        help        display this help message</pre>
+   <pre style="font-size:80%;">
+   <b>&gt; setenv help</b>
+   Usage: setenv { &lt;option&gt; | &lt;subcommand&gt; }
+   &nbsp;
+     Options:
+       -debug      show commands executed by this script
+       -verbose    display environment settings
+   &nbsp;
+     Subcommands:
+       help        display this help message</pre>
 
 2. [**`bin\graal\build.bat`**](bin/graal/build.bat) - This batch command generates the [GraalVM](https://www.graalvm.org/) software archive.
 
    <pre style="font-size:80%;">
    <b>&gt; build help</b>
-   Usage: build { option | subcommand }
+   Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
+   &nbsp;
      Options:
        -debug       show commands executed by this script
        -timer       display total elapsed time
        -verbose     display progress messages
+   &nbsp;
      Subcommands:
        clean        delete generated files
        dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
@@ -152,22 +156,6 @@ Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal](h
 <b>&gt; cp bin\graal\build.bat graal</b>
 <b>&gt; cd graal</b>
 </pre>
-
-Command [**`build help`**](bin/graal/build.bat) displays the help message.
-
-<pre style="font-size:80%;">
-<b>&gt; build help</b>
-Usage: build { option | subcommand }
-  Options:
-    -debug       show commands executed by this script
-    -timer       display total elapsed time
-    -verbose     display progress messages
-  Subcommands:
-    clean        delete generated files
-    dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
-                 (see envrionment definitions in file <b>build.ini</b>)
-    help         display this help message
-    update       fetch/merge local directories graal/mx</pre>
 
 Usage examples of command **`build.bat`** are presented in document [BUILD.md](BUILD.md).
 

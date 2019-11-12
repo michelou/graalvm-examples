@@ -100,8 +100,12 @@ Starting audit...
 Audit done.
 </pre>
 
-> **:mag_right:** CheckStyle configuration file **`graal_checks.xml`** is stored in the user home directory:
+> **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the CheckStyle configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*8.26-all.jar`** :
 > <pre style="font-size:80%;">
+> <b>&gt; dir /b %USERPROFILE%\.graal</b>
+> checkstyle-8.26-all.jar
+> graal_checks.xml
+> &nbsp;
 > <b>&gt; more %USERPROFILE%\.graal\graal_checks.xml</b>
 > &lt;?xml version="1.0"?&gt;
 > &lt;!DOCTYPE module PUBLIC
