@@ -20,11 +20,14 @@ if not %_EXITCODE%==0 goto end
 
 call :args %*
 if not %_EXITCODE%==0 goto end
-if %_HELP%==1 call :help & exit /b %_EXITCODE%
 
 rem ##########################################################################
 rem ## Main
 
+if %_HELP%==1 (
+    call :help
+    exit /b !_EXITCODE!
+)
 if %_CLEAN%==1 (
     call :clean
     if not !_EXITCODE!==0 goto end
@@ -77,7 +80,7 @@ set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
 rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-19.3-b04
+set _JVMCI_VERSION=jvmci-19.3-b05
 set _JDK8_UPDATE_VERSION=232
 set _JDK8_UPDATE_VERSION_SUFFIX=
 rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
@@ -134,10 +137,9 @@ set __N=0
 :args_loop
 set "__ARG=%~1"
 if not defined __ARG (
-    if %__N%==0 set _HELP=1
+    if !__N!==0 set _HELP=1
     goto args_done
 )
-
 if "%__ARG:~0,1%"=="-" (
     rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
@@ -168,16 +170,18 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _DIST=%_DIST% _DIST_ENV=%_DIST_ENV% _UPDATE=%_UPDATE% _VERBOSE=%_VERBOSE% 1>&2
+if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { option ^| subcommand }
+echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
+echo.
 echo   Options:
 echo     -debug       show commands executed by this script
 echo     -timer       display total elapsed time
 echo     -verbose     display progress messages
+echo.
 echo   Subcommands:
 echo     clean        delete generated files
 echo     dist[:^<n^>]   generate distribution with environment n=1-6 ^(default=2^)
@@ -327,10 +331,10 @@ set "__ECLIPSE_TGZ_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.
 set "__ECLIPSE_TGZ_FILE=%_ROOT_DIR%eclipse.tar.gz"
 if exist "%__ECLIPSE_TGZ_FILE%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__ECLIPSE_TGZ_FILE%' %__ECLIPSE_TGZ_URL%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri %__ECLIPSE_TGZ_URL%" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__ECLIPSE_TGZ_FILE%' %__ECLIPSE_TGZ_URL%"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri %__ECLIPSE_TGZ_URL%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -347,10 +351,10 @@ set "__JDT_JAR_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-
 set "__JDT_JAR_FILE=%_MX_PATH%\ecj.jar"
 if exist "%__JDT_JAR_FILE%" goto fullbuild_done
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDT_JAR_FILE%' %__JDT_JAR_URL%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDT_JAR_FILE%' -Uri %__JDT_JAR_URL%" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDT_JAR_FILE%' %__JDT_JAR_URL%"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDT_JAR_FILE%' -Uri %__JDT_JAR_URL%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
