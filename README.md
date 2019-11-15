@@ -11,7 +11,7 @@
 
 [Dotty](https://github.com/michelou/dotty-examples), [GraalSqueak](https://github.com/michelou/graalsqueak-examples) and [LLVM](https://github.com/michelou/llvm-examples) are other topics we are currently investigating.
 
-## Project dependencies
+## <span id="proj_deps">Project dependencies</span>
 
 This project relies on the following external software for the **Microsoft Windows** plaform:
 
@@ -39,7 +39,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 We further recommand using an advanced console emulator such as [ComEmu](https://conemu.github.io/) (or [Cmdr](http://cmder.net/)) which features [Unicode support](https://conemu.github.io/en/UnicodeSupport.html).
 -->
 
-## Directory structure
+## <span id="structure">Directory structure</span>
 
 This repository is organized as follows:
 <pre style="font-size:80%;">
@@ -74,7 +74,7 @@ We also define a virtual drive **`G:`** in our working environment in order to r
 
 In the next section we give a brief description of the batch files present in this project.
 
-## Batch commands
+## <span id="batch_commands">Batch commands</span>
 
 We distinguish different sets of batch commands:
 
@@ -105,10 +105,11 @@ We distinguish different sets of batch commands:
      Subcommands:
        clean        delete generated files
        dist[:&lt;n&gt;]   generate distribution with environment n=1-6 (default=2)
+                    (see environment defnitions in file build.ini)
        help         display this help message
        update       fetch/merge local directories graal/mx</pre>
 
-## Usage examples
+## <span id="usage_examples">Usage examples</span>
 
 #### `setenv.bat`
 
@@ -163,11 +164,11 @@ Usage examples of command **`build.bat`** are presented in document [BUILD.md](B
 
 See document [**`examples\README.md`**](examples/README.md).
 
-## Resources
+## <span id="resources">Resources</span>
 
 See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM](https://www.graalvm.org/) related resources.
 
-## Footnotes
+## <span id="footnotes">Footnotes</span>
 
 <a name="footnote_01">[1]</a> ***2 GraalVM editions*** [↩](#anchor_01)
 

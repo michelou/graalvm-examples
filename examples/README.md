@@ -19,7 +19,7 @@ In this document we present the following examples in more detail:
 
 ## <span id="ClassInitialization">`ClassInitialization`</span>
 
-Example [**`ClassInitialization\`**](ClassInitialization/) ...
+Example [**`ClassInitialization\`**](ClassInitialization/) is described in [Christian Wimmer](https://medium.com/@christian.wimmer)'s article [*Updates on Class Initialization in GraalVM Native Image Generation*](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7), September 12, 2019: 
 
 Command [**`build`**](ClassInitialization/build.bat) with no argument displays the available options and subcommands:
 
@@ -28,7 +28,10 @@ Command [**`build`**](ClassInitialization/build.bat) with no argument displays t
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
-    -debug      show commands executed by this script
+    -cached     select main class with cached startup time
+    -debug      display commands executed by this script
+    -jvmci      add JVMCI options
+    -native     generate both JVM files and native image
     -verbose    display progress messages
 &nbsp;
   Subcommands:
@@ -43,14 +46,69 @@ Command [**`build clean run`**](ClassInitialization/build.bat) produces the foll
 
 <pre style="font-size:80%;">
 <b>&gt; build clean run</b>
-
+Startup: Fri Nov 15 22:43:31 CET 2019
+Now:     Fri Nov 15 22:43:31 CET 2019
 </pre>
 
 Command [**`build -verbose clean run`**](ClassInitialization/build.bat) also displays progress messages:
 
 <pre style="font-size:80%;">
 <b>&gt; build -verbose clean run</b>
+Delete directory target
+Compile Java source files to directory target\classes
+Execute Java main class org.graalvm.example.HelloStartupTime
+Startup: Fri Nov 15 22:43:48 CET 2019
+Now:     Fri Nov 15 22:43:48 CET 2019
+</pre>
 
+Command [**`build -native clean compile`**](ClassInitialization/build.bat) geerates the native image **`target\HelloStartupTime.exe`**:
+
+<pre style="font-size:80%;">
+<b>&gt; build -native clean compile</b>
+<b>&gt; tree /a /f target | findstr /v "^[A-Z]"</b>
+|   HelloStartupTime.exe
+|   HelloStartupTime.exp
+|   HelloStartupTime.lib
+|   HelloStartupTime.obj
+|   HelloStartupTime.pdb
+|   HelloStartupTime.tmp
+|   source_list.txt
+|
+\---classes
+    \---org
+        \---graalvm
+            \---example
+                    HelloStartupTime.class
+                    Startup.class
+&nbsp;
+<b>&gt; target\HelloStartupTime.exe</b>
+Startup: Fri Nov 15 22:50:01 CET 2019
+Now:     Fri Nov 15 22:50:01 CET 2019
+</pre>
+
+Command [**`build -native -cached clean compile`**](ClassInitialization/build.bat) geerates the native image **`target\HelloCachedTime.exe`**:
+
+<pre style="font-size:80%;">
+<b>&gt; build -native -cached clean compile</b>
+<b>&gt; tree /a /f target | findstr /v "^[A-Z]"</b>
+|   HelloCachedTime.exe
+|   HelloCachedTime.exp
+|   HelloCachedTime.lib
+|   HelloCachedTime.obj
+|   HelloCachedTime.pdb
+|   HelloCachedTime.tmp
+|   source_list.txt
+|
+\---classes
+    \---org
+        \---graalvm
+            \---example
+                    HelloCachedTime.class
+                    Startup.class
+&nbsp;
+<b>&gt; target\HelloCachedTime.exe</b>
+Startup: Fri Nov 15 22:53:31 CET 2019
+Now:     Fri Nov 15 22:53:31 CET 2019
 </pre>
 
 ## <span id="CountUppercase">`CountUppercase`</span>

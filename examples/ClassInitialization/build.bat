@@ -17,12 +17,15 @@ call :env
 if not %_EXITCODE%==0 goto end
 
 call :args %*
-if %_HELP%==1 call :help & goto end
 if not %_EXITCODE%==0 goto end
 
 rem ##########################################################################
 rem ## Main
 
+if %_HELP%==1 (
+    call :help
+    exit /b !_EXITCODE!
+)
 if %_CLEAN%==1 (
     call :clean
     if not !_EXITCODE!==0 goto en
@@ -34,9 +37,13 @@ if %_CHECKSTYLE%==1 (
 if %_COMPILE%==1 (
     call :compile
     if not !_EXITCODE!==0 goto end
+    if %_TARGET%==native (
+        call :native_image
+        if not !_EXITCODE!==0 goto end
+    )
 )
 if %_RUN%==1 (
-    call :run
+    call :run_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
 goto end
@@ -56,8 +63,13 @@ set _SOURCE_DIR=%_ROOT_DIR%src\main\java
 set _TARGET_DIR=%_ROOT_DIR%target
 set _CLASSES_DIR=%_TARGET_DIR%\classes
 
+set _PKG_NAME=org.graalvm.example
+
 set _JAVAC_CMD=javac.exe
 set _JAVAC_OPTS=-d %_CLASSES_DIR%
+
+set _NATIVE_IMAGE_CMD=native-image.cmd
+set _NATIVE_IMAGE_OPTS=--initialize-at-build-time=%_PKG_NAME% --initialize-at-run-time=%_PKG_NAME%.Startup -cp %_CLASSES_DIR%
 
 set _GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
@@ -69,11 +81,13 @@ goto :eof
 rem input parameter %*
 :args
 set _CHECKSTYLE=0
+set _CACHED=0
 set _CLEAN=0
 set _COMPILE=0
 set _HELP=0
 set _RUN=0
 set _JVMCI=0
+set _TARGET=jvm
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -84,8 +98,10 @@ if not defined __ARG (
 )
 if "%__ARG:~0,1%"=="-" (
     rem option
-    if /i "%__ARG%"=="-debug" ( set _DEBUG=1
+    if /i "%__ARG%"=="-cached" ( set _CACHED=1
+    ) else if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
+    ) else if /i "%__ARG%"=="-native" ( set _TARGET=native
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
@@ -109,15 +125,31 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _CACHED=%_CACHED% _TARGET=%_TARGET% _VERBOSE=%_VERBOSE% 1>&2
+
+set _STDOUT_REDIRECT=1^>CON
+if %_DEBUG%==0 if %_VERBOSE%==0 set _STDOUT_REDIRECT=1^>NUL
+
+if %_CACHED%==1 (
+    set _MAIN_NAME=HelloCachedTime
+    set _NATIVE_IMAGE_OPTS=--initialize-at-run-time=%_PKG_NAME%.!_MAIN_NAME! %_NATIVE_IMAGE_OPTS%
+) else (
+    set _MAIN_NAME=HelloStartupTime
+)
+if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
+
+set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
+set _MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%
 goto :eof
 
 :help
 echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
 echo.
 echo   Options:
+echo     -cached     select main class with cached startup time
 echo     -debug      display commands executed by this script
 echo     -jvmci      add JVMCI options
+echo     -native     generate both JVM files and native image
 echo     -verbose    display progress messages
 echo.
 echo   Subcommands:
@@ -192,7 +224,7 @@ if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 set __SOURCE_LIST_FILE=%_TARGET_DIR%\source_list.txt
 if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
 
-for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *%_MAIN_NAME%.java') do (
     echo %%f>> "%__SOURCE_LIST_FILE%"
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% %_JAVAC_OPTS% @%__SOURCE_LIST_FILE% 1>&2
@@ -205,10 +237,49 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:run
-set __MAIN_CLASS=HelloStartupTime
-set __MAIN_ARGS=
+:native_image
+setlocal
+call :native_env_msvc
 
+if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_NATIVE_IMAGE_CMD% %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% 1>&2
+) else if %_VERBOSE%==1 ( echo Create native image !_MAIN_NATIVE_FILE:%_ROOT_DIR%=! 1>&2
+)
+call %_NATIVE_IMAGE_CMD% %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% %_STDOUT_REDIRECT%
+if not %ERRORLEVEL%==0 (
+    endlocal
+    echo %_ERROR_LABEL% Failed to create native image !_MAIN_NATIVE_FILE:%_ROOT_DIR%=! 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+endlocal
+goto :eof
+
+:native_env_msvc
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set __MSVC_ARCH=\amd64
+    set __NET_ARCH=Framework64\v4.0.30319
+    set __SDK_ARCH=\x64
+    set __KIT_ARCH=\x64
+) else (
+    set __MSVC_ARCH=\x86
+    set __NET_ARCH=Framework\v4.0.30319
+    set __SDK_ARCH=
+    set __KIT_ARCH=\x86
+)
+rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
+set INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include
+set LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
+    echo %_DEBUG_LABEL% INCLUDE=%INCLUDE% 1>&2
+    echo %_DEBUG_LABEL% LIB=%LIB% 1>&2
+    echo %_DEBUG_LABEL% ========================================= 1>&2
+)
+goto :eof
+
+:run_jvm
 if %_DEBUG%==1 ( set __JAVA_OPTS=%_JAVA_OPTS% %_GRAALVM_OPTS%
 ) else ( set __JAVA_OPTS=%_JAVA_OPTS%
 )
@@ -219,18 +290,32 @@ if %_JVMCI%==1 (
     set __JAVA_OPTS=%_JAVA_OPTS% -XX:-UseJVMCICompiler
 )
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS% 1>&2
-) else if %_VERBOSE%==1 ( echo Execute Java main class %__MAIN_CLASS% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% %__JAVA_OPTS% %_MAIN_CLASS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% 1>&2
 )
-call "%_JAVA_CMD%" %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS%
+call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 if exist "%_GRAALVM_LOG_FILE%" (
+if exist "%_GRAALVM_LOG_FILE%" (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to %_GRAALVM_LOG_FILE% 1>&2
     ) else if %_VERBOSE%==1 ( echo Compilation log written to !_GRAALVM_LOG_FILE:%_ROOT_DIR%=! 1>&2
     )
+)
+goto :eof
+
+:run_native
+set __EXE_FILE=%_MAIN_NATIVE_FILE%.exe
+if not exist "%__EXE_FILE%" (
+    echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+call "%__EXE_FILE%"
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
 )
 goto :eof
 

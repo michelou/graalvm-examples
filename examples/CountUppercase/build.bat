@@ -17,12 +17,15 @@ call :env
 if not %_EXITCODE%==0 goto end
 
 call :args %*
-if %_HELP%==1 call :help & goto end
 if not %_EXITCODE%==0 goto end
 
 rem ##########################################################################
 rem ## Main
 
+if %_HELP%==1 (
+    call :help
+    exit /b !_EXITCODE!
+)
 if %_CLEAN%==1 (
     call :clean
     if not !_EXITCODE!==0 goto en
