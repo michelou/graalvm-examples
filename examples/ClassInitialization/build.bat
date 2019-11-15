@@ -28,7 +28,7 @@ if %_HELP%==1 (
 )
 if %_CLEAN%==1 (
     call :clean
-    if not !_EXITCODE!==0 goto en
+    if not !_EXITCODE!==0 goto end
 )
 if %_CHECKSTYLE%==1 (
     call :checkstyle

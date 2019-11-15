@@ -19,7 +19,7 @@ In this document we present the following examples in more detail:
 
 ## <span id="ClassInitialization">`ClassInitialization`</span>
 
-Example [**`ClassInitialization\`**](ClassInitialization/) is described in [Christian Wimmer](https://medium.com/@christian.wimmer)'s article [*Updates on Class Initialization in GraalVM Native Image Generation*](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7), September 12, 2019: 
+Example [**`ClassInitialization\`**](ClassInitialization/) is from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article [*Updates on Class Initialization in GraalVM Native Image Generation*](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7), September 12, 2019. It consists of the two classes [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java) and [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java).
 
 Command [**`build`**](ClassInitialization/build.bat) with no argument displays the available options and subcommands:
 
@@ -61,7 +61,7 @@ Startup: Fri Nov 15 22:43:48 CET 2019
 Now:     Fri Nov 15 22:43:48 CET 2019
 </pre>
 
-Command [**`build -native clean compile`**](ClassInitialization/build.bat) geerates the native image **`target\HelloStartupTime.exe`**:
+Command [**`build -native clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloStartupTime.exe`** for source file [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java):
 
 <pre style="font-size:80%;">
 <b>&gt; build -native clean compile</b>
@@ -86,7 +86,7 @@ Startup: Fri Nov 15 22:50:01 CET 2019
 Now:     Fri Nov 15 22:50:01 CET 2019
 </pre>
 
-Command [**`build -native -cached clean compile`**](ClassInitialization/build.bat) geerates the native image **`target\HelloCachedTime.exe`**:
+Command [**`build -native -cached clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloCachedTime.exe`** for source file [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java):
 
 <pre style="font-size:80%;">
 <b>&gt; build -native -cached clean compile</b>
@@ -109,6 +109,36 @@ Command [**`build -native -cached clean compile`**](ClassInitialization/build.ba
 <b>&gt; target\HelloCachedTime.exe</b>
 Startup: Fri Nov 15 22:53:31 CET 2019
 Now:     Fri Nov 15 22:53:31 CET 2019
+</pre>
+
+Command [**`build -native -debug compile`**](ClassInitialization/build.bat) shows the the settings of commands **`javac.exe`** and **`native-image.cmd`** during the generation of executable **`target\HelloStartupTime.exe`**:
+
+<pre style="font-size:80%;">
+<b>&gt; build -native -debug compile</b>
+[build] _CLEAN=0 _COMPILE=1 _RUN=0 _CACHED=0 _TARGET=native _VERBOSE=0
+[build] javac.exe -d G:\examples\CLASSI~1\target\classes @G:\examples\CLASSI~1\target\source_list.txt
+[build] <b>===== B U I L D   V A R I A B L E S =====</b>
+[build] <b>INCLUDE=C:\PROGRA~2\MICROS~1.0\VC\include;C:\PROGRA~1\MICROS~4\Windows\v7.1\include</b>
+[build] <b>LIB=C:\PROGRA~2\MICROS~1.0\VC\Lib\amd64;C:\PROGRA~1\MICROS~4\Windows\v7.1\lib\x64</b>
+[build] <b>=========================================</b>
+[build] native-image.cmd -H:+TraceClassInitialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\CLASSI~1\target\classes org.graalvm.example.HelloStartupTime G:\examples\CLASSI~1\target\HelloStartupTime
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    classlist:   3,315.44 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        (cap):   8,256.38 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        setup:   9,749.13 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]   (typeflow):   7,767.53 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    (objects):   6,367.10 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]   (features):     528.67 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     analysis:  14,991.11 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     (clinit):     277.61 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     universe:     645.47 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      (parse):     962.09 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     (inline):   2,159.67 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    (compile):   9,242.30 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      compile:  13,148.71 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        image:   1,521.88 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        write:     734.72 ms
+[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      [total]:  44,387.22 ms
+[build] _EXITCODE=0
 </pre>
 
 ## <span id="CountUppercase">`CountUppercase`</span>
