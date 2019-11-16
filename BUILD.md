@@ -12,7 +12,7 @@
 
 ## `build.bat` command
 
-Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](https://docs.travis-ci.com/user/build-matrix/) as defined by the Travis configuration file [**`.travis.yml`**](https://github.com/oracle/graal/blob/master/.travis.yml) in repository [oracle/graal](https://github.com/oracle/graal).
+Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix](build_matrix) as defined by the Travis configuration file [**`.travis.yml`**](travis_yml) in repository [oracle/graal](oracle_graal).
 Available build environments are defined in configuration file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
 
 <pre style="font-size:80%;">
@@ -37,7 +37,7 @@ NO_FEMBED_BITCODE=
 
 #### `graal\build.bat`
 
-Command **`build .. clean dist:2`** generates the [GraalVM](https://www.graalvm.org/) build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
+Command **`build .. clean dist:2`** generates the [GraalVM](graalvm) build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
 
 <pre style="font-size:80%;">
 <b>&gt; build -timer -verbose clean dist:2</b>
@@ -128,7 +128,7 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 19.09.2019  16:49       340 978 219 graalvm-unknown.zip
 </pre>
 
-Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM](https://www.graalvm.org/) software distribution; it contains the following command files:
+Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM](graalvm) software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
 <b>&gt; unzip -l vm\mxbuild\windows-amd64\dists\graalvm-ce-java8-loc.zip | findstr cmd</b>
@@ -147,7 +147,7 @@ Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM](https://www.graalvm
 
 ## Troubleshooting
 
-Graal projects rely on the [**`mx`**](https://github.com/graalvm/mx) command-line tool to build, test, run, update, etc. [GraalVM](htts://www.graalvm.org) software.
+Graal projects rely on the [**`mx`**](mx_cmd) command-line tool to build, test, run, update, etc. [GraalVM](graalvm) software.
 
 <pre style="font-size:80%;">
 <b>&gt; build -timer -verbose clean dist:1</b>
@@ -170,7 +170,7 @@ Traceback (most recent call last):
 SystemExit: 1
 </pre>
 
-We observe that the [**`mx`**](https://github.com/graalvm/mx) configuration accepts a restricted set of **`pylint`** versions. In our case we had to change back to version 1.9.2 (from version 2.3.1).
+We observe that the [**`mx`**](mx_cmd) configuration accepts a restricted set of **`pylint`** versions. In our case we had to change back to version 1.9.2 (from version 2.3.1).
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
@@ -203,3 +203,11 @@ Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit 
 
 *[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
+
+<!-- link refs -->
+
+[build_matrix]: https://docs.travis-ci.com/user/build-matrix/
+[graalvm]: https://www.graalvm.org/
+[mx_cmd]: https://github.com/graalvm/mx
+[oracle_graal]: https://github.com/oracle/graal
+[travis_yml]: https://github.com/oracle/graal/blob/master/.travis.yml
