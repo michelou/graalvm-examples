@@ -9,19 +9,19 @@
   </tr>
 </table>
 
-[Dotty](dotty_examples), [GraalSqueak](graalsqueak_examples) and [LLVM](llvm_examples) are other topics we are currently investigating.
+[Dotty][dotty_examples], [GraalSqueak][graalsqueak_examples] and [LLVM][llvm_examples] are other topics we are currently investigating.
 
 ## <span id="proj_deps">Project dependencies</span>
 
 This project relies on the following external software for the **Microsoft Windows** plaform:
 
-- [Git 2.24](git_downloads) ([*release notes*](git_relnotes))
-- [GraalVM Community Edition 19.2](graalvm_downloads) <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*](graalvm_relnotes))
-- [Microsoft Visual Studio 10](vs2010_downloads) ([*release notes*](vs2010_relnotes))
-- [Microsoft Windows SDK 7.1](windows_sdk)
-- [Python 2.7](python_downloads) ([*release notes*](python_relnotes))
+- [Git 2.24][git_downloads] ([*release notes*][git_relnotes])
+- [GraalVM Community Edition 19.2][graalvm_downloads] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
+- [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
+- [Microsoft Windows SDK 7.1][windows_sdk]
+- [Python 2.7][python_downloads] ([*release notes*][python_relnotes])
 
-> **:mag_right:** Git for Windows provides a BASH emulation used to run [**`git`**](git_exe) from the command line (as well as over 250 Unix commands like [**`awk`**](man1_awk), [**`diff`**](man1_diff), [**`file`**](https://www.linux.org/docs/man1/file.html), [**`grep`**](man1_grep), [**`more`**](https://www.linux.org/docs/man1/more.html), [**`mv`**](man1_mv), [**`rmdir`**](man1_rmdir), [**`sed`**](https://www.linux.org/docs/man1/sed.html) and [**`wc`**](man1_wc)).
+> **:mag_right:** Git for Windows provides a BASH emulation used to run [**`git`**][git_exe] from the command line (as well as over 250 Unix commands like [**`awk`**][man1_awk], [**`diff`**][man1_diff], [**`file`**][man1_file], [**`grep`**][man1_grep], [**`more`**][man1_more], [**`mv`**][man1_mv], [**`rmdir`**][man1_rmdir], [**`sed`**][man1_sed] and [**`wc`**][man1_wc]).
 
 For instance our development environment looks as follows (*November 2019*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
@@ -34,7 +34,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 </pre>
 
 > **&#9755;** ***Installation policy***<br/>
-> When possible we install software from a [Zip archive](zip_archive) rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`](linux_opt) directory on Unix).
+> When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
 ## <span id="structure">Directory structure</span>
 
@@ -53,17 +53,17 @@ setenv.bat
 
 where
 
-- file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch script for building [GraalVM](graalvm) on a Windows machine.
-- directory [**`docs\`**](docs/) contains [GraalVM](graalvm) related papers/articles.
-- directory [**`examples\`**](examples/) contains [GraalVM](graalvm) code examples (see [**`examples\README.md`**](examples/README.md)).
-- directory **`graal\`** contains a copy of the [oracle/graal](oracle_graal) repository as a [Github submodule](.gitmodules).
+- file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch script for building [GraalVM] on a Windows machine.
+- directory [**`docs\`**](docs/) contains [GraalVM] related papers/articles.
+- directory [**`examples\`**](examples/) contains [GraalVM] code examples (see [**`examples\README.md`**](examples/README.md)).
+- directory **`graal\`** contains a copy of the [oracle/graal][oracle_graal] repository as a [Github submodule](.gitmodules).
 - file [**`README.md`**](README.md) is the Markdown document for this page.
 - file [**`RESOURCES.md`**](RESOURCES.md) is the Markdown document presenting external resources.
 - file [**`setenv.bat`**](setenv.bat) is the batch script for setting up our environment.
 
-We also define a virtual drive **`G:`** in our working environment in order to reduce/hide the real path of our project directory (see article ["Windows command prompt limitation"](windows_limitation) from Microsoft Support).
+We also define a virtual drive **`G:`** in our working environment in order to reduce/hide the real path of our project directory (see article ["Windows command prompt limitation"][windows_limitation] from Microsoft Support).
 
-> **:mag_right:** We use the Windows external command [**`subst`**](windows_subst) to create virtual drives; for instance:
+> **:mag_right:** We use the Windows external command [**`subst`**][windows_subst] to create virtual drives; for instance:
 >
 > <pre style="font-size:80%;">
 > <b>&gt; subst G: %USERPROFILE%\workspace\graalvm-examples</b>
@@ -75,7 +75,7 @@ In the next section we give a brief description of the batch files present in th
 
 We distinguish different sets of batch commands:
 
-1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**](clang_exe), [**`cl.exe`**](cl_exe), [**`git.exe`**](git_exe), etc. directly available from the command prompt (see section [**Project dependencies**](#section_01)).
+1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**][llvm_clang], [**`cl.exe`**][cl_exe], [**`git.exe`**][git_exe], etc. directly available from the command prompt (see section [**Project dependencies**](#section_01)).
 
    <pre style="font-size:80%;">
    <b>&gt; setenv help</b>
@@ -88,7 +88,7 @@ We distinguish different sets of batch commands:
      Subcommands:
        help        display this help message</pre>
 
-2. [**`bin\graal\build.bat`**](bin/graal/build.bat) - This batch command generates the [GraalVM](graalvm) software archive.
+2. [**`bin\graal\build.bat`**](bin/graal/build.bat) - This batch command generates the [GraalVM] software archive.
 
    <pre style="font-size:80%;">
    <b>&gt; build help</b>
@@ -110,7 +110,7 @@ We distinguish different sets of batch commands:
 
 #### `setenv.bat`
 
-Command [**`setenv`**](setenv.bat) is executed once to setup our development environment; it makes external tools such as [**`javac.exe`**](javac_exe), [**`cl.exe`**](cl_exe) and [**`git.exe`**](git_exe) directly available from the command prompt:
+Command [**`setenv`**](setenv.bat) is executed once to setup our development environment; it makes external tools such as [**`javac.exe`**][javac_exe], [**`cl.exe`**][cl_exe] and [**`git.exe`**][git_exe] directly available from the command prompt:
 
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
@@ -149,7 +149,7 @@ Tool paths:
 
 #### `graal\build.bat`
 
-Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal](oracle_graal) repository; it is setup as follows:
+Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal][oracle_graal] repository; it is setup as follows:
 <pre style="font-size:80%;">
 <b>&gt; cp bin\graal\build.bat graal</b>
 <b>&gt; cd graal</b>
@@ -163,7 +163,7 @@ See document [**`examples\README.md`**](examples/README.md).
 
 ## <span id="resources">Resources</span>
 
-See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM](graalvm) related resources.
+See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 
 ## <span id="footnotes">Footnotes</span>
 
@@ -200,7 +200,6 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 <!-- link refs -->
 
 [cl_exe]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
-[clang_exe]: https://clang.llvm.org/docs/ClangCommandLineReference.html#introduction
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_exe]: https://git-scm.com/docs/git
@@ -211,12 +210,16 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/19_2/
 [javac_exe]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [linux_opt]: http://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/opt.html
+[llvm_clang]: https://clang.llvm.org/docs/ClangCommandLineReference.html#introduction
 [llvm_examples]: https://github.com/michelou/llvm-examples
 [man1_awk]: https://www.linux.org/docs/man1/awk.html
 [man1_diff]: https://www.linux.org/docs/man1/diff.html
+[man1_file]: https://www.linux.org/docs/man1/file.html
 [man1_grep]: https://www.linux.org/docs/man1/grep.html
+[man1_more]: https://www.linux.org/docs/man1/more.html
 [man1_mv]: https://www.linux.org/docs/man1/mv.html
 [man1_rmdir]: https://www.linux.org/docs/man1/rmdir.html
+[man1_sed]: https://www.linux.org/docs/man1/sed.html
 [man1_wc]: https://www.linux.org/docs/man1/wc.html
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/download/releases/2.7/
