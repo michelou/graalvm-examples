@@ -51,8 +51,8 @@ goto :end
 rem ##########################################################################
 rem ## Subroutines
 
-rem output parameter(s): _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
-rem                      _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
+rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
 :env
 rem ANSI colors in standard Windows 10 shell
 rem see https://gist.github.com/mlocati/#file-win10colors-cmd
@@ -159,8 +159,16 @@ if "%__ARG:~0,1%"=="-" (
     ) else if /i "%__ARG%"=="help" ( set _HELP=1
     ) else if /i "%__ARG%"=="update" ( set _UPDATE=1
     ) else if /i "%__ARG:~0,5%"=="dist:" (
-        set _DIST=1
-        set "_DIST_ENV=env%__ARG:~5,1%"
+        set /a "__N_MAX=_INI_N-1"
+        set /a "__N=%__ARG:~5%+0"
+        if 1 leq !__N! if !__N! leq !__N_MAX! (
+            set _DIST=1
+            set "_DIST_ENV=env!__N!"
+        ) else (
+            echo %_ERROR_LABEL% Invalid environment ID !__N! ^(1..!__N_MAX!^) 1>&2
+            set _EXITCODE=1
+            goto args_done
+        )
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -175,6 +183,7 @@ if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TI
 goto :eof
 
 :help
+set /a "__N_MAX=_INI_N-1"
 echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
 echo.
 echo   Options:
@@ -184,8 +193,8 @@ echo     -verbose     display progress messages
 echo.
 echo   Subcommands:
 echo     clean        delete generated files
-echo     dist[:^<n^>]   generate distribution with environment n=1-6 ^(default=2^)
-echo                  ^(see environment defnitions in file build.ini^)
+echo     dist[:^<n^>]   generate distribution with environment n=1-%__N_MAX% ^(default=2^)
+echo                  ^(see environment definitions in file build.ini^)
 echo     help         display this help message
 echo     update       fetch/merge local directories graal/mx
 goto :eof
@@ -293,10 +302,19 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is !_MX_PATH:%_ROOT_DIR%=
 )
 pushd "%_MX_PATH%"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% pull 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% fetch 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update MX suite repository into directory %_MX_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% pull
+call %_GIT_CMD% %_GIT_OPTS% fetch
+if not %ERRORLEVEL%==0 (
+    popd
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% merge 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update MX suite repository into directory %_MX_PATH% 1>&2
+)
+call %_GIT_CMD% %_GIT_OPTS% merge
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
@@ -331,10 +349,10 @@ set "__ECLIPSE_TGZ_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.
 set "__ECLIPSE_TGZ_FILE=%_ROOT_DIR%eclipse.tar.gz"
 if exist "%__ECLIPSE_TGZ_FILE%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri %__ECLIPSE_TGZ_URL%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri '%__ECLIPSE_TGZ_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri %__ECLIPSE_TGZ_URL%"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri '%__ECLIPSE_TGZ_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -351,10 +369,10 @@ set "__JDT_JAR_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-
 set "__JDT_JAR_FILE=%_MX_PATH%\ecj.jar"
 if exist "%__JDT_JAR_FILE%" goto fullbuild_done
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDT_JAR_FILE%' -Uri %__JDT_JAR_URL%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDT_JAR_FILE%' -Uri '%__JDT_JAR_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDT_JAR_FILE%' -Uri %__JDT_JAR_URL%"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDT_JAR_FILE%' -Uri '%__JDT_JAR_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -375,10 +393,10 @@ set "__JDK_TGZ_FILE=%_ROOT_DIR%\%__JDK_TGZ_NAME%"
 if exist "%_ROOT_DIR%\%__JDK_INSTALL_NAME%\" goto jdk8_done
 if exist "%__JDK_TGZ_FILE%" goto jdk8_extract
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDK_TGZ_FILE%' %__JDK_TGZ_URL%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDK_TGZ_FILE%' -Uri '%__JDK_TGZ_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download OpenJDK 8 archive to directory %_ROOT_DIR% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDK_TGZ_FILE%' %__JDK_TGZ_URL%"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDK_TGZ_FILE%' -Uri '%__JDK_TGZ_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -429,10 +447,14 @@ if not %_EXITCODE%==0 goto dist_done
 echo %JAVA_HOME%
 %JAVA_HOME%\bin\java.exe -version
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_MX_CMD% --primary-suite-path %__PRIMARY_PATH% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
+if %_DEBUG%==1 ( set __MX_OPTS=-V %_MX_OPTS%
+) else if %_VERBOSE%==1 ( set __MX_OPTS=-v %_MX_OPTS%
+) else ( set __MX_OPTS=%_MX_OPTS%
+)
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_MX_CMD% %__MX_OPTS% --primary-suite-path %__PRIMARY_PATH% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Create GraalVM build with tags %GATE% 1>&2
 )
-call %_MX_CMD% --primary-suite-path "%__PRIMARY_PATH%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
+call %_MX_CMD% %__MX_OPTS% --primary-suite-path "%__PRIMARY_PATH%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto dist_done
@@ -441,8 +463,10 @@ if not %ERRORLEVEL%==0 (
 endlocal
 goto :eof
 
+rem Defined variables are local to subroutine dist
 :dist_env
 call :dist_env_ini
+if "%JDK%"=="jdk11" set JAVA_HOME=%JAVA11_HOME%
 
 call :dist_env_msvc
 rem call :dist_env_msvc2019
@@ -463,6 +487,7 @@ if defined LLVM_VERSION (
 )
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
+    echo %_DEBUG_LABEL% JAVA_HOME=%JAVA_HOME% 1>&2
     echo %_DEBUG_LABEL% INCLUDE=%INCLUDE% 1>&2
     echo %_DEBUG_LABEL% LIB=%LIB% 1>&2
     echo %_DEBUG_LABEL% LIBPATH=%LIBPATH% 1>&2
@@ -492,33 +517,33 @@ goto :eof
 
 :dist_env_msvc
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set __MSVC_ARCH=\amd64
-    set __NET_ARCH=Framework64\v4.0.30319
-    set __SDK_ARCH=\x64
-    set __KIT_ARCH=\x64
+    set __MSVC_LIB=Lib\amd64
+    set __NET_FRAMEWORK=Framework64\v4.0.30319
+    set __SDK_LIB=lib\x64
+    set __KIT_UCRT=ucrt\x64
 ) else (
-    set __MSVC_ARCH=\x86
-    set __NET_ARCH=Framework\v4.0.30319
-    set __SDK_ARCH=
-    set __KIT_ARCH=\x86
+    set __MSVC_LIB=Lib\x86
+    set __NET_FRAMEWORK=Framework\v4.0.30319
+    set __SDK_LIB=lib
+    set __KIT_UCRT=ucrt\x86
 )
 rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
 set INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
-set LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
-set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_ARCH%;%MSVC_HOME%\lib%__MSVC_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
+set LIB=%MSVC_HOME%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
+set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%MSVC_HOME%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
 goto :eof
 
 :dist_env_msvc2019
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set __MSVC_ARCH=\amd64
-    set __NET_ARCH=Framework64\v4.0.30319
-    set __SDK_ARCH=\x64
-    set __KIT_ARCH=\x66
+    set __MSVC_LIB=Lib\amd64
+    set __NET_FRAMEWORK=Framework64\v4.0.30319
+    set __SDK_LIB=lib\x64
+    set __KIT_UCRT=ucrt\x66
 ) else (
-    set __MSVC_ARCH=\x86
-    set __NET_ARCH=Framework\v4.0.30319
-    set __SDK_ARCH=
-    set __KIT_ARCH=\x86
+    set __MSVC_LIB=Lib\x86
+    set __NET_FRAMEWORK=Framework\v4.0.30319
+    set __SDK_LIB=lib
+    set __KIT_UCRT=ucrt\x86
 )
 
 rem TODO Change hard-coded path
@@ -526,8 +551,8 @@ set __MSVC_2019=C:\PROGRA~2\MIB055~1\2019\COMMUN~1\VC\Tools\MSVC\1422~1.279\
 
 rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
 set INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
-set LIB=%__MSVC_2019%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
-set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_ARCH%;%__MSVC_2019%\lib%__MSVC_ARCH%;%KIT_LIB_DIR%\ucrt%__KIT_ARCH%
+set LIB=%__MSVC_2019%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
+set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%__MSVC_2019%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
 goto :eof
 
 rem output parameter: _DURATION

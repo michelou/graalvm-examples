@@ -59,13 +59,13 @@ set _SOURCE_DIR=%_ROOT_DIR%src\main\java
 set _TARGET_DIR=%_ROOT_DIR%target
 set _CLASSES_DIR=%_TARGET_DIR%\classes
 
-set _JAVAC_CMD=javac.exe
+set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
 set _JAVAC_OPTS=-d %_CLASSES_DIR%
 
 set _GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 
-set _JAVA_CMD=java.exe
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set _JAVA_OPTS=-cp %_CLASSES_DIR%
 goto :eof
 
@@ -211,9 +211,10 @@ goto :eof
 :run
 set __MAIN_CLASS=CountUppercase
 set __MAIN_ARGS=In 2019 I would like to run ALL languages in one VM.
+set __ITERATIONS=5
 
-if %_DEBUG%==1 ( set __JAVA_OPTS=%_JAVA_OPTS% %_GRAALVM_OPTS%
-) else ( set __JAVA_OPTS=%_JAVA_OPTS%
+if %_DEBUG%==1 ( set __JAVA_OPTS=%_JAVA_OPTS% -Diterations=%__ITERATIONS% %_GRAALVM_OPTS%
+) else ( set __JAVA_OPTS=%_JAVA_OPTS% -Diterations=%__ITERATIONS%
 )
 if %_JVMCI%==1 (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
@@ -223,7 +224,7 @@ if %_JVMCI%==1 (
 )
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS% 1>&2
-) else if %_VERBOSE%==1 ( echo Execute Java main class %__MAIN_CLASS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class %__MAIN_CLASS% %__MAIN_ARGS% 1>&2
 )
 call "%_JAVA_CMD%" %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS%
 if not %ERRORLEVEL%==0 (

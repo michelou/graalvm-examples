@@ -143,7 +143,9 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 
 ## <span id="CountUppercase">`CountUppercase`</span>
 
-Example [**`CountUppercase\`**](CountUppercase/) ...
+Example [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
+- system property `iterations` defines how many times the counting test is performed.
+- program arguments are concatenated into a sentence which is used as test input. 
 
 Command [**`build`**](CountUppercase/build.bat) with no argument displays the available options and subcommands:
 
@@ -163,21 +165,44 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
     run         run executable
 </pre>
 
-Command [**`build clean run`**](CountUppercase/build.bat) produces the following output:
+Command [**`build clean run`**](CountUppercase/build.bat) produces the following output (system property **`iterations=5`** by default):
 
 <pre style="font-size:80%;">
 <b>&gt; build clean run</b>
-1 (1485 ms)
-2 (316 ms)
-3 (386 ms)
-4 (185 ms)
-5 (162 ms)
-6 (138 ms)
-7 (163 ms)
-8 (154 ms)
-9 (147 ms)
-total: 69999993 (3274 ms)
+-- iteration 1 --
+1 (375 ms)
+2 (187 ms)
+3 (141 ms)
+4 (172 ms)
+5 (140 ms)
+6 (141 ms)
+7 (187 ms)
+8 (141 ms)
+9 (141 ms)
+total: 69999993 (1750 ms)
+[...]
+-- iteration 5 --
+1 (125 ms)
+2 (188 ms)
+3 (125 ms)
+4 (140 ms)
+5 (141 ms)
+6 (125 ms)
+7 (140 ms)
+8 (125 ms)
+9 (141 ms)
+total: 69999993 (1375 ms)
 </pre>
+
+> **:mag_right:** Executing the above command with option <b><code>-debug</code></b> also displays operations performed internally. The interesting parts are prefixed with label <b><code>[build]</code></b> (e.g. <b><code>-Diterations=5</code></b>):
+> <pre style="font-size:80%;">
+> <b>&gt; build run -debug | findstr /b "[debug]"</b>
+> [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
+> [build] C:\opt\graalvm-ce-java8-19.3.0\bin\javac.exe -d G:\examples\COUNTU~1\target\classes @G:\examples\COUNTU~1\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java8-19.3.0\bin\java.exe -cp G:\examples\COUNTU~1\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\COUNTU~1\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] Compilation log written to G:\examples\COUNTU~1\target\graal_log.txt
+> [build] _EXITCODE=0
+> </pre>
 
 Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom CheckStyle configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
 
@@ -204,7 +229,11 @@ Audit done.
 >     <b>&lt;property</b> name="localeCountry" value="US"/&gt;
 >     <b>&lt;property</b> name="localeLanguage" value="en"/&gt;
 >     <b>&lt;property</b> name="severity" value="error"/&gt;
-> ...
+>     ...
+>     <b>&lt;module</b> name="TreeWalker"&gt;
+>     ...
+>     <b>&lt;/module&gt;</b>
+> <b>&lt;/module&gt;</b>
 > </pre>
 
 ## <span id="footnotes">Footnotes</a>

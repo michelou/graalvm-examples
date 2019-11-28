@@ -65,16 +65,16 @@ set _CLASSES_DIR=%_TARGET_DIR%\classes
 
 set _PKG_NAME=org.graalvm.example
 
-set _JAVAC_CMD=javac.exe
+set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
 set _JAVAC_OPTS=-d %_CLASSES_DIR%
 
-set _NATIVE_IMAGE_CMD=native-image.cmd
-set _NATIVE_IMAGE_OPTS=--initialize-at-build-time=%_PKG_NAME% --initialize-at-run-time=%_PKG_NAME%.Startup -cp %_CLASSES_DIR%
+set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
+set _NATIVE_IMAGE_OPTS="--initialize-at-build-time=%_PKG_NAME%" "--initialize-at-run-time=%_PKG_NAME%.Startup" -cp %_CLASSES_DIR%
 
 set _GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 
-set _JAVA_CMD=java.exe
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set _JAVA_OPTS=-cp %_CLASSES_DIR%
 goto :eof
 
@@ -132,7 +132,7 @@ if %_DEBUG%==0 if %_VERBOSE%==0 set _STDOUT_REDIRECT=1^>NUL
 
 if %_CACHED%==1 (
     set _MAIN_NAME=HelloCachedTime
-    set _NATIVE_IMAGE_OPTS=--initialize-at-run-time=%_PKG_NAME%.!_MAIN_NAME! %_NATIVE_IMAGE_OPTS%
+    set _NATIVE_IMAGE_OPTS="--initialize-at-run-time=%_PKG_NAME%.!_MAIN_NAME!" %_NATIVE_IMAGE_OPTS%
 ) else (
     set _MAIN_NAME=HelloStartupTime
 )

@@ -145,9 +145,40 @@ Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM] software distributi
        70  2019-10-16 21:11   graalvm-ce-java8-19.3.0-dev/jre/bin/js.cmd
 </pre>
 
+Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
+
+<pre style="font-size:80%;">
+<b>&gt; build -verbose update</b>
+ Current directory is graal\
+ Update local directory G:\graal\
+remote: Enumerating objects: 9784, done.
+[...]
+From https://github.com/oracle/graal
+ * branch                    master     -> FETCH_HEAD
+   27c67640e10..b6022e8699b  master     -> upstream/master
+[...]
+ Current directory is \mx
+ Update MX suite repository into directory G:\\mx
+ remote: Enumerating objects: 8, done.
+remote: Counting objects: 100% (8/8), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 8 (delta 4), reused 5 (delta 4), pack-reused 0
+Unpacking objects: 100% (8/8), done.
+From https://github.com/graalvm/mx
+   1a8e2a9..6369620  master     -> origin/master
+ * [new tag]         5.247.5    -> 5.247.5
+ Update MX suite repository into directory G:\\mx
+Updating 1a8e2a9..6369620
+Fast-forward
+ mx.py           | 12 +++++++++++-
+ mx_benchmark.py |  7 +++++--
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+</pre>
+
+
 ## Troubleshooting
 
-Graal projects rely on the [**`mx`**][mx_cmd] command-line tool to build, test, run, update, etc. [GraalVM] software.
+Graal projects rely on the [**`mx`**][mx_cli] command-line tool to build, test, run, update, etc. [GraalVM] software.
 
 <pre style="font-size:80%;">
 <b>&gt; build -timer -verbose clean dist:1</b>
@@ -170,11 +201,11 @@ Traceback (most recent call last):
 SystemExit: 1
 </pre>
 
-We observe that the [**`mx`**][mx_cmd] configuration accepts a restricted set of **`pylint`** versions. In our case we had to change back to version 1.9.2 (from version 2.3.1).
+We observe that the [**`mx`**][mx_cli] configuration accepts a restricted set of **`pylint`** versions. In our case we had to change back to version 1.9.2 (from version 2.3.1).
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
-c:\opt\Python-3.7.4
+c:\opt\Python-2.7.17
 &nbsp;
 <b>&gt; Scripts\pip uninstall package pylint</b>
 [...]
@@ -187,7 +218,7 @@ Collecting pylint==1.9.2
 No config file found, using default configuration
 pylint 1.9.2,
 astroid 1.6.6
-Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)]
+Python 2.7.17 (v2.7.17:c2f86d86e6, Oct 19 2019, 21:01:17) [MSC v.1500 64 bit (AMD64)]
 </pre>
 
 <!--
@@ -208,6 +239,6 @@ Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit 
 
 [build_matrix]: https://docs.travis-ci.com/user/build-matrix/
 [graalvm]: https://www.graalvm.org/
-[mx_cmd]: https://github.com/graalvm/mx
+[mx_cli]: https://github.com/graalvm/mx
 [oracle_graal]: https://github.com/oracle/graal
 [travis_yml]: https://github.com/oracle/graal/blob/master/.travis.yml

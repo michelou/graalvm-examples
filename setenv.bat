@@ -23,17 +23,26 @@ if %_HELP%==1 call :help & exit /b %_EXITCODE%
 rem ##########################################################################
 rem ## Main
 
-set _GRAAL_PATH=
+set _JAVA_HOME=
+set _JAVA11_HOME=
+
 set _PYTHON_PATH=
 set _MX_PATH=
+set _CYGWIN_PATH=
 set _MSVS_PATH=
 set _SDK_PATH=
 set _GIT_PATH=
 
-call :graal
+call :java8
+if not %_EXITCODE%==0 goto end
+
+call :java11
 if not %_EXITCODE%==0 goto end
 
 call :python
+if not %_EXITCODE%==0 goto end
+
+call :mx
 if not %_EXITCODE%==0 goto end
 
 call :msvs
@@ -46,10 +55,10 @@ if not %_EXITCODE%==0 goto end
 call :kit
 if not %_EXITCODE%==0 goto end
 
-call :git
+call :cygwin
 if not %_EXITCODE%==0 goto end
 
-call :mx
+call :git
 if not %_EXITCODE%==0 goto end
 
 goto end
@@ -73,6 +82,7 @@ goto :eof
 rem input parameter: %*
 :args
 set _HELP=0
+set _TRAVIS=0
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -82,6 +92,7 @@ if not defined __ARG goto args_done
 if "%__ARG:~0,1%"=="-" (
     rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
+    ) else if /i "%__ARG%"=="-travis" ( set _TRAVIS=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
@@ -101,7 +112,7 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _JAVA_VERSION=%_JAVA_VERSION% _TRAVIS=%_TRAVIS% _VERBOSE=%_VERBOSE% 1>&2
 goto :eof
 
 :help
@@ -115,42 +126,54 @@ echo   Subcommands:
 echo     help        display this help message
 goto :eof
 
-rem output parameters: _GRAAL_HOME, _GRAAL_PATH
+rem input parameter: %1=Java version
+rem output parameter: _GRAAL_HOME
 :graal
+set __JAVA_VERSION=%~1
 set _GRAAL_HOME=
-set _GRAAL_PATH=
 
 set __JAVAC_CMD=
-for /f %%f in ('where javac.exe 2^>NUL') do set __JAVAC_CMD=%%f
+for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
     for %%i in ("%__JAVAC_CMD%") do set __GRAAL_BIN_DIR=%%~dpsi
     for %%f in ("!__GRAAL_BIN_DIR!..") do set _GRAAL_HOME=%%~sf
-    rem keep _GRAAL_PATH undefined since executable already in path
-    goto :eof
 ) else if defined GRAAL_HOME (
     set _GRAAL_HOME=%GRAAL_HOME%
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GRAAL_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!__PATH!\graalvm-ce*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
+    for /f %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
     if not defined _GRAAL_HOME (
         set "__PATH=%_PROGRAM_FILES%"
-        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\graalvm-ce*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
     )
 )
 if not exist "%_GRAAL_HOME%\bin\javac.exe" (
-    echo %_ERROR_LABEL% javac executable not found ^(%_GRAAL_HOME%^) 1>&2
+    echo %_ERROR_LABEL% Executable javac.exe not found ^(%_GRAAL_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-if not exist "%_GRAAL_HOME%\bin\polyglot.cmd" (
-    echo %_ERROR_LABEL% polyglot executable not found ^(%_GRAAL_HOME%^) 1>&2
+if %__JAVA_VERSION%==java8 ( set __POLYGLOT_NAME=polyglot.cmd
+) else ( set __POLYGLOT_NAME=polyglot.exe
+)
+if not exist "%_GRAAL_HOME%\bin\%__POLYGLOT_NAME%" (
+    echo %_ERROR_LABEL% Executable %__POLYGLOT_NAME% not found ^(%_GRAAL_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-rem Here we use trailing separator because it will be prepended to PATH
-set "_GRAAL_PATH=%_GRAAL_HOME%\bin;"
+goto :eof
+
+:java8
+call :graal java8
+if not %_EXITCODE%==0 goto :eof
+if defined _GRAAL_HOME set _JAVA_HOME=%_GRAAL_HOME%
+goto :eof
+
+:java11
+call :graal java11
+if not %_EXITCODE%==0 goto :eof
+if defined _GRAAL_HOME set _JAVA11_HOME=%_GRAAL_HOME%
 goto :eof
 
 rem output parameter: _PYTHON_PATH
@@ -158,9 +181,9 @@ rem output parameter: _PYTHON_PATH
 set _PYTHON_PATH=
 
 set __PYTHON_HOME=
-set __PYTHON_EXE=
-for /f %%f in ('where python.exe 2^>NUL') do set __PYTHON_EXE=%%f
-if defined __PYTHON_EXE (
+set __PYTHON_CMD=
+for /f %%f in ('where python.exe 2^>NUL') do set "__PYTHON_CMD=%%f"
+if defined __PYTHON_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Python executable found in PATH 1>&2
     rem keep _PYTHON_PATH undefined since executable already in path
     goto :eof
@@ -196,42 +219,70 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %
 set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
 goto :eof
 
-rem output parameter: _GIT_CMD
-:mx_git
-set _GIT_CMD=
-
-where /q git.exe
-if %ERRORLEVEL%==0 (
-    set _GIT_CMD=git.exe
-) else if defined _GIT_HOME (
-    where /q "%_GIT_HOME%\bin:git.exe"
-    if !ERRORLEVEL!==0 (
-        set "_GIT_CMD=%_GIT_HOME%\bin\git.exe"
-    )
-)
-goto :eof
-
 :mx
-call :mx_git
-if not defined _GIT_CMD (
-    echo %_ERROR_LABEL% Executable git.exe not found 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-set __MX_URL=https://github.com/graalvm/mx.git
-
+set __GIT_EXE=git.exe
+rem set __MX_URL=https://github.com/graalvm/mx.git
 set __MX_HOME=%_ROOT_DIR%\mx
-if not exist "%__MX_HOME%\mx.cmd" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% clone %__MX_URL% %__MX_HOME% 1>&2
-    else if %_VERBOSE%==1 ( echo Clone mx repository to directory !_MX_HOME:%_ROOT_DIR%=! 1>&2
+if exist "%__MX_HOME%\mx.cmd" (
+    where /q %__GIT_EXE%
+    if not !ERRORLEVEL!==0 (
+        echo %_WARNING_LABEL% mx directory was not updated ^(git.exe not found^) 1>&2
+        rem set _EXITCODE=1
+        goto :eof
     )
-    %_GIT_CMD% clone %__MX_URL% %__MX_HOME%
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %__GIT_EXE% fetch ^&^& %__GIT_EXE% merge 1^>NUL 1>&2
+    ) else if %_VERBOSE%==1 ( echo Update mx directory %__MX_HOME% 1>&2
+    ) else ( echo Update mx directory
+    )
+    call "%__GIT_EXE%" -C "%__MX_HOME%" fetch && call "%__GIT_EXE%" -C "%__MX_HOME%" merge 1>NUL
     if not !ERRORLEVEL!==0 (
         set _EXITCODE=1
         goto :eof
     )
+) else (
+    echo %_WARNING_LABEL% mx directory not found 1>&2
+    rem set _EXITCODE=1
+    goto :eof
 )
 set "_MX_PATH=;%__MX_HOME%"
+goto :eof
+
+rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
+:cygwin
+set _CYGWIN_HOME=
+set _CYGWIN_PATH=
+
+set __MAKE_EXE=
+for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_EXE=%%f"
+if defined __MAKE_EXE (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
+    for /f "delims=" %%i in ("%__MAKE_EXE%") do set __MAKE_BIN_DIR=%%~dpi
+    for %%f in ("!__MAKE_BIN_DIR!..\..") do set _CYGWIN_HOME=%%~sf
+    rem keep _CYGWIN_PATH undefined since executable already in path
+    goto :eof
+) else if defined CYGWIN_HOME (
+    set _CYGWIN_HOME=%CYGWIN_HOME%
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
+) else (
+    set "__PATH=%_PROGRAM_FILES%"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
+    if not defined _CYGWIN_HOME (
+        set __PATH=C:\opt
+        for /f %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
+    )
+)
+if not exist "%_CYGWIN_HOME%\bin\make.exe" (
+    echo %_ERROR_LABEL% GNU Make executable not found ^(%_CYGWIN_HOME%^) 1>&2
+    set _CYGWIN_HOME=
+    set _EXITCODE=1
+    goto :eof
+)
+rem path name of installation directory may contain spaces
+for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set _CYGWIN_HOME=%%~sf
+if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
+
+rem i.e. make.exe, gcc.exe
+set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
 goto :eof
 
 rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
@@ -241,7 +292,7 @@ set _MSVC_HOME=
 set _MSVS_PATH=
 set _MSVS_HOME=
 
-for /f "delims=" %%f in ("%_PROGRAM_FILES_X86%\Microsoft Visual Studio 10.0") do set _MSVS_HOME=%%~sf
+for /f "delims=" %%f in ("%_PROGRAM_FILES_X86%\Microsoft Visual Studio 10.0") do set "_MSVS_HOME=%%~f"
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 10 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -393,10 +444,16 @@ rem output parameters: _GIT_HOME, _GIT_PATH
 set _GIT_HOME=
 set _GIT_PATH=
 
-set __GIT_EXE=
-for /f %%f in ('where git.exe 2^>NUL') do set __GIT_EXE=%%f
-if defined __GIT_EXE (
+set __GIT_CMD=
+for /f %%f in ('where git.exe 2^>NUL') do set __GIT_CMD=%%f
+if defined __GIT_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Git executable found in PATH 1>&2
+    for %%i in ("%__GIT_CMD%") do set __GIT_BIN_DIR=%%~dpsi
+    for %%f in ("!__GIT_BIN_DIR!..") do set _GIT_HOME=%%~sf
+    rem Executable git.exe is present both in bin\ and \mingw64\bin\
+    if not "!_GIT_HOME:mingw=!"=="!_GIT_HOME!" (
+        for %%f in ("!_GIT_HOME!\..") do set _GIT_HOME=%%~sf
+    )
     rem keep _GIT_PATH undefined since executable already in path
     goto :eof
 ) else if defined GIT_HOME (
@@ -431,10 +488,17 @@ set "__VERSIONS_LINE1=  "
 set "__VERSIONS_LINE2=  "
 set "__VERSIONS_LINE3=  "
 set __WHERE_ARGS=
-where /q javac.exe
-if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,*" %%i in ('javac.exe -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
-    set __WHERE_ARGS=%__WHERE_ARGS% javac.exe
+set __JAVAC_CMD=
+if defined JAVA_HOME for /f %%f in ('where /r "%JAVA_HOME%" javac.exe') do set "__JAVAC_CMD=%%f"
+if defined __JAVAC_CMD (
+    for /f "tokens=1,2,*" %%i in ('%__JAVAC_CMD% -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA_HOME%\bin:javac.exe"
+)
+set __JAVAC_CMD=
+if defined JAVA11_HOME for /f %%f in ('where /r "%JAVA11_HOME%" javac.exe') do set "__JAVAC_CMD=%%f"
+if defined __JAVAC_CMD (
+    for /f "tokens=1,2,*" %%i in ('%__JAVAC_CMD% -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA11_HOME%\bin:javac.exe"
 )
 where /q python.exe
 if %ERRORLEVEL%==0 (
@@ -445,6 +509,11 @@ where /q pylint.exe
 if %ERRORLEVEL%==0 (
     for /f "tokens=1,*" %%i in ('pylint.exe --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j"
     set __WHERE_ARGS=%__WHERE_ARGS% pylint.exe
+)
+where /q make.exe
+if %ERRORLEVEL%==0 (
+    for /f "tokens=1,2,3,*" %%i in ('make.exe --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% make.exe
 )
 where /q mx.cmd
 if %ERRORLEVEL%==0 (
@@ -498,16 +567,21 @@ rem ## Cleanups
 :end
 endlocal & (
     if %_EXITCODE%==0 (
-        if not defined GRAAL_HOME set GRAAL_HOME=%_GRAAL_HOME%
-        if not defined JAVA_HOME set JAVA_HOME=%_GRAAL_HOME%
+        if not defined JAVA_HOME set JAVA_HOME=%_JAVA_HOME%
+        if not defined JAVA11_HOME set JAVA11_HOME=%_JAVA11_HOME%
+        if not defined CYGWIN_HOME set CYGWIN_HOME=%_CYGWIN_HOME%
         if not defined MSVC_HOME set MSVC_HOME=%_MSVC_HOME%
         if not defined MSVS_CMAKE_CMD set MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%
         if not defined MSVS_HOME set MSVS_HOME=%_MSVS_HOME%
         if not defined SDK_HOME set SDK_HOME=%_SDK_HOME%
         if not defined KIT_INC_DIR set KIT_INC_DIR=%_KIT_INC_DIR%
         if not defined KIT_LIB_DIR set KIT_LIB_DIR=%_KIT_LIB_DIR%
-        set "PATH=%_GRAAL_PATH%%PATH%%_PYTHON_PATH%%_MX_PATH%%_MSVS_PATH%%_SDK_PATH%%_GIT_PATH%;%~dp0bin"
-        if %_EXITCODE%==0 call :print_env %_VERBOSE%
+        set "PATH=%PATH%%_PYTHON_PATH%%_MX_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        call :print_env %_VERBOSE%
+        if %_TRAVIS%==1 (
+            if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2
+            call %_GIT_HOME%\bin\bash.exe --login
+        )
     )
     if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
     for /f "delims==" %%i in ('set ^| findstr /b "_"') do set %%i=
