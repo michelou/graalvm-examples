@@ -1,4 +1,4 @@
-# <span id="top">GraalVM Resources</span> <span style="size:30%;"><a href="../README.md">⬆</a></span>
+# <span id="top">GraalVM Resources</span> <span style="size:30%;"><a href="README.md">↩</a></span>
 
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>

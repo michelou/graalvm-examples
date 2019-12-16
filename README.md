@@ -23,10 +23,10 @@ This project relies on the following external software for the **Microsoft Windo
 
 > **:mag_right:** Git for Windows provides a BASH emulation used to run [**`git`**][git_cli] from the command line (as well as over 250 Unix commands like [**`awk`**][man1_awk], [**`diff`**][man1_diff], [**`file`**][man1_file], [**`grep`**][man1_grep], [**`more`**][man1_more], [**`mv`**][man1_mv], [**`rmdir`**][man1_rmdir], [**`sed`**][man1_sed] and [**`wc`**][man1_wc]).
 
-For instance our development environment looks as follows (*November 2019*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
+For instance our development environment looks as follows (*December 2019*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <pre style="font-size:80%;">
-C:\opt\Git-2.24.0\                                    <i>(271 MB)</i>
+C:\opt\Git-2.24.1\                                    <i>(271 MB)</i>
 C:\opt\graalvm-ce-java8-19.3.0\                       <i>(380 MB)</i> <!-- 19.2.1=362 -->
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
@@ -44,8 +44,9 @@ bin\graal\build.bat
 docs\
 examples\
 graal\                              <i>(Git submodule)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.5-jvmci-19.3-b05\</a>
 mx\                                 <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_232-jvmci-19.3-b05\</a><sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_232-jvmci-19.3-b06\</a><sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
 README.md
 RESOURCES.md
 setenv.bat
@@ -105,7 +106,7 @@ We distinguish different sets of batch commands:
                     (see environment definitions in file build.ini)
        help         display this help message
        update       fetch/merge local directories graal/mx</pre>
-   > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in file [**`build.ini`**](bin/graal/build.ini).
+   > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&colon;&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in file [**`build.ini`**](bin/graal/build.ini).
 
 ## <span id="usage_examples">Usage examples</span>
 
@@ -116,13 +117,13 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.247.4
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.248.3
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.1.windows.2
 
 <b>&gt; where cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
-C:\opt\graalvm-ce-19.2.1\bin\java.exe
+C:\opt\graalvm-ce-java8-19.3.0\bin\java.exe
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
 </pre>
 
@@ -131,21 +132,21 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; setenv -verbose</b>
 Tool versions:
-   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.247.4
+   javac 1.8.0_232, python 2.7.17, pylint 1.9.2, mx 5.248.3
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.24.1.windows.2
 Tool paths:
-   C:\opt\graalvm-ce-19.2.1\bin\javac.exe
+   C:\opt\graalvm-ce-java8-19.3.0\bin\javac.exe
    C:\opt\Python-2.7.17\python.exe
    C:\opt\Python-2.7.17\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.24.0\usr\bin\link.exe
+   C:\opt\Git-2.24.1\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.24.0\bin\git.exe
-   C:\opt\Git-2.24.0\mingw64\bin\git.exe
+   C:\opt\Git-2.24.1\bin\git.exe
+   C:\opt\Git-2.24.1\mingw64\bin\git.exe
 </pre>
 
 #### `graal\build.bat`
@@ -183,7 +184,7 @@ In our case we downloaded the following installation files (see <a href="#sectio
 <a href="https://github.com/oracle/graal/releases">graalvm-ce-java8-windows-amd64-19.3.0.zip</a>   <i>(154 MB)</i>
 <a href="https://github.com/oracle/graal/releases">graalvm-ce-java11-windows-amd64-19.3.0.zip</a>  <i>(230 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                          <i>(570 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.24.0-64-bit.7z.exe</a>            <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.24.1-64-bit.7z.exe</a>            <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>                     <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                   <i>(121 MB)</i>
 </pre>
@@ -196,7 +197,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/December 2019* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -205,7 +206,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.24.0.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.24.1.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/

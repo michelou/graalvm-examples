@@ -250,5 +250,5 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/December 2019* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>

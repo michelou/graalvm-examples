@@ -13,7 +13,7 @@
 ## `build.bat` command
 
 Command [**`build.bat`**](bin/graal/build.bat) supports the same [build matrix][build_matrix] as defined by the Travis configuration file [**`.travis.yml`**][travis_yml] in repository [oracle/graal][oracle_graal].
-Available build environments are defined in configuration file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
+Build environments are defined in configuration file [**`build.ini`**](bin/graal/build.ini), e.g. environment **`env1`** is defined in section with same name: 
 
 <pre style="font-size:80%;">
 <b>&gt; cd</b>
@@ -232,7 +232,7 @@ Python 2.7.17 (v2.7.17:c2f86d86e6, Oct 19 2019, 21:01:17) [MSC v.1500 64 bit (AM
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/December 2019* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

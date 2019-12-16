@@ -27,10 +27,10 @@ set _JAVA_HOME=
 set _JAVA11_HOME=
 
 set _PYTHON_PATH=
-set _MX_PATH=
-set _CYGWIN_PATH=
+set _LLVM_PATH=
 set _MSVS_PATH=
 set _SDK_PATH=
+set _CYGWIN_PATH=
 set _GIT_PATH=
 
 call :java8
@@ -42,7 +42,7 @@ if not %_EXITCODE%==0 goto end
 call :python
 if not %_EXITCODE%==0 goto end
 
-call :mx
+call :llvm
 if not %_EXITCODE%==0 goto end
 
 call :msvs
@@ -219,70 +219,41 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %
 set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
 goto :eof
 
-:mx
-set __GIT_EXE=git.exe
-rem set __MX_URL=https://github.com/graalvm/mx.git
-set __MX_HOME=%_ROOT_DIR%\mx
-if exist "%__MX_HOME%\mx.cmd" (
-    where /q %__GIT_EXE%
-    if not !ERRORLEVEL!==0 (
-        echo %_WARNING_LABEL% mx directory was not updated ^(git.exe not found^) 1>&2
-        rem set _EXITCODE=1
-        goto :eof
-    )
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %__GIT_EXE% fetch ^&^& %__GIT_EXE% merge 1^>NUL 1>&2
-    ) else if %_VERBOSE%==1 ( echo Update mx directory %__MX_HOME% 1>&2
-    ) else ( echo Update mx directory
-    )
-    call "%__GIT_EXE%" -C "%__MX_HOME%" fetch && call "%__GIT_EXE%" -C "%__MX_HOME%" merge 1>NUL
-    if not !ERRORLEVEL!==0 (
-        set _EXITCODE=1
-        goto :eof
-    )
-) else (
-    echo %_WARNING_LABEL% mx directory not found 1>&2
-    rem set _EXITCODE=1
-    goto :eof
-)
-set "_MX_PATH=;%__MX_HOME%"
-goto :eof
+rem output parameter(s): _LLVM_HOME, _LLVM_PATH
+:llvm
+set _LLVM_HOME=
+set _LLVM_PATH=
 
-rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
-:cygwin
-set _CYGWIN_HOME=
-set _CYGWIN_PATH=
-
-set __MAKE_EXE=
-for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_EXE=%%f"
-if defined __MAKE_EXE (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
-    for /f "delims=" %%i in ("%__MAKE_EXE%") do set __MAKE_BIN_DIR=%%~dpi
-    for %%f in ("!__MAKE_BIN_DIR!..\..") do set _CYGWIN_HOME=%%~sf
-    rem keep _CYGWIN_PATH undefined since executable already in path
+set __CLANG_EXE=
+for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_EXE=%%f"
+if defined __CLANG_EXE (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Clang executable found in PATH 1>&2
+    for /f "delims=" %%i in ("%__CLANG_EXE%") do set __LLVM_BIN_DIR=%%~dpi
+    for %%f in ("!__LLVM_BIN_DIR!..") do set _LLVM_HOME=%%~sf
+    rem keep _LLVM_PATH undefined since executable already in path
     goto :eof
-) else if defined CYGWIN_HOME (
-    set _CYGWIN_HOME=%CYGWIN_HOME%
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
+) else if defined LLVM_HOME (
+    set _LLVM_HOME=%LLVM_HOME%
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable LLVM_HOME 1>&2
 ) else (
-    set "__PATH=%_PROGRAM_FILES%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
-    if not defined _CYGWIN_HOME (
+    set "__PATH=%ProgramFiles%"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-8*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+    if not defined _LLVM_HOME (
         set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
+        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-8*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     )
 )
-if not exist "%_CYGWIN_HOME%\bin\make.exe" (
-    echo %_ERROR_LABEL% GNU Make executable not found ^(%_CYGWIN_HOME%^) 1>&2
-    set _CYGWIN_HOME=
+if not exist "%_LLVM_HOME%\bin\clang.exe" (
+    echo %_ERROR_LABEL% clang executable not found ^(%_LLVM_HOME%^) 1>&2
+    set _LLVM_HOME=
     set _EXITCODE=1
     goto :eof
 )
 rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set _CYGWIN_HOME=%%~sf
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
+for /f "delims=" %%f in ("%_LLVM_HOME%") do set _LLVM_HOME=%%~sf
+if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default LLVM installation directory %_LLVM_HOME% 1>&2
 
-rem i.e. make.exe, gcc.exe
-set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
+set "_LLVM_PATH=;%_LLVM_HOME%\bin"
 goto :eof
 
 rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
@@ -439,6 +410,44 @@ set "_KIT_INC_DIR=%__KIT_HOME%\Include\%__KIT_VERSION%"
 set "_KIT_LIB_DIR=%__KIT_HOME%\Lib\%__KIT_VERSION%"
 goto :eof
 
+rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
+:cygwin
+set _CYGWIN_HOME=
+set _CYGWIN_PATH=
+
+set __MAKE_EXE=
+for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_EXE=%%f"
+if defined __MAKE_EXE (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
+    for /f "delims=" %%i in ("%__MAKE_EXE%") do set __MAKE_BIN_DIR=%%~dpi
+    for %%f in ("!__MAKE_BIN_DIR!..\..") do set _CYGWIN_HOME=%%~sf
+    rem keep _CYGWIN_PATH undefined since executable already in path
+    goto :eof
+) else if defined CYGWIN_HOME (
+    set _CYGWIN_HOME=%CYGWIN_HOME%
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
+) else (
+    set "__PATH=%_PROGRAM_FILES%"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
+    if not defined _CYGWIN_HOME (
+        set __PATH=C:\opt
+        for /f %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
+    )
+)
+if not exist "%_CYGWIN_HOME%\bin\make.exe" (
+    echo %_ERROR_LABEL% GNU Make executable not found ^(%_CYGWIN_HOME%^) 1>&2
+    set _CYGWIN_HOME=
+    set _EXITCODE=1
+    goto :eof
+)
+rem path name of installation directory may contain spaces
+for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set _CYGWIN_HOME=%%~sf
+if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
+
+rem i.e. make.exe, gcc.exe
+set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
+goto :eof
+
 rem output parameters: _GIT_HOME, _GIT_PATH
 :git
 set _GIT_HOME=
@@ -515,10 +524,15 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,2,3,*" %%i in ('make.exe --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% make.exe
 )
-where /q mx.cmd
+where /q clang.exe
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,*" %%i in ('mx.cmd --version 2^>^NUL') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% mx %%k"
-    set __WHERE_ARGS=%__WHERE_ARGS% mx.cmd
+    for /f "tokens=1,2,3,*" %%i in ('clang.exe --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% clang %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% clang.exe
+)
+where /q opt.exe
+if %ERRORLEVEL%==0 (
+    for /f "tokens=1,2,3,*" %%i in ('opt.exe --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% opt.exe
 )
 where /q cl.exe
 if %ERRORLEVEL%==0 (
@@ -569,14 +583,15 @@ endlocal & (
     if %_EXITCODE%==0 (
         if not defined JAVA_HOME set JAVA_HOME=%_JAVA_HOME%
         if not defined JAVA11_HOME set JAVA11_HOME=%_JAVA11_HOME%
-        if not defined CYGWIN_HOME set CYGWIN_HOME=%_CYGWIN_HOME%
+        if not defined LLVM_HOME set LLVM_HOME=%_LLVM_HOME%
         if not defined MSVC_HOME set MSVC_HOME=%_MSVC_HOME%
         if not defined MSVS_CMAKE_CMD set MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%
         if not defined MSVS_HOME set MSVS_HOME=%_MSVS_HOME%
         if not defined SDK_HOME set SDK_HOME=%_SDK_HOME%
         if not defined KIT_INC_DIR set KIT_INC_DIR=%_KIT_INC_DIR%
         if not defined KIT_LIB_DIR set KIT_LIB_DIR=%_KIT_LIB_DIR%
-        set "PATH=%PATH%%_PYTHON_PATH%%_MX_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        if not defined CYGWIN_HOME set CYGWIN_HOME=%_CYGWIN_HOME%
+        set "PATH=%PATH%%_PYTHON_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if %_TRAVIS%==1 (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2

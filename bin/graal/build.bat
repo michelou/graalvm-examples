@@ -37,10 +37,7 @@ if %_UPDATE%==1 (
     if not !_EXITCODE!==0 goto end
 )
 if %_DIST%==1 (
-    call :graal_clone
-    if not !_EXITCODE!==0 goto end
-
-    call :mx_clone
+    call :clone
     if not !_EXITCODE!==0 goto end
 
     call :dist
@@ -64,14 +61,14 @@ set _WARNING_LABEL=[93mWarning[0m:
 for %%f in ("%~dp0") do set _TRAVIS_BUILD_DIR=%%~sf
 set _TMP_DIR=%_ROOT_DIR%\tmp
 
-set _GIT_CMD=git.exe
-set _GIT_OPTS=
-
 set _GRAAL_URL=https://github.com/oracle/graal.git
 set _GRAAL_PATH=%_TRAVIS_BUILD_DIR%
 
 set _MX_URL=https://github.com/graalvm/mx.git
 set _MX_PATH=%_ROOT_DIR%\mx
+
+set _GIT_CMD=git.exe
+set _GIT_OPTS=
 
 set _MX_CMD=%_MX_PATH%\mx.cmd
 set _MX_OPTS=
@@ -80,7 +77,7 @@ set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
 rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-19.3-b05
+set _JVMCI_VERSION=jvmci-19.3-b06
 set _JDK8_UPDATE_VERSION=232
 set _JDK8_UPDATE_VERSION_SUFFIX=
 rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
@@ -124,15 +121,15 @@ set _INI[%_INI_N%]=global
 goto :eof
 
 rem input parameter: %*
-rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _VERBOSE, _UPDATE
+rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _UPDATE, _VERBOSE
 :args
 set _CLEAN=0
 set _DIST=0
 set _DIST_ENV=env2
 set _HELP=0
 set _TIMER=0
-set _VERBOSE=0
 set _UPDATE=0
+set _VERBOSE=0
 set __N=0
 :args_loop
 set "__ARG=%~1"
@@ -239,14 +236,14 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :update
-call :graal_update
+call :update_graal
 if not %_EXITCODE%==0 goto :eof
 
-call :mx_update
+call :update_mx
 if not %_EXITCODE%==0 goto :eof
 goto :eof
 
-:graal_update
+:update_graal
 if not exist "%_GRAAL_PATH%\.travis.yml" goto :eof
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is !_GRAAL_PATH:%_ROOT_DIR%=! 1>&2
@@ -275,26 +272,7 @@ if not %ERRORLEVEL%==0 (
 popd
 goto :eof
 
-:graal_clone
-if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% clone %_GRAAL_URL% %_GRAAL_PATH% 1>&2
-) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory %_GRAAL_PATH% 1>&2
-)
-call %_GIT_CMD% %_GIT_OPTS% clone "%_GRAAL_URL%" "%_GRAAL_PATH%"
-if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to clone graal remote Git repository 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-if not exist "%_GRAAL_HOME%\.travis.yml" (
-    echo %_ERROR_LABEL% Travis configuration file not found ^(%_GRAAL_PATH%^) 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-goto :eof
-
-:mx_update
+:update_mx
 if not exist "%_MX_CMD%" goto :eof
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is !_MX_PATH:%_ROOT_DIR%=! 1>&2
@@ -323,7 +301,34 @@ if not %ERRORLEVEL%==0 (
 popd
 goto :eof
 
-:mx_clone
+:clone
+call :clone_graal
+if not %_EXITCODE%==0 goto :eof
+
+call :clone_mx
+if not %_EXITCODE%==0 goto :eof
+goto :eof
+
+:clone_graal
+if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% clone %_GRAAL_URL% %_GRAAL_PATH% 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory %_GRAAL_PATH% 1>&2
+)
+call %_GIT_CMD% %_GIT_OPTS% clone "%_GRAAL_URL%" "%_GRAAL_PATH%"
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to clone graal remote Git repository 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+if not exist "%_GRAAL_HOME%\.travis.yml" (
+    echo %_ERROR_LABEL% Travis configuration file not found ^(%_GRAAL_PATH%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
+:clone_mx
 if exist "%_MX_CMD%" goto :eof
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% clone %_MX_URL% %_MX_PATH% 1>&2
@@ -382,7 +387,7 @@ set "JDT=%__JDT_JAR_FILE%"
 goto :eof
 
 rem depends on :dist_env
-:jdk8
+:jvmci
 if not %JDK%==jdk8 goto :eof
 
 set "__JDK_INSTALL_NAME=openjdk1.8.0_%_JDK8_UPDATE_VERSION%-%_JVMCI_VERSION%"
@@ -390,8 +395,8 @@ set "__JDK_TGZ_NAME=openjdk-8u%_JDK8_UPDATE_VERSION%%_JDK8_UPDATE_VERSION_SUFFIX
 set "__JDK_TGZ_URL=https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/%_JVMCI_VERSION%/%__JDK_TGZ_NAME%"
 set "__JDK_TGZ_FILE=%_ROOT_DIR%\%__JDK_TGZ_NAME%"
 
-if exist "%_ROOT_DIR%\%__JDK_INSTALL_NAME%\" goto jdk8_done
-if exist "%__JDK_TGZ_FILE%" goto jdk8_extract
+if exist "%_ROOT_DIR%\%__JDK_INSTALL_NAME%\" goto jvmci_done
+if exist "%__JDK_TGZ_FILE%" goto jvmci_extract
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDK_TGZ_FILE%' -Uri '%__JDK_TGZ_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download OpenJDK 8 archive to directory %_ROOT_DIR% 1>&2
@@ -401,7 +406,7 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-:jdk8_extract
+:jvmci_extract
 if not exist "%_TMP_DIR%" mkdir "%_TMP_DIR%"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_TAR_CMD% -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%" 1>&2
@@ -422,7 +427,7 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-:jdk8_done
+:jvmci_done
 set "JAVA_HOME=%_ROOT_DIR%\%__JDK_INSTALL_NAME%"
 goto :eof
 
@@ -441,7 +446,7 @@ if not %_EXITCODE%==0 goto dist_done
 call :fullbuild
 if not %_EXITCODE%==0 goto dist_done
 
-call :jdk8
+call :jvmci
 if not %_EXITCODE%==0 goto dist_done
 
 echo %JAVA_HOME%
