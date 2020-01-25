@@ -74,15 +74,12 @@ rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
 set _ERROR_LABEL=[91mError[0m:
 set _WARNING_LABEL=[93mWarning[0m:
-
-for %%f in ("%ProgramFiles%") do set _PROGRAM_FILES=%%~sf
-for %%f in ("%ProgramFiles(x86)%") do set _PROGRAM_FILES_X86=%%~sf
 goto :eof
 
 rem input parameter: %*
 :args
+set _BASH=0
 set _HELP=0
-set _TRAVIS=0
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -91,8 +88,8 @@ if not defined __ARG goto args_done
 
 if "%__ARG:~0,1%"=="-" (
     rem option
-    if /i "%__ARG%"=="-debug" ( set _DEBUG=1
-    ) else if /i "%__ARG%"=="-travis" ( set _TRAVIS=1
+    if /i "%__ARG%"=="-bash" ( set _BASH=1
+    ) else if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
@@ -112,13 +109,14 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _JAVA_VERSION=%_JAVA_VERSION% _TRAVIS=%_TRAVIS% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _JAVA_VERSION=%_JAVA_VERSION% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
 goto :eof
 
 :help
 echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
 echo.
 echo   Options:
+echo     -bash       start Git bash shell instead of Windows command prompt
 echo     -debug      show commands executed by this script
 echo     -verbose    display environment settings
 echo.
@@ -145,7 +143,7 @@ if defined __JAVAC_CMD (
     set __PATH=C:\opt
     for /f %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
     if not defined _GRAAL_HOME (
-        set "__PATH=%_PROGRAM_FILES%"
+        set "__PATH=%ProgramFiles%"
         for /f "delims=" %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
     )
 )
@@ -196,7 +194,7 @@ if defined __PYTHON_CMD (
     ) else (
         for /f %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "__PYTHON_HOME=!__PATH!\%%f"
         if not defined __PYTHON_HOME (
-            set "__PATH=%_PROGRAM_FILES%"
+            set "__PATH=%ProgramFiles%"
             for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "__PYTHON_HOME=!__PATH!\%%f"
         )
     )
@@ -263,16 +261,13 @@ set _MSVC_HOME=
 set _MSVS_PATH=
 set _MSVS_HOME=
 
-for /f "delims=" %%f in ("%_PROGRAM_FILES_X86%\Microsoft Visual Studio 10.0") do set "_MSVS_HOME=%%~f"
+for /f "delims=" %%f in ("%ProgramFiles(x86)%\Microsoft Visual Studio 10.0") do set "_MSVS_HOME=%%~f"
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 10 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-rem From now on use short name of MSVS installation path
-for %%f in ("%_MSVS_HOME%") do set _MSVS_HOME=%%~sf
-
 set "_MSVC_HOME=%_MSVS_HOME%\VC"
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __MSVC_ARCH=\amd64
 ) else ( set __MSVC_ARCH=
@@ -315,7 +310,7 @@ if not %_EXITCODE%==0 goto :eof
 set "_MSVS_HOME=%_SUBST_PATH%"
 
 set "__PATH=%_MSVS_HOME%\VC\Tools\MSVC"
-for /f %%f in ('dir /ad /b "%__PATH%" 2^>NUL') do set _MSVC_HOME=%__PATH%\%%f
+for /f %%f in ('dir /ad /b "%__PATH%" 2^>NUL') do set "_MSVC_HOME=%__PATH%\%%f"
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __MSVC_ARCH=\Hostx64\x64
 ) else ( set __MSVC_ARCH=\Hostx86\x86
 )
@@ -376,7 +371,7 @@ rem native-image dependency
 set _SDK_HOME=
 set _SDK_PATH=
 
-for /f "delims=" %%f in ("%_PROGRAM_FILES%\Microsoft SDKs\Windows\v7.1") do set _SDK_HOME=%%~sf
+for /f "delims=" %%f in ("%ProgramFiles%\Microsoft SDKs\Windows\v7.1") do set _SDK_HOME=%%~sf
 if not exist "%_SDK_HOME%" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Windows SDK 7.1 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -395,14 +390,14 @@ rem native-image dependency
 set _KIT_INC_DIR=
 set _KIT_LIB_DIR=
 
-set "__KIT_HOME=%_PROGRAM_FILES_X86%\Windows Kits\10"
+set "__KIT_HOME=%ProgramFiles(x86)%\Windows Kits\10"
 set "__MANIFEST_FILE=%__KIT_HOME%\SDKManifest.xml"
 if not exist "%__MANIFEST_FILE%" (
-    echo %_ERROR_LABEL% Manifest file not found ^(%__KIT_HOME%^) 1>&2
+    echo %_ERROR_LABEL% Manifest file not found ^("%__KIT_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-for /f "delims== tokens=1,*" %%i in ('powershell -c "$p='%__MANIFEST_FILE%';$xml=[xml](Get-Content $p); $xml.FileList.PlatformIdentity"') do set __KIT_VERSION=%%j
+for /f "delims== tokens=1,*" %%i in ('powershell -c "$p='%__MANIFEST_FILE%';$xml=[xml](Get-Content $p); $xml.FileList.PlatformIdentity"') do set "__KIT_VERSION=%%j"
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __KIT_ARCH=\x64
 ) else ( set __KIT_ARCH=\x86
 )
@@ -427,7 +422,7 @@ if defined __MAKE_EXE (
     set _CYGWIN_HOME=%CYGWIN_HOME%
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
 ) else (
-    set "__PATH=%_PROGRAM_FILES%"
+    set "__PATH=%ProgramFiles%"
     for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
     if not defined _CYGWIN_HOME (
         set __PATH=C:\opt
@@ -435,7 +430,7 @@ if defined __MAKE_EXE (
     )
 )
 if not exist "%_CYGWIN_HOME%\bin\make.exe" (
-    echo %_ERROR_LABEL% GNU Make executable not found ^(%_CYGWIN_HOME%^) 1>&2
+    echo %_ERROR_LABEL% GNU Make executable not found ^("%_CYGWIN_HOME%"^) 1>&2
     set _CYGWIN_HOME=
     set _EXITCODE=1
     goto :eof
@@ -454,14 +449,14 @@ set _GIT_HOME=
 set _GIT_PATH=
 
 set __GIT_CMD=
-for /f %%f in ('where git.exe 2^>NUL') do set __GIT_CMD=%%f
+for /f %%f in ('where git.exe 2^>NUL') do set "__GIT_CMD=%%f"
 if defined __GIT_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Git executable found in PATH 1>&2
-    for %%i in ("%__GIT_CMD%") do set __GIT_BIN_DIR=%%~dpsi
-    for %%f in ("!__GIT_BIN_DIR!..") do set _GIT_HOME=%%~sf
+    for %%i in ("%__GIT_CMD%") do set "__GIT_BIN_DIR=%%~dpi"
+    for %%f in ("!__GIT_BIN_DIR!..") do set "_GIT_HOME=%%f"
     rem Executable git.exe is present both in bin\ and \mingw64\bin\
     if not "!_GIT_HOME:mingw=!"=="!_GIT_HOME!" (
-        for %%f in ("!_GIT_HOME!\..") do set _GIT_HOME=%%~sf
+        for %%f in ("!_GIT_HOME!\..") do set "_GIT_HOME=%%f"
     )
     rem keep _GIT_PATH undefined since executable already in path
     goto :eof
@@ -474,18 +469,16 @@ if defined __GIT_CMD (
     ) else (
         for /f %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
         if not defined _GIT_HOME (
-            set "__PATH=%_PROGRAM_FILES%"
+            set "__PATH=%ProgramFiles%"
             for /f %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
         )
     )
 )
 if not exist "%_GIT_HOME%\bin\git.exe" (
-    echo %_ERROR_LABEL% Git executable not found ^(%_GIT_HOME%^) 1>&2
+    echo %_ERROR_LABEL% Git executable not found ^("%_GIT_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%_GIT_HOME%") do set _GIT_HOME=%%~sf
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Git installation directory %_GIT_HOME% 1>&2
 
 set "_GIT_PATH=;%_GIT_HOME%\bin;%_GIT_HOME%\mingw64\bin;%_GIT_HOME%\usr\bin"
@@ -581,19 +574,19 @@ rem ## Cleanups
 :end
 endlocal & (
     if %_EXITCODE%==0 (
-        if not defined JAVA_HOME set JAVA_HOME=%_JAVA_HOME%
-        if not defined JAVA11_HOME set JAVA11_HOME=%_JAVA11_HOME%
-        if not defined LLVM_HOME set LLVM_HOME=%_LLVM_HOME%
-        if not defined MSVC_HOME set MSVC_HOME=%_MSVC_HOME%
-        if not defined MSVS_CMAKE_CMD set MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%
-        if not defined MSVS_HOME set MSVS_HOME=%_MSVS_HOME%
-        if not defined SDK_HOME set SDK_HOME=%_SDK_HOME%
-        if not defined KIT_INC_DIR set KIT_INC_DIR=%_KIT_INC_DIR%
-        if not defined KIT_LIB_DIR set KIT_LIB_DIR=%_KIT_LIB_DIR%
-        if not defined CYGWIN_HOME set CYGWIN_HOME=%_CYGWIN_HOME%
+        if not defined JAVA_HOME set "JAVA_HOME=%_JAVA_HOME%"
+        if not defined JAVA11_HOME set "JAVA11_HOME=%_JAVA11_HOME%"
+        if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
+        if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
+        if not defined MSVS_CMAKE_CMD set "MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%"
+        if not defined MSVS_HOME set "MSVS_HOME=%_MSVS_HOME%"
+        if not defined SDK_HOME set "SDK_HOME=%_SDK_HOME%"
+        if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
+        if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
+        if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         set "PATH=%PATH%%_PYTHON_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
-        if %_TRAVIS%==1 (
+        if %_BASH%==1 (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2
             call %_GIT_HOME%\bin\bash.exe --login
         )

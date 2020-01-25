@@ -198,8 +198,8 @@ total: 69999993 (1375 ms)
 > <pre style="font-size:80%;">
 > <b>&gt; build run -debug | findstr /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java8-19.3.0\bin\javac.exe -d G:\examples\COUNTU~1\target\classes @G:\examples\COUNTU~1\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java8-19.3.0\bin\java.exe -cp G:\examples\COUNTU~1\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\COUNTU~1\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] C:\opt\graalvm-ce-java8-19.3.1\bin\javac.exe -d G:\examples\COUNTU~1\target\classes @G:\examples\COUNTU~1\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java8-19.3.1\bin\java.exe -cp G:\examples\COUNTU~1\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\COUNTU~1\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
 > [build] Compilation log written to G:\examples\COUNTU~1\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
@@ -250,5 +250,5 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/December 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>

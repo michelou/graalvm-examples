@@ -33,7 +33,7 @@
 
 ## <span id="papers">Papers</span>
 
-- [*An Experimental Study of the Influence of DynamicCompiler Optimizations on Scala Performance*](http://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf) by Lukas Stadler, Gilles Duboscq, Hanspeter Mössenböck.
+- [*An Experimental Study of the Influence of DynamicCompiler Optimizations on Scala Performance*][ch_epfl_paper9] by Lukas Stadler, Gilles Duboscq, Hanspeter Mössenböck.
 - [*An Empirical Study on Deoptimization in the Graal Compiler*](https://core.ac.uk/download/pdf/84869007.pdf) by Yudi Zheng, Lubomír Bulej, and Walter Binder,  ECOOP 2017.
 
 ## <span id="talks">Talks</span>
@@ -52,5 +52,9 @@
 -->
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/November 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
+
+<!-- link refs -->
+
+[ch_epfl_paper9]: http://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf

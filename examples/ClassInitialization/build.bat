@@ -183,9 +183,9 @@ if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 
 set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
-)
-set __JAR_NAME=checkstyle-8.26-all.jar
-set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.26/%__JAR_NAME%
+
+set __JAR_NAME=checkstyle-8.28-all.jar
+set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.28/%__JAR_NAME%
 set __JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
@@ -273,8 +273,8 @@ set INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include
 set LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
-    echo %_DEBUG_LABEL% INCLUDE=%INCLUDE% 1>&2
-    echo %_DEBUG_LABEL% LIB=%LIB% 1>&2
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
     echo %_DEBUG_LABEL% ========================================= 1>&2
 )
 goto :eof
@@ -370,7 +370,7 @@ rem NB. cURL is a standard tool only from Windows 10 build 17063 and later.
     echo Param^(
     echo    [Parameter^(Mandatory=$True,Position=1^)]
     echo    [string]$Uri,
-    echo    [Parameter(Mandatory=$True^)]
+    echo    [Parameter^(Mandatory=$True^)]
     echo    [string]$OutFile
     echo ^)
     echo Add-Type ^@^"

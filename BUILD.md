@@ -232,7 +232,7 @@ Python 2.7.17 (v2.7.17:c2f86d86e6, Oct 19 2019, 21:01:17) [MSC v.1500 64 bit (AM
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/December 2019* [**&#9650;**](#top)
+*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
