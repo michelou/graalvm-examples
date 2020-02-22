@@ -16,7 +16,7 @@
 This project relies on the following external software for the **Microsoft Windows** plaform:
 
 - [Git 2.25][git_downloads] ([*release notes*][git_relnotes])
-- [GraalVM Community Edition 19.3 LTS][graalvm_downloads] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
+- [GraalVM Community Edition 20.0 LTS][graalvm_downloads] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
 - [Python 2.7][python_downloads] ([*release notes*][python_relnotes])
@@ -29,7 +29,7 @@ For instance our development environment looks as follows (*February 2020*) </i>
 <pre style="font-size:80%;">
 C:\opt\Git-2.25.1\                                    <i>(268 MB)</i>
 C:\opt\graalvm-ce-java11-20.0.0\                      <i>(764 MB)</i>
-C:\opt\graalvm-ce-java8-20.0.0\<sup id="anchor_03">&#8239;<a href="#footnote_03">[3]</a></sup>                    <i>(670 MB)</i>
+C:\opt\graalvm-ce-java8-20.0.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(670 MB)</i>
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
