@@ -93,8 +93,8 @@ OK (111 tests)
 gate: 29 Oct 2019 19:36:29(+21:14) END:   XcompUnitTests: hosted-product compiler [0:01:00.126000]
 gate: 29 Oct 2019 19:36:29(+21:14) BEGIN: MakeGraalJDK
 [...]
-openjdk version "1.8.0_232"
-OpenJDK Runtime Environment (build 1.8.0_232-20191009144847.buildslave.jdk8u-src-tar--b07)
+openjdk version "1.8.0_242"
+OpenJDK Runtime Environment (build 1.8.0_242-20191009144847.buildslave.jdk8u-src-tar--b07)
 OpenJDK 64-Bit Graal:compiler_f426cf34ff05f5728b80979d6462da25a63cfb40:compiler_f426cf34ff05f5728b80979d6462da25a63cfb40 (build 25.232-b07-jvmci-19.3-b04, mixed mode)
 Archiving MakeGraalJDK-ws\graaljdk-1.8.tar
 gate: 29 Oct 2019 19:36:47(+21:33) END:   MakeGraalJDK [0:00:18.227000]
@@ -132,17 +132,17 @@ Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM] software distributi
 
 <pre style="font-size:80%;">
 <b>&gt; unzip -l vm\mxbuild\windows-amd64\dists\graalvm-ce-java8-loc.zip | findstr cmd</b>
-       71  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/bin/native-image.cmd
-       85  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/jre/bin/native-image-configure.cmd
-     2208  2019-10-16 21:08   graalvm-ce-java8-19.3.0-dev/jre/lib/svm/bin/native-image-configure.cmd
-       81  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/bin/native-image-configure.cmd
-     1991  2019-10-16 21:09   graalvm-ce-java8-19.3.0-dev/jre/languages/js/bin/js.cmd
-       67  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/bin/polyglot.cmd
-     2196  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/jre/lib/svm/bin/native-image.cmd
-       75  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/jre/bin/native-image.cmd
-       61  2019-10-16 21:10   graalvm-ce-java8-19.3.0-dev/bin/js.cmd
-    10240  2019-07-11 13:47   graalvm-ce-java8-19.3.0-dev/bin/jcmd.exe
-       70  2019-10-16 21:11   graalvm-ce-java8-19.3.0-dev/jre/bin/js.cmd
+       71  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/native-image.cmd
+       85  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/bin/native-image-configure.cmd
+     2208  2019-10-16 21:08   graalvm-ce-java8-20.0.0-dev/jre/lib/svm/bin/native-image-configure.cmd
+       81  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/native-image-configure.cmd
+     1991  2019-10-16 21:09   graalvm-ce-java8-20.0.0-dev/jre/languages/js/bin/js.cmd
+       67  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/polyglot.cmd
+     2196  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/lib/svm/bin/native-image.cmd
+       75  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/bin/native-image.cmd
+       61  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/js.cmd
+    10240  2019-07-11 13:47   graalvm-ce-java8-20.0.0-dev/bin/jcmd.exe
+       70  2019-10-16 21:11   graalvm-ce-java8-20.0.0-dev/jre/bin/js.cmd
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
@@ -232,7 +232,7 @@ Python 2.7.17 (v2.7.17:c2f86d86e6, Oct 19 2019, 21:01:17) [MSC v.1500 64 bit (AM
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

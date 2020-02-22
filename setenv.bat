@@ -222,6 +222,7 @@ rem output parameter(s): _LLVM_HOME, _LLVM_PATH
 set _LLVM_HOME=
 set _LLVM_PATH=
 
+set __LLVM_VERSION=9
 set __CLANG_EXE=
 for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_EXE=%%f"
 if defined __CLANG_EXE (
@@ -235,10 +236,10 @@ if defined __CLANG_EXE (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable LLVM_HOME 1>&2
 ) else (
     set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-8*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     if not defined _LLVM_HOME (
         set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-8*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     )
 )
 if not exist "%_LLVM_HOME%\bin\clang.exe" (
@@ -249,7 +250,7 @@ if not exist "%_LLVM_HOME%\bin\clang.exe" (
 )
 rem path name of installation directory may contain spaces
 for /f "delims=" %%f in ("%_LLVM_HOME%") do set _LLVM_HOME=%%~sf
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default LLVM installation directory %_LLVM_HOME% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default LLVM %__LLVM_VERSION% installation directory %_LLVM_HOME% 1>&2
 
 set "_LLVM_PATH=;%_LLVM_HOME%\bin"
 goto :eof

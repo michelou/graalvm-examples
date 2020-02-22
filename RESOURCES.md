@@ -52,9 +52,9 @@
 -->
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
 
-[ch_epfl_paper9]: http://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf
+[ch_epfl_paper9]: https://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf
