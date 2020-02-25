@@ -43,24 +43,26 @@ Command **`build .. clean dist:2`** generates the [GraalVM] build specified by b
 <b>&gt; build -timer -verbose clean dist:2</b>
 [...]
  Create GraalVM build with tags build,test
-gate: 29 Oct 2019 19:15:14(+00:00) BEGIN: Gate
-gate: 29 Oct 2019 19:15:14(+00:00) BEGIN: Versions
+gate: 25 Feb 2020 10:03:01(+00:00) BEGIN: Gate
+gate: 25 Feb 2020 10:03:01(+00:00) BEGIN: Versions
+Running: mx --primary-suite-path 'G:\graal\\compiler' '--java-home=G:\\openjdk1.8.0_242-jvmci-20.0-b02' version --oneline
+f7f5f79ddd23  mx 5.252.4
 [...]
-gate: 29 Oct 2019 19:15:15(+00:00) END:   Versions [0:00:00.956000]
-gate: 29 Oct 2019 19:15:15(+00:00) BEGIN: JDKReleaseInfo
-==== G:\openjdk1.8.0_232-jvmci-19.3-b04 ====
+gate: 25 Feb 2020 10:03:02(+00:00) END:   Versions [0:00:00.953000]
+gate: 25 Feb 2020 10:03:02(+00:00) BEGIN: JDKReleaseInfo
+==== G:\\openjdk1.8.0_242-jvmci-20.0-b02 ====
 [...]
-gate: 29 Oct 2019 19:15:15(+00:00) END:   JDKReleaseInfo [0:00:00]
-gate: 29 Oct 2019 19:15:15(+00:00) BEGIN: VerifyMultiReleaseProjects
+gate: 25 Feb 2020 10:03:02(+00:00) END:   JDKReleaseInfo [0:00:00]
+gate: 25 Feb 2020 10:03:02(+00:00) BEGIN: VerifyMultiReleaseProjects
 [...]
-gate: 29 Oct 2019 19:15:15(+00:01) END:   VerifyMultiReleaseProjects [0:00:00.231000]
-gate: 29 Oct 2019 19:15:15(+00:01) BEGIN: Clean
+gate: 25 Feb 2020 10:03:02(+00:01) END:   VerifyMultiReleaseProjects [0:00:00.359000]
+gate: 25 Feb 2020 10:03:02(+00:01) BEGIN: Clean
 Running: mx [...] clean --all
 Cleaning org.graalvm.compiler.api.directives...
 [...]
 Cleaning TRUFFLE_TEST...
-gate: 29 Oct 2019 19:15:25(+00:10) END:   Clean [0:00:09.580000]
-gate: 29 Oct 2019 19:15:25(+00:10) BEGIN: BuildWithJavac
+gate: 25 Feb 2020 10:04:19(+01:18) END:   Clean [0:01:17.258000]
+gate: 25 Feb 2020 10:04:19(+01:18) BEGIN: BuildWithJavac
 Running: mx [...] build -p --warning-as-error --force-javac
 [...]
 Compiling org.graalvm.compiler.java with javac-daemon(JDK 1.8)... [dependency GRAAL_OPTIONS_PROCESSOR updated]
@@ -69,51 +71,49 @@ Compiling com.oracle.truffle.dsl.processor.interop with javac-daemon(JDK 1.8)...
 Archiving TRUFFLE_DSL_PROCESSOR... [dependency com.oracle.truffle.dsl.processor updated]
 [...]
 Archiving TRUFFLE_TEST... [dependency com.oracle.truffle.api.test updated]
-gate: 29 Oct 2019 19:25:52(+10:38) END:   BuildWithJavac [0:10:27.533000]
-gate: 29 Oct 2019 19:25:52(+10:38) BEGIN: UnitTests: hosted-product compiler
+gate: 25 Feb 2020 10:18:59(+15:58) END:   BuildWithJavac [0:14:39.579000]
+gate: 25 Feb 2020 10:18:59(+15:58) BEGIN: UnitTests: hosted-product compiler 
 Running: mx -[...] unittest --suite compiler -XX:-UseJVMCICompiler
 [...]
 MxJUnitCore
 JUnit version 4.12
 [...]
-Time: 529.853
+Time: 465.799
 
-OK (13082 tests)
+OK (13227 tests)
 
-gate: 29 Oct 2019 19:35:29(+20:14) END:   UnitTests: hosted-product compiler [0:09:36.400000]
-gate: 29 Oct 2019 19:35:29(+20:14) BEGIN: XcompUnitTests: hosted-product compiler
+gate: 25 Feb 2020 10:27:29(+24:28) END:   UnitTests: hosted-product compiler [0:08:30.241000]
+gate: 25 Feb 2020 10:27:29(+24:28) BEGIN: XcompUnitTests: hosted-product compiler
 Running: mx [...] unittest --suite compiler --fail-fast -Xcomp -XX:-UseJVMCICompiler [...]
 MxJUnitCore
 JUnit version 4.12
 [...]
-Time: 52.055
+Time: 33.77
 
 OK (111 tests)
 
-gate: 29 Oct 2019 19:36:29(+21:14) END:   XcompUnitTests: hosted-product compiler [0:01:00.126000]
-gate: 29 Oct 2019 19:36:29(+21:14) BEGIN: MakeGraalJDK
+gate: 25 Feb 2020 10:28:09(+25:08) END:   XcompUnitTests: hosted-product compiler [0:00:40.205000]
+gate: 25 Feb 2020 10:28:09(+25:08) BEGIN: MakeGraalJDK
 [...]
 openjdk version "1.8.0_242"
-OpenJDK Runtime Environment (build 1.8.0_242-20191009144847.buildslave.jdk8u-src-tar--b07)
-OpenJDK 64-Bit Graal:compiler_f426cf34ff05f5728b80979d6462da25a63cfb40:compiler_f426cf34ff05f5728b80979d6462da25a63cfb40 (build 25.232-b07-jvmci-19.3-b04, mixed mode)
-Archiving MakeGraalJDK-ws\graaljdk-1.8.tar
-gate: 29 Oct 2019 19:36:47(+21:33) END:   MakeGraalJDK [0:00:18.227000]
-[...]
-gate: 29 Oct 2019 19:37:10(+21:56) END:   Gate [0:21:56.230000]
+OpenJDK Runtime Environment (build 1.8.0_242-b06)
+OpenJDK 64-Bit Server VM Graal:compiler_ee232b09e21e1b949dadaf95fa5949a61cfff0df (build 25.242-b06-jvmci-20.0-b02, compiled mode)
+gate: 25 Feb 2020 10:29:06(+26:05) END:   XCompMode:product [0:00:04.675000]
+gate: 25 Feb 2020 10:29:06(+26:05) END:   Gate [0:26:05.745000]
 Gate task times:
-  0:00:00.956000        Versions
+  0:00:00.953000        Versions
   0:00:00       JDKReleaseInfo
-  0:00:00.231000        VerifyMultiReleaseProjects
-  0:00:09.580000        Clean
-  0:10:27.533000        BuildWithJavac
-  0:09:36.400000        UnitTests: hosted-product compiler
-  0:01:00.126000        XcompUnitTests: hosted-product compiler
-  0:00:18.227000        MakeGraalJDK
-  0:00:12.638000        DaCapo_pmd:BatchMode
-  0:00:06.016000        DaCapo_pmd:BenchmarkCounters
-  0:00:04.518000        XCompMode:product
+  0:00:00.359000        VerifyMultiReleaseProjects
+  0:01:17.258000        Clean
+  0:14:39.579000        BuildWithJavac
+  0:08:30.241000        UnitTests: hosted-product compiler
+  0:00:40.205000        XcompUnitTests: hosted-product compiler
+  0:00:28.378000        MakeGraalJDK
+  0:00:17.846000        DaCapo_pmd:BatchMode
+  0:00:06.251000        DaCapo_pmd:BenchmarkCounters
+  0:00:04.675000        XCompMode:product
   =======
-  0:21:56.230000
+  0:26:05.745000
 Elapsed time: 00:22:03
 </pre>
 
