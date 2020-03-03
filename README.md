@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-[Dotty][dotty_examples], [GraalSqueak][graalsqueak_examples], [Kotlin][kotlin_examples] and [LLVM][llvm_examples] are other topics we are currently investigating.
+[Dotty][dotty_examples], [GraalSqueak][graalsqueak_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples] and [Node.js][nodes_examples] are other topics we are currently investigating.
 
 ## <span id="proj_deps">Project dependencies</span>
 
@@ -254,7 +254,8 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/
 [graalvm_downloads]: https://github.com/graalvm/graalvm-ce-builds/releases
-[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/19_3/
+[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/20_0/
+[haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kotlin_examples]: https://github.com/michelou/kotlin-examples
 [linux_opt]: https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/opt.html
@@ -269,6 +270,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [man1_rmdir]: https://www.linux.org/docs/man1/rmdir.html
 [man1_sed]: https://www.linux.org/docs/man1/sed.html
 [man1_wc]: https://www.linux.org/docs/man1/wc.html
+[nodes_examples]: https://github.com/michelou/nodejs-examples
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/
 [python_relnotes]: https://www.python.org/downloads/release/python-2717/

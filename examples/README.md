@@ -204,7 +204,7 @@ total: 69999993 (1375 ms)
 > [build] _EXITCODE=0
 > </pre>
 
-Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom CheckStyle configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
+Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
 
 <pre style="font-size:80%;">
 <b>&gt; build -verbose check</b>
@@ -213,7 +213,7 @@ Starting audit...
 Audit done.
 </pre>
 
-> **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the CheckStyle configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*8.26-all.jar`** :
+> **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
 > checkstyle-8.26-all.jar
@@ -250,5 +250,11 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 
 ***
 
-*[mics](http://lampwww.epfl.ch/~michelou/)/January 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
+
+<!-- link refs -->
+
+[checkstyle_downloads]: https://github.com/checkstyle/checkstyle/releases/
+[checkstyle_home]: https://checkstyle.sourceforge.io/
+[checkstyle_relnotes]: https://checkstyle.org/releasenotes.html
