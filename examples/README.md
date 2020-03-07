@@ -216,7 +216,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
-> checkstyle-8.26-all.jar
+> checkstyle-8.30-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; more %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -250,7 +250,7 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
