@@ -1,6 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
+rem only for interactive debugging !
 set _DEBUG=0
 
 rem ##########################################################################
@@ -77,8 +78,8 @@ set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
 rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-19.3-b06
-set _JDK8_UPDATE_VERSION=232
+set _JVMCI_VERSION=jvmci-20.0-b02
+set _JDK8_UPDATE_VERSION=242
 set _JDK8_UPDATE_VERSION_SUFFIX=
 rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
@@ -184,7 +185,7 @@ set /a "__N_MAX=_INI_N-1"
 echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
 echo.
 echo   Options:
-echo     -debug       show commands executed by this script
+echo     -debug       show commands executed by this batch file
 echo     -timer       display total elapsed time
 echo     -verbose     display progress messages
 echo.
@@ -492,10 +493,10 @@ if defined LLVM_VERSION (
 )
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
-    echo %_DEBUG_LABEL% JAVA_HOME=%JAVA_HOME% 1>&2
-    echo %_DEBUG_LABEL% INCLUDE=%INCLUDE% 1>&2
-    echo %_DEBUG_LABEL% LIB=%LIB% 1>&2
-    echo %_DEBUG_LABEL% LIBPATH=%LIBPATH% 1>&2
+    echo %_DEBUG_LABEL% JAVA_HOME="%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
     echo %_DEBUG_LABEL% ========================================= 1>&2
 )
 goto :eof

@@ -2,7 +2,7 @@
 
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
-  <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120"/></a></td>
+  <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/">GraalVM</a> examples coming from various websites and books.<br/>
   It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting">batch files</a> for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on a Windows machine.
   </td>
@@ -120,29 +120,18 @@ Elapsed time: 00:22:03
 Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archives:
 
 <pre style="font-size:80%;">
-<b>&gt; dir vm\mxbuild\windows-amd64\dists | findstr /e zip</b>
-16.10.2019  20:11       373 459 024 graalvm-ce-java8-loc.zip
-16.10.2019  20:07       373 535 771 graalvm-unknown-java8-stage1.zip
-03.10.2019  19:54       341 053 147 graalvm-unknown-java8.zip
-19.09.2019  16:45       332 097 817 graalvm-unknown-stage1.zip
-19.09.2019  16:49       340 978 219 graalvm-unknown.zip
+<b>&gt; dir sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
+11.04.2020  10:07       277 714 588 graalvm-3398ab5293-java8.zip
+15.03.2020  16:35       276 745 135 graalvm-unknown-java8-stage1.zip
+15.03.2020  16:35       276 749 506 graalvm-unknown-java8.zip
 </pre>
 
 Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; unzip -l vm\mxbuild\windows-amd64\dists\graalvm-ce-java8-loc.zip | findstr cmd</b>
-       71  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/native-image.cmd
-       85  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/bin/native-image-configure.cmd
-     2208  2019-10-16 21:08   graalvm-ce-java8-20.0.0-dev/jre/lib/svm/bin/native-image-configure.cmd
-       81  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/native-image-configure.cmd
-     1991  2019-10-16 21:09   graalvm-ce-java8-20.0.0-dev/jre/languages/js/bin/js.cmd
-       67  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/polyglot.cmd
-     2196  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/lib/svm/bin/native-image.cmd
-       75  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/jre/bin/native-image.cmd
-       61  2019-10-16 21:10   graalvm-ce-java8-20.0.0-dev/bin/js.cmd
-    10240  2019-07-11 13:47   graalvm-ce-java8-20.0.0-dev/bin/jcmd.exe
-       70  2019-10-16 21:11   graalvm-ce-java8-20.0.0-dev/jre/bin/js.cmd
+<b>&gt; unzip -l sdk\mxbuild\windows-amd64\dists\graalvm-unknown-java8.zip | findstr cmd</b>
+       67  2020-03-15 15:34   graalvm-unknown-java8-20.1.0-dev/bin/polyglot.cmd
+     9728  2020-01-09 15:25   graalvm-unknown-java8-20.1.0-dev/bin/jcmd.exe
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
@@ -232,7 +221,7 @@ Python 2.7.17 (v2.7.17:c2f86d86e6, Oct 19 2019, 21:01:17) [MSC v.1500 64 bit (AM
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/April 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

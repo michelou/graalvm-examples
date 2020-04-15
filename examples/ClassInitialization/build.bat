@@ -184,8 +184,9 @@ if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
-set __JAR_NAME=checkstyle-8.28-all.jar
-set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.28/%__JAR_NAME%
+set __JAR_VERSION=8.31
+set __JAR_NAME=checkstyle-%__JAR_VERSION%-all.jar
+set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%__JAR_VERSION%/%__JAR_NAME%
 set __JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
