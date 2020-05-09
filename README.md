@@ -27,7 +27,7 @@ For instance our development environment looks as follows (*April 2020*) </i><su
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.26.0\                                    <i>(268 MB)</i>
+C:\opt\Git-2.26.2\                                    <i>(271 MB)</i>
 C:\opt\graalvm-ce-java11-20.0.0\                      <i>(764 MB)</i>
 C:\opt\graalvm-ce-java8-20.0.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(670 MB)</i>
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
@@ -48,9 +48,9 @@ bin\graal\build.bat
 docs\
 examples\
 graal\                              <i>(Git submodule)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.6-jvmci-20.1-b01\</a>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.7-jvmci-20.1-b02\</a>
 mx\                                 <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_242-jvmci-20.1-b01\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_252-jvmci-20.1-b02\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
 README.md
 RESOURCES.md
 setenv.bat
@@ -80,7 +80,7 @@ In the next section we give a brief description of the batch files present in th
 
 We distinguish different sets of batch commands:
 
-1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**][llvm_clang], [**`cl.exe`**][cl_cli], [**`git.exe`**][git_cli], etc. directly available from the command prompt (see section [**Project dependencies**](#section_01)).
+1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**][llvm_clang], [**`cl.exe`**][cl_cli] or [**`git.exe`**][git_cli] directly available from the command prompt (see section [**Project dependencies**](#section_01)).
 
    <pre style="font-size:80%;">
    <b>&gt; setenv help</b>
@@ -110,7 +110,7 @@ We distinguish different sets of batch commands:
                     (see environment definitions in file build.ini)
        help         display this help message
        update       fetch/merge local directories graal/mx</pre>
-   > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&colon;&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in file [**`build.ini`**](bin/graal/build.ini).
+   > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&colon;&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in configuration file [**`build.ini`**](bin/graal/build.ini).
 
 ## <span id="usage_examples">Usage examples</span>
 
@@ -121,9 +121,9 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; setenv</b>
 Tool versions:
-   javac 1.8.0_242, python 2.7.17, pylint 1.9.2, mx 2.261.2
+   javac 1.8.0_252, python 2.7.17, pylint 1.9.2, mx 2.263.1
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.26.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.26.2.windows.1
 
 <b>&gt; where cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -136,9 +136,9 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; setenv -verbose</b>
 Tool versions:
-   javac 1.8.0_242, python 2.7.17, pylint 1.9.2, mx 2.261.2
+   javac 1.8.0_252, python 2.7.17, pylint 1.9.2, mx 2.263.1
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.26.0.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.26.2.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-20.0.0\bin\javac.exe
    C:\opt\Python-2.7.17\python.exe
@@ -147,10 +147,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.26.0\usr\bin\link.exe
+   C:\opt\Git-2.26.2\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.26.0\bin\git.exe
-   C:\opt\Git-2.26.0\mingw64\bin\git.exe
+   C:\opt\Git-2.26.2\bin\git.exe
+   C:\opt\Git-2.26.2\mingw64\bin\git.exe
 </pre>
 
 #### `graal\build.bat`
@@ -188,10 +188,10 @@ In our case we downloaded the following installation files (see <a href="#sectio
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-20.0.0.zip</a>                    <i>(154 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-20.0.0.zip</a>                   <i>(230 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                           <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-20.1-b01">labsjdk-ce-11.0.6+9-jvmci-20.1-b01-windows-amd64.tar.gz</a>      <i>(174 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-20.1-b01">labsjdk-ce-11.0.7+10-jvmci-20.1-b02-windows-amd64.tar.gz</a>      <i>(174 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-20.0.0.jar</a>  <i>(  6 MB)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.1-b01">openjdk-8u242-jvmci-20.1-b01-windows-amd64.tar.gz</a>            <i>(102 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.26.0-64-bit.7z.exe</a>                             <i>( 41 MB)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.1-b01">openjdk-8u252-jvmci-20.1-b02-windows-amd64.tar.gz</a>            <i>(102 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.26.2-64-bit.7z.exe</a>                             <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>                                      <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                    <i>(121 MB)</i>
 </pre>
@@ -242,7 +242,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/April 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -251,7 +251,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.26.0.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.26.2.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/

@@ -1,17 +1,17 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem only for interactive debugging !
+@rem only for interactive debugging !
 set _DEBUG=0
 
-rem ##########################################################################
-rem ## Environment setup
+@rem #########################################################################
+@rem ## Environment setup
 
 set _BASENAME=%~n0
 
 set _EXITCODE=0
 
-for %%f in ("%~dp0..") do set _ROOT_DIR=%%~sf
+for %%f in ("%~dp0..") do set "_ROOT_DIR=%%~sf"
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -22,8 +22,8 @@ if not %_EXITCODE%==0 goto end
 call :args %*
 if not %_EXITCODE%==0 goto end
 
-rem ##########################################################################
-rem ## Main
+@rem #########################################################################
+@rem ## Main
 
 if %_HELP%==1 (
     call :help
@@ -46,14 +46,14 @@ if %_DIST%==1 (
 )
 goto :end
 
-rem ##########################################################################
-rem ## Subroutines
+@rem #########################################################################
+@rem ## Subroutines
 
-rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
-rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
+@rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+@rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
 :env
-rem ANSI colors in standard Windows 10 shell
-rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
 set _VERBOSE_LABEL=
 set _ERROR_LABEL=[91mError[0m:
@@ -77,19 +77,19 @@ set _MX_OPTS=
 set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
-rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-20.0-b02
-set _JDK8_UPDATE_VERSION=242
+@rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
+set _JVMCI_VERSION=jvmci-20.1-b02
+set _JDK8_UPDATE_VERSION=252
 set _JDK8_UPDATE_VERSION_SUFFIX=
-rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
+@rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
 goto :eof
 
-rem output parameters: _INI, _INI_N
-rem see https://en.wikipedia.org/wiki/INI_file
-rem - properties: name=value
-rem - sections  : [section]
-rem - comments  : ; commented text
+@rem output parameters: _INI, _INI_N
+@rem see https://en.wikipedia.org/wiki/INI_file
+@rem - properties: name=value
+@rem - sections  : [section]
+@rem - comments  : ; commented text
 :ini
 set "__INI_FILE=%~dp0%_BASENAME%.ini"
 if not exist "%__INI_FILE%" goto :eof
@@ -100,13 +100,13 @@ set __SECTION=global
 for /f "delims=" %%f in (%__INI_FILE%) do (
     set __LINE=%%f
     if "!__LINE:~0,1!"==";" (
-        rem ignore comment
+        @rem ignore comment
     ) else if "!__LINE:~0,1!"=="[" (
         if not "!__LINE:~-1!"=="]" (
             echo %_ERROR_LABEL% Section name must end with ']' in .ini file 1>&2
             set _EXITCODE=1
         )
-        rem section start/end
+        @rem section start/end
         set __SECTION=!__LINE:~1,-1!
         set /a _INI_N+=1
         set _INI[!_INI_N!]=!__SECTION!
@@ -116,13 +116,13 @@ for /f "delims=" %%f in (%__INI_FILE%) do (
         )
     )
 )
-rem properties defined outside a section are put into 'global'.
+@rem properties defined outside a section are put into 'global'.
 set /a _INI_N+=1
 set _INI[%_INI_N%]=global
 goto :eof
 
-rem input parameter: %*
-rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _UPDATE, _VERBOSE
+@rem input parameter: %*
+@rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _UPDATE, _VERBOSE
 :args
 set _CLEAN=0
 set _DIST=0
@@ -139,7 +139,7 @@ if not defined __ARG (
     goto args_done
 )
 if "%__ARG:~0,1%"=="-" (
-    rem option
+    @rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-help" ( set _HELP=1
     ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
@@ -150,8 +150,7 @@ if "%__ARG:~0,1%"=="-" (
         goto args_done
     )
 ) else (
-    rem subcommand
-    set /a __N+=1
+    @rem subcommand
     if /i "%__ARG%"=="clean" ( set _CLEAN=1
     ) else if /i "%__ARG%"=="dist" ( set _DIST=1
     ) else if /i "%__ARG%"=="help" ( set _HELP=1
@@ -172,6 +171,7 @@ if "%__ARG:~0,1%"=="-" (
         set _EXITCODE=1
         goto args_done
     )
+    set /a __N+=1
 )
 shift
 goto :args_loop
@@ -207,6 +207,10 @@ for /f %%d in ('dir /ad /b "%_GRAAL_PATH%\DumpPathTest*" 2^>NUL') do (
 )
 for /f %%f in ('dir /a-d /b "%_GRAAL_PATH%\hs_err_pid*.log" 2^>NUL') do (
     call :del "%_GRAAL_PATH%\%%f"
+)
+@rem Workaround: mx tool has troubles with long file paths on Windows.
+if exist "%_GRAAL_PATH%\truffle\mxbuild\src" (
+    call :del "%_GRAAL_PATH%\truffle\mxbuild\src"
 )
 goto :eof
 
@@ -347,7 +351,7 @@ if not exist "%_MX_CMD%" (
 )
 goto :eof
 
-rem depends on :dist_env
+@rem depends on :dist_env
 :style
 if "%GATE:style=%"=="%GATE%" goto :eof
 
@@ -366,7 +370,7 @@ if not %ERRORLEVEL%==0 (
 
 goto :eof
 
-rem depends on :dist_env
+@rem depends on :dist_env
 :fullbuild
 if "%GATE:fullbuild=%"=="%GATE%" goto :eof
 if not %JDK%==jdk8 goto :eof
@@ -387,7 +391,7 @@ if not %ERRORLEVEL%==0 (
 set "JDT=%__JDT_JAR_FILE%"
 goto :eof
 
-rem depends on :dist_env
+@rem depends on :dist_env
 :jvmci
 if not %JDK%==jdk8 goto :eof
 
@@ -413,7 +417,7 @@ if not exist "%_TMP_DIR%" mkdir "%_TMP_DIR%"
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_TAR_CMD% -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Extract archive %__JDK_TGZ_FILE% into directory %_ROOT_DIR% 1>&2
 )
-rem NB. tar on Windows dislike it when <dir1>=<dir2>, given -xf <dir2>\*.tar.gz and -C <dir1>
+@rem NB. tar on Windows dislike it when <dir1>=<dir2>, given -xf <dir2>\*.tar.gz and -C <dir1>
 call %_TAR_CMD% -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
@@ -469,15 +473,15 @@ if not %ERRORLEVEL%==0 (
 endlocal
 goto :eof
 
-rem Defined variables are local to subroutine dist
+@rem Defined variables are local to subroutine dist
 :dist_env
 call :dist_env_ini
 if "%JDK%"=="jdk11" set JAVA_HOME=%JAVA11_HOME%
 
 call :dist_env_msvc
-rem call :dist_env_msvc2019
+@rem call :dist_env_msvc2019
 
-rem Official LLVM variables: https://llvm.org/docs/CMake.html#llvm-specific-variables
+@rem Official LLVM variables: https://llvm.org/docs/CMake.html#llvm-specific-variables
 if defined LLVM_VERSION (
     set CLANG=clang-%LLVM_VERSION%.exe
     set CLANGXX=clang++-%LLVM_VERSION%.exe
@@ -501,7 +505,7 @@ if %_DEBUG%==1 (
 )
 goto :eof
 
-rem both _INI and _INI_N are defined in subroutine :ini
+@rem both _INI and _INI_N are defined in subroutine :ini
 :dist_env_ini
 for /l %%i in (1, 1, %_INI_N%) do (
     set __SECTION=!_INI[%%i]!
@@ -533,7 +537,7 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
     set __SDK_LIB=lib
     set __KIT_UCRT=ucrt\x86
 )
-rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
+@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
 set INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
 set LIB=%MSVC_HOME%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
 set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%MSVC_HOME%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
@@ -552,16 +556,16 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
     set __KIT_UCRT=ucrt\x86
 )
 
-rem TODO Change hard-coded path
+@rem TODO Change hard-coded path
 set __MSVC_2019=C:\PROGRA~2\MIB055~1\2019\COMMUN~1\VC\Tools\MSVC\1422~1.279\
 
-rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
+@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
 set INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
 set LIB=%__MSVC_2019%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
 set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%__MSVC_2019%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
 goto :eof
 
-rem output parameter: _DURATION
+@rem output parameter: _DURATION
 :duration
 set __START=%~1
 set __END=%~2
@@ -569,8 +573,8 @@ set __END=%~2
 for /f "delims=" %%i in ('powershell -c "$interval = New-TimeSpan -Start '%__START%' -End '%__END%'; Write-Host $interval"') do set _DURATION=%%i
 goto :eof
 
-rem ##########################################################################
-rem ## Cleanups
+@rem #########################################################################
+@rem ## Cleanups
 
 :end
 if %_TIMER%==1 (

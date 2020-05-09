@@ -566,6 +566,10 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     rem if %_DEBUG%==1 echo %_DEBUG_LABEL% where %__WHERE_ARGS%
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
+    echo Environment variables: 1>&2
+    if defined JAVA_HOME echo    JAVA_HOME=%JAVA_HOME% 1>&2
+    if defined JAVA11_HOME echo    JAVA11_HOME=%JAVA11_HOME% 1>&2
+    if defined LLVM_HOME echo    LLVM_HOME=%LLVM_HOME% 1>&2
 )
 goto :eof
 

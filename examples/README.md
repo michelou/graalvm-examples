@@ -3,7 +3,7 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;">
-    <a href="https://www.graalvm.org/"><img style="border:0;width:120px;" src="https://www.graalvm.org/resources/img/graalvm.png" alt="GraalVM"/></a>
+    <a href="https://www.graalvm.org/"><img style="border:0;width:120px;" src="https://www.graalvm.org/resources/img/graalvm.png" alt="GraalVM logo"/></a>
   </td>
   <td style="border:0;padding:0;vertical-align:text-top;">
     Directory <a href="."><strong><code>examples\</code></strong></a> contains <a href="https://llvm.org/img/LLVM-Logo-Derivative-1.png" alt="GraalVM">GraalVM</a> code examples coming from various websites - mostly from the <a href="https://www.graalvm.org/">GraalVM</a> project and tested on a Windows machine.
@@ -250,7 +250,7 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/March 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
