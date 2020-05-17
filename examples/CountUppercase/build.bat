@@ -1,11 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem only for interactive debugging !
+@rem only for interactive debugging !
 set _DEBUG=0
 
-rem ##########################################################################
-rem ## Environment setup
+@rem #########################################################################
+@rem ## Environment setup
 
 set _BASENAME=%~n0
 
@@ -19,8 +19,8 @@ if not %_EXITCODE%==0 goto end
 call :args %*
 if not %_EXITCODE%==0 goto end
 
-rem ##########################################################################
-rem ## Main
+@rem #########################################################################
+@rem ## Main
 
 if %_HELP%==1 (
     call :help
@@ -44,32 +44,32 @@ if %_RUN%==1 (
 )
 goto end
 
-rem ##########################################################################
-rem ## Subroutines
+@rem #########################################################################
+@rem ## Subroutines
 
-rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+@rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
 :env
-rem ANSI colors in standard Windows 10 shell
-rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
 set _ERROR_LABEL=[91mError[0m:
 set _WARNING_LABEL=[93mWarning[0m:
 
-set _SOURCE_DIR=%_ROOT_DIR%src\main\java
-set _TARGET_DIR=%_ROOT_DIR%target
-set _CLASSES_DIR=%_TARGET_DIR%\classes
+set "_SOURCE_DIR=%_ROOT_DIR%src\main\java"
+set "_TARGET_DIR=%_ROOT_DIR%target"
+set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
 set _JAVAC_OPTS=-d %_CLASSES_DIR%
 
-set _GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt
+set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 
 set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set _JAVA_OPTS=-cp %_CLASSES_DIR%
 goto :eof
 
-rem input parameter %*
+@rem input parameter %*
 :args
 set _CHECKSTYLE=0
 set _CLEAN=0
@@ -86,7 +86,7 @@ if not defined __ARG (
     goto args_done
 )
 if "%__ARG:~0,1%"=="-" (
-    rem option
+    @rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
@@ -96,8 +96,7 @@ if "%__ARG:~0,1%"=="-" (
         goto args_done
     )
 ) else (
-    rem subcommand
-    set /a __N+=1
+    @rem subcommand
     if /i "%__ARG%"=="clean" ( set _CLEAN=1
     ) else if /i "%__ARG%"=="check" ( set _CHECKSTYLE=1
     ) else if /i "%__ARG%"=="compile" ( set _COMPILE=1
@@ -108,6 +107,7 @@ if "%__ARG:~0,1%"=="-" (
         set _EXITCODE=1
         goto args_done
     )
+    set /a __N+=1
 )
 shift
 goto :args_loop
@@ -155,10 +155,10 @@ if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
-set __JAR_VERSION=8.31
+set __JAR_VERSION=8.32
 set __JAR_NAME=checkstyle-%__JAR_VERSION%-all.jar
 set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%__JAR_VERSION%/%__JAR_NAME%
-set __JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%
+set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
 set "__PS1_FILE=%__USER_GRAAL_DIR%\webrequest.ps1"
@@ -183,7 +183,7 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do set __SOURCE_FILE
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
 ) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration !__XML_FILE:%USERPROFILE%\=! 1>&2
 )
-%_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
+call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -193,7 +193,7 @@ goto :eof
 :compile
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 
-set __SOURCE_LIST_FILE=%_TARGET_DIR%\source_list.txt
+set "__SOURCE_LIST_FILE=%_TARGET_DIR%\source_list.txt"
 if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
 
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
@@ -202,7 +202,7 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% %_JAVAC_OPTS% @%__SOURCE_LIST_FILE% 1>&2
 ) else if %_VERBOSE%==1 ( echo Compile Java source files to directory !_CLASSES_DIR:%_ROOT_DIR%=! 1>&2
 )
-%_JAVAC_CMD% %_JAVAC_OPTS% @"%__SOURCE_LIST_FILE%"
+call "%_JAVAC_CMD%" %_JAVAC_OPTS% @"%__SOURCE_LIST_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -239,9 +239,9 @@ if %_DEBUG%==1 if exist "%_GRAALVM_LOG_FILE%" (
 )
 goto :eof
 
-rem input parameter: %1=XML file path
-rem NB. Archive checkstyle-*-all.jar contains 2 configuration files:
-rem     google_checks.xml, sun_checks.xml.
+@rem input parameter: %1=XML file path
+@rem NB. Archive checkstyle-*-all.jar contains 2 configuration files:
+@rem     google_checks.xml, sun_checks.xml.
 :checkstyle_xml
 set "__XML_FILE=%~1"
 (
@@ -281,11 +281,11 @@ set "__XML_FILE=%~1"
 ) > "%__XML_FILE%"
 goto :eof
 
-rem input parameter: %1=PS1 file path
+@rem input parameter: %1=PS1 file path
 :checkstyle_ps1
 set "__PS1_FILE=%~1"
-rem see https://stackoverflow.com/questions/11696944/powershell-v3-invoke-webrequest-https-error
-rem NB. cURL is a standard tool only from Windows 10 build 17063 and later.
+@rem see https://stackoverflow.com/questions/11696944/powershell-v3-invoke-webrequest-https-error
+@rem NB. cURL is a standard tool only from Windows 10 build 17063 and later.
 (
     echo Param^(
     echo    [Parameter^(Mandatory=$True,Position=1^)]
@@ -313,8 +313,8 @@ rem NB. cURL is a standard tool only from Windows 10 build 17063 and later.
 ) > "%__PS1_FILE%"
 goto :eof
 
-rem ##########################################################################
-rem ## Cleanups
+@rem #########################################################################
+@rem ## Cleanups
 
 :end
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2

@@ -1,17 +1,17 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem only for interactive debugging
+@rem only for interactive debugging
 set _DEBUG=0
 
-rem ##########################################################################
-rem ## Environment setup
+@rem #########################################################################
+@rem ## Environment setup
 
 set _BASENAME=%~n0
 
 set _EXITCODE=0
 
-for %%f in ("%~dp0") do set _ROOT_DIR=%%~sf
+for %%f in ("%~dp0") do set "_ROOT_DIR=%%~sf"
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -20,8 +20,8 @@ call :args %*
 if not %_EXITCODE%==0 goto end
 if %_HELP%==1 call :help & exit /b %_EXITCODE%
 
-rem ##########################################################################
-rem ## Main
+@rem #########################################################################
+@rem ## Main
 
 set _JAVA_HOME=
 set _JAVA11_HOME=
@@ -46,7 +46,7 @@ call :llvm
 if not %_EXITCODE%==0 goto end
 
 call :msvs
-rem call :msvs_2019
+@rem call :msvs_2019
 if not %_EXITCODE%==0 goto end
 
 call :sdk
@@ -63,20 +63,20 @@ if not %_EXITCODE%==0 goto end
 
 goto end
 
-rem ##########################################################################
-rem ## Subroutines
+@rem #########################################################################
+@rem ## Subroutines
 
-rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
-rem                    _PROGRAM_FILES, _PROGRAM_FILES_X86
+@rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
+@rem                    _PROGRAM_FILES, _PROGRAM_FILES_X86
 :env
-rem ANSI colors in standard Windows 10 shell
-rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
 set _ERROR_LABEL=[91mError[0m:
 set _WARNING_LABEL=[93mWarning[0m:
 goto :eof
 
-rem input parameter: %*
+@rem input parameter: %*
 :args
 set _BASH=0
 set _HELP=0
@@ -87,7 +87,7 @@ set "__ARG=%~1"
 if not defined __ARG goto args_done
 
 if "%__ARG:~0,1%"=="-" (
-    rem option
+    @rem option
     if /i "%__ARG%"=="-bash" ( set _BASH=1
     ) else if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
@@ -97,14 +97,14 @@ if "%__ARG:~0,1%"=="-" (
         goto args_done
     )
 ) else (
-    rem subcommand
-    set /a __N+=1
+    @rem subcommand
     if /i "%__ARG%"=="help" ( set _HELP=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
         goto args_done
     )
+    set /a __N+=1
 )
 shift
 goto :args_loop
@@ -124,8 +124,8 @@ echo   Subcommands:
 echo     help        display this help message
 goto :eof
 
-rem input parameter: %1=Java version
-rem output parameter: _GRAAL_HOME
+@rem input parameter: %1=Java version
+@rem output parameter: _GRAAL_HOME
 :graal
 set __JAVA_VERSION=%~1
 set _GRAAL_HOME=
@@ -137,7 +137,7 @@ if defined __JAVAC_CMD (
     for %%i in ("%__JAVAC_CMD%") do set __GRAAL_BIN_DIR=%%~dpsi
     for %%f in ("!__GRAAL_BIN_DIR!..") do set _GRAAL_HOME=%%~sf
 ) else if defined GRAAL_HOME (
-    set _GRAAL_HOME=%GRAAL_HOME%
+    set "_GRAAL_HOME=%GRAAL_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GRAAL_HOME 1>&2
 ) else (
     set __PATH=C:\opt
@@ -174,7 +174,7 @@ if not %_EXITCODE%==0 goto :eof
 if defined _GRAAL_HOME set _JAVA11_HOME=%_GRAAL_HOME%
 goto :eof
 
-rem output parameter: _PYTHON_PATH
+@rem output parameter: _PYTHON_PATH
 :python
 set _PYTHON_PATH=
 
@@ -183,7 +183,7 @@ set __PYTHON_CMD=
 for /f %%f in ('where python.exe 2^>NUL') do set "__PYTHON_CMD=%%f"
 if defined __PYTHON_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Python executable found in PATH 1>&2
-    rem keep _PYTHON_PATH undefined since executable already in path
+    @rem keep _PYTHON_PATH undefined since executable already in path
     goto :eof
 ) else if defined PYTHON_HOME (
     set "__PYTHON_HOME=%PYTHON_HOME%"
@@ -210,14 +210,14 @@ if not exist "%__PYTHON_HOME%\Scripts\pylint.exe" (
     set _EXITCODE=1
     goto :eof
 )
-rem path name of installation directory may contain spaces
+@rem path name of installation directory may contain spaces
 for /f "delims=" %%f in ("%__PYTHON_HOME%") do set __PYTHON_HOME=%%~sf
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %__PYTHON_HOME% 1>&2
 
 set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
 goto :eof
 
-rem output parameter(s): _LLVM_HOME, _LLVM_PATH
+@rem output parameter(s): _LLVM_HOME, _LLVM_PATH
 :llvm
 set _LLVM_HOME=
 set _LLVM_PATH=
@@ -232,7 +232,7 @@ if defined __CLANG_EXE (
     rem keep _LLVM_PATH undefined since executable already in path
     goto :eof
 ) else if defined LLVM_HOME (
-    set _LLVM_HOME=%LLVM_HOME%
+    set "_LLVM_HOME=%LLVM_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable LLVM_HOME 1>&2
 ) else (
     set "__PATH=%ProgramFiles%"
@@ -248,15 +248,15 @@ if not exist "%_LLVM_HOME%\bin\clang.exe" (
     set _EXITCODE=1
     goto :eof
 )
-rem path name of installation directory may contain spaces
+@rem path name of installation directory may contain spaces
 for /f "delims=" %%f in ("%_LLVM_HOME%") do set _LLVM_HOME=%%~sf
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default LLVM %__LLVM_VERSION% installation directory %_LLVM_HOME% 1>&2
 
 set "_LLVM_PATH=;%_LLVM_HOME%\bin"
 goto :eof
 
-rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
-rem Visual Studio 10
+@rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
+@rem Visual Studio 10
 :msvs
 set _MSVC_HOME=
 set _MSVS_PATH=
@@ -290,15 +290,15 @@ if not exist "%__MSBUILD_HOME%\MSBuild.exe" (
 set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_HOME%"
 goto :eof
 
-rem output parameter(s): _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME, _MSVS_PATH
-rem Visual Studio 2019
+@rem output parameter(s): _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME, _MSVS_PATH
+@rem Visual Studio 2019
 :msvs_2019
 set _MSVC_HOME=
 set _MSVS_CMAKE_CMD=
 set _MSVS_HOME=
 set _MSVS_PATH=
 
-set __WSWHERE_CMD=%_ROOT_DIR%bin\vswhere.exe
+set "__WSWHERE_CMD=%_ROOT_DIR%bin\vswhere.exe"
 for /f "delims=" %%f in ('%__WSWHERE_CMD% -property installationPath 2^>NUL') do set _MSVS_HOME=%%~sf
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 2019 1>&2
@@ -341,8 +341,8 @@ set "_MSVS_CMAKE_CMD=%__CMAKE_BIN_DIR%\cmake.exe"
 set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_BIN_DIR%"
 goto :eof
 
-rem input parameter(s): %1=directory path
-rem output parameter: _SUBST_PATH
+@rem input parameter(s): %1=directory path
+@rem output parameter: _SUBST_PATH
 :subst_path
 for %%f in (%~1) do set "_SUBST_PATH=%%f"
 
@@ -366,8 +366,8 @@ if not defined __ASSIGNED_PATH (
 set _SUBST_PATH=%__DRIVE_NAME%
 goto :eof
 
-rem output parameter(s): _SDK_HOME, _SDK_PATH
-rem native-image dependency
+@rem output parameter(s): _SDK_HOME, _SDK_PATH
+@rem native-image dependency
 :sdk
 set _SDK_HOME=
 set _SDK_PATH=
@@ -385,8 +385,8 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __SDK_ARCH=\x64
 set "_SDK_PATH=;%_SDK_HOME%\bin%__SDK_ARCH%"
 goto :eof
 
-rem output parameter(s): _KIT_INC_DIR, _KIT_LIB_DIR
-rem native-image dependency
+@rem output parameter(s): _KIT_INC_DIR, _KIT_LIB_DIR
+@rem native-image dependency
 :kit
 set _KIT_INC_DIR=
 set _KIT_LIB_DIR=
@@ -406,7 +406,7 @@ set "_KIT_INC_DIR=%__KIT_HOME%\Include\%__KIT_VERSION%"
 set "_KIT_LIB_DIR=%__KIT_HOME%\Lib\%__KIT_VERSION%"
 goto :eof
 
-rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
+@rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
 :cygwin
 set _CYGWIN_HOME=
 set _CYGWIN_PATH=
@@ -417,10 +417,10 @@ if defined __MAKE_EXE (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
     for /f "delims=" %%i in ("%__MAKE_EXE%") do set __MAKE_BIN_DIR=%%~dpi
     for %%f in ("!__MAKE_BIN_DIR!..\..") do set _CYGWIN_HOME=%%~sf
-    rem keep _CYGWIN_PATH undefined since executable already in path
+    @rem keep _CYGWIN_PATH undefined since executable already in path
     goto :eof
 ) else if defined CYGWIN_HOME (
-    set _CYGWIN_HOME=%CYGWIN_HOME%
+    set "_CYGWIN_HOME=%CYGWIN_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
 ) else (
     set "__PATH=%ProgramFiles%"
@@ -436,15 +436,15 @@ if not exist "%_CYGWIN_HOME%\bin\make.exe" (
     set _EXITCODE=1
     goto :eof
 )
-rem path name of installation directory may contain spaces
+@rem path name of installation directory may contain spaces
 for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set _CYGWIN_HOME=%%~sf
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
 
-rem i.e. make.exe, gcc.exe
+@rem i.e. make.exe, gcc.exe
 set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
 goto :eof
 
-rem output parameters: _GIT_HOME, _GIT_PATH
+@rem output parameters: _GIT_HOME, _GIT_PATH
 :git
 set _GIT_HOME=
 set _GIT_PATH=
@@ -455,11 +455,11 @@ if defined __GIT_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Git executable found in PATH 1>&2
     for %%i in ("%__GIT_CMD%") do set "__GIT_BIN_DIR=%%~dpi"
     for %%f in ("!__GIT_BIN_DIR!..") do set "_GIT_HOME=%%f"
-    rem Executable git.exe is present both in bin\ and \mingw64\bin\
+    @rem Executable git.exe is present both in bin\ and \mingw64\bin\
     if not "!_GIT_HOME:mingw=!"=="!_GIT_HOME!" (
         for %%f in ("!_GIT_HOME!\..") do set "_GIT_HOME=%%f"
     )
-    rem keep _GIT_PATH undefined since executable already in path
+    @rem keep _GIT_PATH undefined since executable already in path
     goto :eof
 ) else if defined GIT_HOME (
     set "_GIT_HOME=%GIT_HOME%"
@@ -563,7 +563,7 @@ echo %__VERSIONS_LINE1%
 echo %__VERSIONS_LINE2%
 echo %__VERSIONS_LINE3%
 if %__VERBOSE%==1 if defined __WHERE_ARGS (
-    rem if %_DEBUG%==1 echo %_DEBUG_LABEL% where %__WHERE_ARGS%
+    @rem if %_DEBUG%==1 echo %_DEBUG_LABEL% where %__WHERE_ARGS%
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
@@ -573,8 +573,8 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
 )
 goto :eof
 
-rem ##########################################################################
-rem ## Cleanups
+@rem #########################################################################
+@rem ## Cleanups
 
 :end
 endlocal & (
