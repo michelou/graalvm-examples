@@ -8,10 +8,8 @@ set _DEBUG=0
 @rem ## Environment setup
 
 set _BASENAME=%~n0
-
 set _EXITCODE=0
-
-for %%f in ("%~dp0") do set _ROOT_DIR=%%~sf
+set "_ROOT_DIR=%~dp0"
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -77,6 +75,7 @@ set _COMPILE=0
 set _HELP=0
 set _RUN=0
 set _JVMCI=0
+set _TIMER=0
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -89,6 +88,7 @@ if "%__ARG:~0,1%"=="-" (
     @rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
+    ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
@@ -100,8 +100,8 @@ if "%__ARG:~0,1%"=="-" (
     if /i "%__ARG%"=="clean" ( set _CLEAN=1
     ) else if /i "%__ARG%"=="check" ( set _CHECKSTYLE=1
     ) else if /i "%__ARG%"=="compile" ( set _COMPILE=1
-    ) else if /i "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else if /i "%__ARG%"=="help" ( set _HELP=1
+    ) else if /i "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -112,7 +112,8 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
@@ -121,6 +122,7 @@ echo.
 echo   Options:
 echo     -debug      display commands executed by this script
 echo     -jvmci      add JVMCI options
+echo     -timer      display total elapsed time
 echo     -verbose    display progress messages
 echo.
 echo   Subcommands:
@@ -193,16 +195,18 @@ goto :eof
 :compile
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 
-set "__SOURCE_LIST_FILE=%_TARGET_DIR%\source_list.txt"
-if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
+set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
+echo %_JAVAC_OPTS% > "%__OPTS_FILE%"
 
+set "__SOURCE_LIST_FILE=%_TARGET_DIR%\javac_sources.txt"
+if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
     echo %%f>> "%__SOURCE_LIST_FILE%"
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% %_JAVAC_OPTS% @%__SOURCE_LIST_FILE% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% "@%__OPTS_FILE%" "@%__SOURCE_LIST_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Compile Java source files to directory !_CLASSES_DIR:%_ROOT_DIR%=! 1>&2
 )
-call "%_JAVAC_CMD%" %_JAVAC_OPTS% @"%__SOURCE_LIST_FILE%"
+call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCE_LIST_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -313,10 +317,23 @@ set "__PS1_FILE=%~1"
 ) > "%__PS1_FILE%"
 goto :eof
 
+@rem output parameter: _DURATION
+:duration
+set __START=%~1
+set __END=%~2
+
+for /f "delims=" %%i in ('powershell -c "$interval = New-TimeSpan -Start '%__START%' -End '%__END%'; Write-Host $interval"') do set _DURATION=%%i
+goto :eof
+
 @rem #########################################################################
 @rem ## Cleanups
 
 :end
+if %_TIMER%==1 (
+    for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
+    call :duration "%_TIMER_START%" "!__TIMER_END!"
+    echo Elapsed time: !_DURATION! 1>&2
+)
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
 exit /b %_EXITCODE%
 endlocal

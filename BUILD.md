@@ -128,7 +128,7 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 
 <pre style="font-size:80%;">
 <b>&gt; dir sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
-10.05.2020  00:51       278 516 909 graalvm-3398ab5293-java8.zip
+20.05.2020  21:49       278 824 674 graalvm-3398ab5293-java8.zip
 15.03.2020  16:35       276 745 135 graalvm-unknown-java8-stage1.zip
 15.03.2020  16:35       276 749 506 graalvm-unknown-java8.zip
 </pre>

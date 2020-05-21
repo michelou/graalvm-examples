@@ -8,20 +8,22 @@ set _DEBUG=0
 @rem ## Environment setup
 
 set _BASENAME=%~n0
-
 set _EXITCODE=0
-
-for %%f in ("%~dp0") do set "_ROOT_DIR=%%~sf"
+set "_ROOT_DIR=%~dp0"
 
 call :env
 if not %_EXITCODE%==0 goto end
 
 call :args %*
 if not %_EXITCODE%==0 goto end
-if %_HELP%==1 call :help & exit /b %_EXITCODE%
 
 @rem #########################################################################
 @rem ## Main
+
+if %_HELP%==1 (
+    call :help
+    exit /b !_EXITCODE!
+)
 
 set _JAVA_HOME=
 set _JAVA11_HOME=
@@ -109,7 +111,7 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _JAVA_VERSION=%_JAVA_VERSION% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
 goto :eof
 
 :help
@@ -134,8 +136,9 @@ set __JAVAC_CMD=
 for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
-    for %%i in ("%__JAVAC_CMD%") do set __GRAAL_BIN_DIR=%%~dpsi
-    for %%f in ("!__GRAAL_BIN_DIR!..") do set _GRAAL_HOME=%%~sf
+    for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpsi"
+    for %%f in ("!__GRAAL_BIN_DIR!..") do set "_GRAAL_HOME=%%~sf"
+    goto :eof
 ) else if defined GRAAL_HOME (
     set "_GRAAL_HOME=%GRAAL_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GRAAL_HOME 1>&2
@@ -152,11 +155,8 @@ if not exist "%_GRAAL_HOME%\bin\javac.exe" (
     set _EXITCODE=1
     goto :eof
 )
-if %__JAVA_VERSION%==java8 ( set __POLYGLOT_NAME=polyglot.cmd
-) else ( set __POLYGLOT_NAME=polyglot.exe
-)
-if not exist "%_GRAAL_HOME%\bin\%__POLYGLOT_NAME%" (
-    echo %_ERROR_LABEL% Executable %__POLYGLOT_NAME% not found ^(%_GRAAL_HOME%^) 1>&2
+if not exist "%_GRAAL_HOME%\bin\polyglot.cmd" (
+    echo %_ERROR_LABEL% Executable polyglot.cmd not found ^(%_GRAAL_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -248,10 +248,6 @@ if not exist "%_LLVM_HOME%\bin\clang.exe" (
     set _EXITCODE=1
     goto :eof
 )
-@rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%_LLVM_HOME%") do set _LLVM_HOME=%%~sf
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default LLVM %__LLVM_VERSION% installation directory %_LLVM_HOME% 1>&2
-
 set "_LLVM_PATH=;%_LLVM_HOME%\bin"
 goto :eof
 

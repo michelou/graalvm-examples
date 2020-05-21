@@ -8,10 +8,8 @@ set _DEBUG=0
 @rem ## Environment setup
 
 set _BASENAME=%~n0
-
 set _EXITCODE=0
-
-for %%f in ("%~dp0") do set "_ROOT_DIR=%%~sf"
+set "_ROOT_DIR=%~dp0"
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -88,6 +86,7 @@ set _HELP=0
 set _RUN=0
 set _JVMCI=0
 set _TARGET=jvm
+set _TIMER=0
 set _VERBOSE=0
 set __N=0
 :args_loop
@@ -102,6 +101,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
     ) else if /i "%__ARG%"=="-native" ( set _TARGET=native
+    ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
@@ -125,8 +125,6 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _CACHED=%_CACHED% _TARGET=%_TARGET% _VERBOSE=%_VERBOSE% 1>&2
-
 set _STDOUT_REDIRECT=1^>CON
 if %_DEBUG%==0 if %_VERBOSE%==0 set _STDOUT_REDIRECT=1^>NUL
 
@@ -140,6 +138,9 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAG
 
 set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
+
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
@@ -150,6 +151,7 @@ echo     -cached     select main class with cached startup time
 echo     -debug      display commands executed by this script
 echo     -jvmci      add JVMCI options
 echo     -native     generate both JVM files and native image
+echo     -timer      display total elapsed time
 echo     -verbose    display progress messages
 echo.
 echo   Subcommands:
@@ -165,10 +167,10 @@ call :rmdir "%_TARGET_DIR%"
 goto :eof
 
 :rmdir
-set __DIR=%~1
+set "__DIR=%~1"
 if not exist "%__DIR%" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
-) else if %_VERBOSE%==1 ( echo Delete directory !__DIR:%_ROOT_DIR%=! 1>&2
+) else if %_VERBOSE%==1 ( echo Delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
 )
 rmdir /s /q "%__DIR%"
 if not %ERRORLEVEL%==0 (
@@ -222,16 +224,18 @@ goto :eof
 :compile
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 
-set "__SOURCE_LIST_FILE=%_TARGET_DIR%\source_list.txt"
-if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
+set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
+echo %_JAVAC_OPTS% > "%__OPTS_FILE%"
 
+set "__SOURCE_LIST_FILE=%_TARGET_DIR%\javac_sources.txt"
+if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *%_MAIN_NAME%.java') do (
     echo %%f>> "%__SOURCE_LIST_FILE%"
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% %_JAVAC_OPTS% @%__SOURCE_LIST_FILE% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% "@%__OPTS_FILE%" @%__SOURCE_LIST_FILE% 1>&2
 ) else if %_VERBOSE%==1 ( echo Compile Java source files to directory !_CLASSES_DIR:%_ROOT_DIR%=! 1>&2
 )
-call "%_JAVAC_CMD%" %_JAVAC_OPTS% @"%__SOURCE_LIST_FILE%"
+call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCE_LIST_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -300,8 +304,8 @@ if not %ERRORLEVEL%==0 (
     goto :eof
 )
 if exist "%_GRAALVM_LOG_FILE%" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to %_GRAALVM_LOG_FILE% 1>&2
-    ) else if %_VERBOSE%==1 ( echo Compilation log written to !_GRAALVM_LOG_FILE:%_ROOT_DIR%=! 1>&2
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%_GRAALVM_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!_GRAALVM_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
 )
 goto :eof
@@ -394,10 +398,23 @@ set "__PS1_FILE=%~1"
 ) > "%__PS1_FILE%"
 goto :eof
 
+@rem output parameter: _DURATION
+:duration
+set __START=%~1
+set __END=%~2
+
+for /f "delims=" %%i in ('powershell -c "$interval = New-TimeSpan -Start '%__START%' -End '%__END%'; Write-Host $interval"') do set _DURATION=%%i
+goto :eof
+
 @rem #########################################################################
 @rem ## Cleanups
 
 :end
+if %_TIMER%==1 (
+    for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
+    call :duration "%_TIMER_START%" "!__TIMER_END!"
+    echo Elapsed time: !_DURATION! 1>&2
+)
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
 exit /b %_EXITCODE%
 endlocal

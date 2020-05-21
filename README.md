@@ -28,14 +28,14 @@ For instance our development environment looks as follows (*April 2020*) </i><su
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.26.2\                                    <i>(271 MB)</i>
-C:\opt\graalvm-ce-java11-20.0.0\                      <i>(764 MB)</i>
-C:\opt\graalvm-ce-java8-20.0.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(670 MB)</i>
+C:\opt\graalvm-ce-java11-20.1.0\                      <i>(721 MB)</i>
+C:\opt\graalvm-ce-java8-20.1.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(630 MB)</i>
 C:\opt\Python-2.7.17\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 </pre>
-<!-- ce-java8 : 19.3.1 = 360 MB, 20.0.0 = 670 MB -->
-<!-- ce-java11: 19.3.1 = 439 MB, 20.0.0 = 764 MB -->
+<!-- ce-java8 : 19.3.1 = 360 MB, 20.0.0 = 670 MB, 20.1.0 = 630 MB -->
+<!-- ce-java11: 19.3.1 = 439 MB, 20.0.0 = 764 MB, 20.1.0 = 721 MB -->
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
@@ -127,7 +127,7 @@ Tool versions:
 
 <b>&gt; where cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
-C:\opt\graalvm-ce-java8-20.0.0\bin\java.exe
+C:\opt\graalvm-ce-java8-20.1.0\bin\java.exe
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
 </pre>
 
@@ -140,7 +140,7 @@ Tool versions:
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.26.2.windows.1
 Tool paths:
-   C:\opt\graalvm-ce-java8-20.0.0\bin\javac.exe
+   C:\opt\graalvm-ce-java8-20.1.0\bin\javac.exe
    C:\opt\Python-2.7.17\python.exe
    C:\opt\Python-2.7.17\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
@@ -176,7 +176,7 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 <a name="footnote_01">[1]</a> ***2 GraalVM editions*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
-<a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_242</a>.
+<a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_252</a>.
 </p>
 
 <a name="footnote_02">[2]</a> ***Downloads*** [↩](#anchor_02)
@@ -185,15 +185,16 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 In our case we downloaded the following installation files (see <a href="#section_01">section 1</a>):
 </p>
 <pre style="margin:0 0 1em 20px; font-size:80%;">
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-20.0.0.zip</a>                    <i>(154 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-20.0.0.zip</a>                   <i>(230 MB)</i>
-<a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                           <i>(570 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-20.1.0.zip</a>                     <i>(154 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-20.1.0.zip</a>                    <i>(230 MB)</i>
+<a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-20.1-b01">labsjdk-ce-11.0.7+10-jvmci-20.1-b02-windows-amd64.tar.gz</a>      <i>(174 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-20.0.0.jar</a>  <i>(  6 MB)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.1-b01">openjdk-8u252-jvmci-20.1-b02-windows-amd64.tar.gz</a>            <i>(102 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.26.2-64-bit.7z.exe</a>                             <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>                                      <i>( 19 MB)</i>
-<a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                    <i>(121 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-20.1.0.jar</a>   <i>(  9 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-20.1.0.jar</a>  <i>(  6 MB)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.1-b01">openjdk-8u252-jvmci-20.1-b02-windows-amd64.tar.gz</a>             <i>(102 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.26.2-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://www.python.org/downloads/release/python-2717/">python-2.7.17.amd64.msi</a>                                       <i>( 19 MB)</i>
+<a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
 
 <a name="footnote_03">[3]</a> ***Improvements in GraalVM 20*** [↩](#anchor_03)
@@ -204,33 +205,33 @@ Version 20.0 of GraalVM brings major improvements to Windows users:
 <ul>
 <li>Command <code>gu.cmd</code> is finally part of the Windows distribution !
 <pre style="font-size:80%;">
-<b>&gt; where /r c:\opt\graalvm-ce-java8-20.0.0\ gu.*</b>
-c:\opt\graalvm-ce-java8-20.0.0\bin\gu.cmd
-c:\opt\graalvm-ce-java8-20.0.0\lib\installer\bin\gu.exe
+<b>&gt; where /r c:\opt\graalvm-ce-java8-20.1.0\ gu.*</b>
+c:\opt\graalvm-ce-java8-20.1.0\bin\gu.cmd
+c:\opt\graalvm-ce-java8-20.1.0\lib\installer\bin\gu.exe
 </pre>
 </li>
-<li><a href="https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.0.0/native-image-installable-svm-java8-windows-amd64-20.0.0.jar"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
+<li><a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.1.0"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
 <pre style="font-size:80%;">
-<b>&gt; bin\gu.cmd install --file native-image-installable-svm-java8-windows-amd64-20.0.0.jar --verbose
-Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.0.0.jar</b>
-Preparing to install native-image-installable-svm-java8-windows-amd64-20.0.0.jar, contains org.graalvm.native-image, version 20.0.0 (org.graalvm.native-image)
-Checking requirements of component Native Image (native-image), version 20.0.0
-        Requires Graal Version = 20.0.0, GraalVM provides: 20.0.0
+<b>&gt; bin\gu.cmd install --file native-image-installable-svm-java8-windows-amd64-20.1.0.jar --verbose
+Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.1.0.jar</b>
+Preparing to install native-image-installable-svm-java8-windows-amd64-20.1.0.jar, contains org.graalvm.native-image, version 20.1.0 (org.graalvm.native-image)
+Checking requirements of component Native Image (native-image), version 20.1.0
+        Requires Graal Version = 20.1.0, GraalVM provides: 20.1.0
         Requires Java Version = 8, GraalVM provides: 8
         Requires Architecture = amd64, GraalVM provides: amd64
         Requires Operating System = windows, GraalVM provides: Windows
-Installing new component: Native Image (org.graalvm.native-image, version 20.0.0)
+Installing new component: Native Image (org.graalvm.native-image, version 20.1.0)
 Extracting: LICENSE_NATIVEIMAGE.txt
 Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
 [..]
-<b>&gt; c:\opt\graalvm-ce-java8-20.0.0\bin\native-image.cmd --version</b>
-GraalVM Version 20.0.0 CE
+<b>&gt; c:\opt\graalvm-ce-java8-20.1.0\bin\native-image.cmd --version</b>
+GraalVM Version 20.1.0 CE
 </pre></li>
 <li>Command <code>polyglot.exe</code> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
-<b>&gt; c:\opt\graalvm-ce-java8-20.0.0\jre\bin\polyglot.exe --version</b>
-GraalVM CE Native polyglot launcher 20.0.0
+<b>&gt; c:\opt\graalvm-ce-java8-20.1.0\jre\bin\polyglot.exe --version</b>
+GraalVM CE Native polyglot launcher 20.1.0
 </pre></li>
 </ul>
 
@@ -256,7 +257,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/
 [graalvm_downloads]: https://github.com/graalvm/graalvm-ce-builds/releases
-[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/20_0/
+[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/20_1/
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kotlin_examples]: https://github.com/michelou/kotlin-examples
