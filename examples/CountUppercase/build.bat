@@ -7,11 +7,12 @@ set _DEBUG=0
 @rem #########################################################################
 @rem ## Environment setup
 
-set _BASENAME=%~n0
 set _EXITCODE=0
-set "_ROOT_DIR=%~dp0"
 
 call :env
+if not %_EXITCODE%==0 goto end
+
+call :props
 if not %_EXITCODE%==0 goto end
 
 call :args %*
@@ -35,9 +36,17 @@ if %_CHECKSTYLE%==1 (
 if %_COMPILE%==1 (
     call :compile
     if not !_EXITCODE!==0 goto end
+    if %_TARGET%==native (
+        call :native_image
+        if not !_EXITCODE!==0 goto end
+    )
+)
+if %_PACK%==1 (
+    call :pack
+    if not !_EXITCODE!==0 goto end
 )
 if %_RUN%==1 (
-    call :run
+    call :run_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
 goto end
@@ -47,6 +56,9 @@ goto end
 
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
 :env
+set _BASENAME=%~n0
+set "_ROOT_DIR=%~dp0"
+
 @rem ANSI colors in standard Windows 10 shell
 @rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
@@ -57,14 +69,44 @@ set "_SOURCE_DIR=%_ROOT_DIR%src\main\java"
 set "_TARGET_DIR=%_ROOT_DIR%target"
 set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 
+set _PKG_NAME=
+set _MAIN_NAME=CountUppercase
+set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
+
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
-set _JAVAC_OPTS=-d %_CLASSES_DIR%
+set _JAVAC_OPTS=
+
+set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
+set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
 
 set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 
 set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
-set _JAVA_OPTS=-cp %_CLASSES_DIR%
+set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
+
+set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
+set _JAR_OPTS=
+goto :eof
+
+@rem output parameters: _CHECKSTYLE_VERSION
+:props
+@rem value may be overwritten if file build.properties exists
+set _CHECKSTYLE_VERSION=8.33
+
+set "__PROPS_FILE=%_ROOT_DIR%build.properties"
+if exist "%__PROPS_FILE%" (
+    for /f "tokens=1,* delims==" %%i in (%__PROPS_FILE%) do (
+        for /f "delims= " %%n in ("%%i") do set __NAME=%%n
+        @rem line comments start with "#"
+        if not "!__NAME!"=="" if not "!__NAME:~0,1!"=="#" (
+            @rem trim value
+            for /f "tokens=*" %%v in ("%%~j") do set __VALUE=%%v
+            set "_!__NAME:.=_!=!__VALUE!"
+        )
+    )
+    if defined _checkstyle_version set _CHECKSTYLE_VERSION=!_checkstyle_version!
+)
 goto :eof
 
 @rem input parameter %*
@@ -73,8 +115,10 @@ set _CHECKSTYLE=0
 set _CLEAN=0
 set _COMPILE=0
 set _HELP=0
-set _RUN=0
 set _JVMCI=0
+set _PACK=0
+set _RUN=0
+set _TARGET=jvm
 set _TIMER=0
 set _VERBOSE=0
 set __N=0
@@ -88,6 +132,7 @@ if "%__ARG:~0,1%"=="-" (
     @rem option
     if /i "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
+    ) else if /i "%__ARG%"=="-native" ( set _TARGET=native
     ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
@@ -101,6 +146,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if /i "%__ARG%"=="check" ( set _CHECKSTYLE=1
     ) else if /i "%__ARG%"=="compile" ( set _COMPILE=1
     ) else if /i "%__ARG%"=="help" ( set _HELP=1
+    ) else if /i "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
     ) else if /i "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
@@ -112,7 +158,17 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+set _STDOUT_REDIRECT=1^>CON
+if %_DEBUG%==0 if %_VERBOSE%==0 set _STDOUT_REDIRECT=1^>NUL
+
+if defined _PKG_NAME ( set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
+) else ( set _MAIN_CLASS=%_MAIN_NAME%
+)
+set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
+
+if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
+
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
@@ -122,6 +178,7 @@ echo.
 echo   Options:
 echo     -debug      display commands executed by this script
 echo     -jvmci      add JVMCI options
+echo     -native     generate both JVM files and native image
 echo     -timer      display total elapsed time
 echo     -verbose    display progress messages
 echo.
@@ -138,10 +195,10 @@ call :rmdir "%_TARGET_DIR%"
 goto :eof
 
 :rmdir
-set __DIR=%~1
+set "__DIR=%~1"
 if not exist "%__DIR%" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
-) else if %_VERBOSE%==1 ( echo Delete directory !__DIR:%_ROOT_DIR%=! 1>&2
+) else if %_VERBOSE%==1 ( echo Delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
 )
 rmdir /s /q "%__DIR%"
 if not %ERRORLEVEL%==0 (
@@ -157,9 +214,9 @@ if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
-set __JAR_VERSION=8.32
-set __JAR_NAME=checkstyle-%__JAR_VERSION%-all.jar
-set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%__JAR_VERSION%/%__JAR_NAME%
+@rem "checkstyle-all" version not available from Maven Central
+set __JAR_NAME=checkstyle-%_CHECKSTYLE_VERSION%-all.jar
+set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%_CHECKSTYLE_VERSION%/%__JAR_NAME%
 set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
@@ -169,12 +226,11 @@ if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 set __PS1_VERBOSE[0]=
 set __PS1_VERBOSE[1]=-Verbose
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -Outfile '%__JAR_FILE%'" 1>&2
-) else if %_VERBOSE%==1 ( echo Downloading: Component catalog %__CATALOG_NAME% 1>&2
-) else ( echo Downloading: Component catalog
+) else if %_VERBOSE%==1 ( echo Download file %__JAR_NAME% 1>&2
 )
 powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to download file %__CATALOG_NAME% 1>&2
+    echo %_ERROR_LABEL% Failed to download file %__JAR_NAME% 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -196,25 +252,69 @@ goto :eof
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo %_JAVAC_OPTS% > "%__OPTS_FILE%"
+echo %_JAVAC_OPTS% -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
-set "__SOURCE_LIST_FILE=%_TARGET_DIR%\javac_sources.txt"
-if exist "%__SOURCE_LIST_FILE%" del "%__SOURCE_LIST_FILE%"
+set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
+if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
-    echo %%f>> "%__SOURCE_LIST_FILE%"
+    echo %%f>> "%__SOURCES_FILE%"
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVAC_CMD% "@%__OPTS_FILE%" "@%__SOURCE_LIST_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Compile Java source files to directory !_CLASSES_DIR:%_ROOT_DIR%=! 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Compile Java source files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
-call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCE_LIST_FILE%"
+call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
 goto :eof
 
-:run
-set __MAIN_CLASS=CountUppercase
+:native_image
+setlocal
+call :native_env_msvc
+
+if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% 1>&2
+) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% %_STDOUT_REDIRECT%
+if not %ERRORLEVEL%==0 (
+    endlocal
+    echo %_ERROR_LABEL% Failed to create native image !_MAIN_NATIVE_FILE:%_ROOT_DIR%=! 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+endlocal
+goto :eof
+
+:native_env_msvc
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set __MSVC_ARCH=\amd64
+    set __NET_ARCH=Framework64\v4.0.30319
+    set __SDK_ARCH=\x64
+    set __KIT_ARCH=\x64
+) else (
+    set __MSVC_ARCH=\x86
+    set __NET_ARCH=Framework\v4.0.30319
+    set __SDK_ARCH=
+    set __KIT_ARCH=\x86
+)
+@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
+set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include"
+set "LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%"
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% ========================================= 1>&2
+)
+goto :eof
+
+:pack
+goto :eof
+
+:run_jvm
 set __MAIN_ARGS=In 2019 I would like to run ALL languages in one VM.
 set __ITERATIONS=5
 
@@ -228,18 +328,33 @@ if %_JVMCI%==1 (
     set __JAVA_OPTS=%_JAVA_OPTS% -XX:-UseJVMCICompiler
 )
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS% 1>&2
-) else if %_VERBOSE%==1 ( echo Execute Java main class %__MAIN_CLASS% %__MAIN_ARGS% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
 )
-call "%_JAVA_CMD%" %__JAVA_OPTS% %__MAIN_CLASS% %__MAIN_ARGS%
+call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
 if %_DEBUG%==1 if exist "%_GRAALVM_LOG_FILE%" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to %_GRAALVM_LOG_FILE% 1>&2
-    ) else if %_VERBOSE%==1 ( echo Compilation log written to !_GRAALVM_LOG_FILE:%_ROOT_DIR%=! 1>&2
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%_GRAALVM_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!_GRAALVM_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
+)
+goto :eof
+
+:run_native
+set "__EXE_FILE=%_MAIN_NATIVE_FILE%.exe"
+if not exist "%__EXE_FILE%" (
+    echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
+call "%__EXE_FILE%"
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
 )
 goto :eof
 
@@ -332,7 +447,7 @@ goto :eof
 if %_TIMER%==1 (
     for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
     call :duration "%_TIMER_START%" "!__TIMER_END!"
-    echo Elapsed time: !_DURATION! 1>&2
+    echo Total elapsed time: !_DURATION! 1>&2
 )
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
 exit /b %_EXITCODE%

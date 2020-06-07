@@ -13,8 +13,9 @@
 - [Python application running on GraalVM and Polyglotting with JavaScript, R, Ruby and Java](https://technology.amis.nl/2019/10/30/python-application-running-on-graalvm-and-polyglotting-with-javascript-r-ruby-and-java/) by Lucas Jellema, October 30, 2019.
 - [Create a Native Image Binary Executable for a Polyglot Java Application using GraalVM](https://technology.amis.nl/2019/10/28/create-a-native-image-binary-executable-for-a-polyglot-java-application-using-graalvm/), by Lucas Jellema, October 28, 2019.
 - [Leverage NPM JavaScript Module from Java application using GraalVM](https://technology.amis.nl/2019/10/25/leverage-npm-javascript-module-from-java-application-using-graalvm/), by Lucas Jellema, October 25, 2019.
-- [Calling out from Java to JavaScript (with call back) – leveraging interoperability support of GraalVM](https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/), by Lucas Jellema, October 24, 2019.
-- [Getting to Know Graal, the New Java JIT Compiler](https://www.infoq.com/articles/Graal-Java-JIT-Compiler/) by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
+- [Calling out from Java to JavaScript (with call back) – leveraging interoperability support of GraalVM][article_jellema], by Lucas Jellema, October 24, 2019.
+- [An Introduction to GraalVM][article_berger] by Frits Berger, June 28, 2019.
+- [Getting to Know Graal, the New Java JIT Compiler][article_evans] by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
 
 ## <span id="blogs">Blogs</span>
 
@@ -24,8 +25,8 @@
 - [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
 - [GraalVM and Groovy - how to start?](https://e.printstacktrace.blog/graalvm-and-groovy-how-to-start/), October 2018.
 - [Intro to GraalVM](https://fedidat.com/510-intro-to-graal/) by [Ben Fedidat](https://fedidat.com/about/), October 2018.
-- [My first impressions about Graal VM](https://blog.frankel.ch/first-impressions-graalvm/) by Nicolas Fränkel, April 2018.
-- [Add Graal JIT Compilation to Your JVM Language in 5 Easy Steps](https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/) by Stefan Marr, November 2015.
+- [My first impressions about Graal VM][blog_frankel] by Nicolas Fränkel, April 2018.
+- [Add Graal JIT Compilation to Your JVM Language in 5 Easy Steps][blog_marr] by Stefan Marr, November 2015.
 
 ## <span id="tools">Online Tools</span>
 
@@ -52,9 +53,14 @@
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
 
+[article_berger]: https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples
+[article_evans]: https://www.infoq.com/articles/Graal-Java-JIT-Compiler/
+[article_jellema]: https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/
+[blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
+[blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [ch_epfl_paper9]: https://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf

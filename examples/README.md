@@ -11,20 +11,23 @@
   </tr>
 </table>
 
-In this document we present the following examples in more detail:
+In this document we present the following code examples in more detail:
 
 - [**`ClassInitialization`**](#ClassInitialization)
 - [**`CountUppercase`**](#CountUppercase)
+- [**`Ranking`**](#Ranking)
 
 
 ## <span id="ClassInitialization">`ClassInitialization`</span>
 
-Example [**`ClassInitialization\`**](ClassInitialization/) is from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article [*Updates on Class Initialization in GraalVM Native Image Generation*](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7), September 12, 2019. It consists of the two classes [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java) and [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java).
+Project [**`ClassInitialization\`**](ClassInitialization/) consists of the two classes [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java) and [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java).
+
+> **:mag_right:** The example comes from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article "[Updates on Class Initialization in GraalVM Native Image Generation](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7)", published on September 12, 2019
 
 Command [**`build`**](ClassInitialization/build.bat) with no argument displays the available options and subcommands:
 
 <pre style="font-size:80%;">
-<b>&gt; build</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a></b>
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
@@ -64,7 +67,7 @@ Now:     Fri Nov 15 22:43:48 CET 2019
 Command [**`build -native clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloStartupTime.exe`** for source file [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java):
 
 <pre style="font-size:80%;">
-<b>&gt; build -native clean compile</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a> -native clean compile</b>
 <b>&gt; tree /a /f target | findstr /v "^[A-Z]"</b>
 |   HelloStartupTime.exe
 |   HelloStartupTime.exp
@@ -143,14 +146,14 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 
 ## <span id="CountUppercase">`CountUppercase`</span>
 
-Example [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
+Code example [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
 - program arguments are concatenated into a sentence which is used as test input. 
 
 Command [**`build`**](CountUppercase/build.bat) with no argument displays the available options and subcommands:
 
 <pre style="font-size:80%;">
-<b>&gt; build</b>
+<b>&gt; <a href="CountUppercase/build.bat">build</a></b>
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
@@ -207,7 +210,7 @@ total: 69999993 (1375 ms)
 Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
 
 <pre style="font-size:80%;">
-<b>&gt; build -verbose check</b>
+<b>&gt; <a href="CountUppercase/build.bat">build</a> -verbose check</b>
 Analyze Java source files with CheckStyle configuration .graal\graal_checks.xml
 Starting audit...
 Audit done.
@@ -236,6 +239,105 @@ Audit done.
 > <b>&lt;/module&gt;</b>
 > </pre>
 
+## <span id="Ranking">`Ranking`</span>
+
+Project [**`Ranking\`**](Ranking/) is a micro-benchmark.
+
+> **:mag_right:** The example comes from Berger's article "[An introduction to GraalVM](https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples)", published on June 28, 2019.
+
+Command [**`build`**](Ranking/build.bat) with no argument displays the available options and subcommands:
+
+<pre style="font-size:80%;">
+<b>&gt; <a hre="Ranking/build.bat">build</a></b>
+Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
+&nbsp;
+  Options:
+    -debug      show commands executed by this script
+    -verbose    display progress messages
+&nbsp;
+  Subcommands:
+    clean       delete generated files
+    check       analyze Java source files with CheckStyle
+    compile     generate executable
+    help        display this help message
+    test        execute micro benchmark
+</pre>
+
+Command [**`build clean run`**](Ranking/build.bat) builds and executes the JVM variant of the [JMH] benchmark (`target\benchmarks.jar`):
+
+<pre style="font-size:80%;">
+<b>&gt; <a href="(Ranking/build.bat">build</a> clean run</b>
+# JMH version: 1.23
+# VM version: JDK 1.8.0_252, OpenJDK 64-Bit Server VM GraalVM CE 20.2.0-dev, 25.252-b09-jvmci-20.1-b02
+# VM invoker: C:\opt\graalvm-ce-java8-20.2.0-dev\jre\bin\java.exe
+# VM options: -Xmx1G
+# Warmup: 3 iterations, 10 s each
+# Measurement: 3 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: nl.avisi.Ranking.rank
+
+# Run progress: 0.00% complete, ETA 00:01:00
+# Fork: 1 of 1
+# Warmup Iteration   1: files=[G:\examples\Ranking\target\chart2000-songyear-0-3-0058.csv]
+16.156 ms/op
+# Warmup Iteration   2: 14.477 ms/op
+# Warmup Iteration   3: 14.463 ms/op
+Iteration   1: 14.419 ms/op
+Iteration   2: 14.939 ms/op
+Iteration   3: 14.542 ms/op
+
+
+Result "nl.avisi.Ranking.rank":
+  14.633 ±(99.9%) 4.958 ms/op [Average]
+  (min, avg, max) = (14.419, 14.633, 14.939), stdev = 0.272
+  CI (99.9%): [9.675, 19.591] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:01:00
+...
+Benchmark     Mode  Cnt   Score   Error  Units
+Ranking.rank  avgt    3  14.633 ± 4.958  ms/op
+</pre>
+
+Command [**`build -verbose -native clean run`**](Ranking/build.bat) builds and executes the *native* variant of the [JMH] benchmark (`target\Ranking.exe`):
+
+<pre style="font-size:80%;">
+<b>&gt; <a href="(Ranking/build.bat">build</a> -verbose -native clean run</b>
+Delete directory "target"
+Compile Java source files to directory "target\classes"
+Create Java benchmark archive "target\benchmarks.jar"
+Create native image "target\Ranking"
+[G:\examples\Ranking\target\Ranking:11144]    classlist:   3,451.69 ms,  1.16 GB
+[G:\examples\Ranking\target\Ranking:11144]        (cap):   3,689.91 ms,  1.63 GB
+[G:\examples\Ranking\target\Ranking:11144]        setup:   5,729.41 ms,  1.63 GB
+[G:\examples\Ranking\target\Ranking:11144]     (clinit):     408.84 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]   (typeflow):   9,147.43 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]    (objects):   6,330.04 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]   (features):     501.61 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]     analysis:  16,727.36 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]     universe:     547.29 ms,  1.87 GB
+[G:\examples\Ranking\target\Ranking:11144]      (parse):   2,080.79 ms,  1.95 GB
+[G:\examples\Ranking\target\Ranking:11144]     (inline):   1,914.74 ms,  2.19 GB
+[G:\examples\Ranking\target\Ranking:11144]    (compile):  14,383.80 ms,  2.75 GB
+[G:\examples\Ranking\target\Ranking:11144]      compile:  19,301.75 ms,  2.75 GB
+[G:\examples\Ranking\target\Ranking:11144]        image:   1,385.88 ms,  2.78 GB
+[G:\examples\Ranking\target\Ranking:11144]        write:     444.53 ms,  2.78 GB
+[G:\examples\Ranking\target\Ranking:11144]      [total]:  47,965.62 ms,  2.78 GB
+Execute JMH benchmark "target\Ranking.exe"
+Exception in thread "main" java.lang.ExceptionInInitializerError
+        at com.oracle.svm.core.classinitialization.ClassInitializationInfo.initialize(ClassInitializationInfo.java:291)
+        at org.openjdk.jmh.runner.options.CommandLineOptions.<init>(CommandLineOptions.java:99)
+        at org.openjdk.jmh.Main.main(Main.java:41)
+Caused by: java.lang.IllegalArgumentException: int is not a value type
+        at joptsimple.internal.Reflection.findConverter(Reflection.java:66)
+        at org.openjdk.jmh.runner.options.IntegerValueConverter.<clinit>(IntegerValueConverter.java:35)
+        at com.oracle.svm.core.classinitialization.ClassInitializationInfo.invokeClassInitializer(ClassInitializationInfo.java:351)
+        at com.oracle.svm.core.classinitialization.ClassInitializationInfo.initialize(ClassInitializationInfo.java:271)
+        ... 2 more
+</pre>
+
 ## <span id="footnotes">Footnotes</a>
 
 <a name="footnote_01">[1]</a> ***CheckStyle configuration*** [↩](#anchor_01)
@@ -247,10 +349,13 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 <li><code>sun_checks.xml</code> (<a href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConvTOC.doc.html">Sun Code Conventions</a>) and</li>
 <li><code>google_checks.xml</code> (<a href="https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html">Google Java Style</a>).</li> 
 </ul>
+<p style="margin:0 0 1em 20px;">
+Note that the above CheckStyle distribtion (aka "<code>checkstyle-all</code>") is not available from <a href="https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle">Maven Central</a> and must be retrieved separately.
+</p>
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -258,3 +363,4 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 [checkstyle_downloads]: https://github.com/checkstyle/checkstyle/releases/
 [checkstyle_home]: https://checkstyle.sourceforge.io/
 [checkstyle_relnotes]: https://checkstyle.org/releasenotes.html
+[jmh]: https://openjdk.java.net/projects/code-tools/jmh/

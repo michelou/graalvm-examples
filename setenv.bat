@@ -7,9 +7,7 @@ set _DEBUG=0
 @rem #########################################################################
 @rem ## Environment setup
 
-set _BASENAME=%~n0
 set _EXITCODE=0
-set "_ROOT_DIR=%~dp0"
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -28,6 +26,7 @@ if %_HELP%==1 (
 set _JAVA_HOME=
 set _JAVA11_HOME=
 
+set _MAVEN_PATH=
 set _PYTHON_PATH=
 set _LLVM_PATH=
 set _MSVS_PATH=
@@ -39,6 +38,9 @@ call :java8
 if not %_EXITCODE%==0 goto end
 
 call :java11
+if not %_EXITCODE%==0 goto end
+
+call :maven
 if not %_EXITCODE%==0 goto end
 
 call :python
@@ -71,6 +73,9 @@ goto end
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
 @rem                    _PROGRAM_FILES, _PROGRAM_FILES_X86
 :env
+set _BASENAME=%~n0
+set "_ROOT_DIR=%~dp0"
+
 @rem ANSI colors in standard Windows 10 shell
 @rem see https://gist.github.com/mlocati/#file-win10colors-cmd
 set _DEBUG_LABEL=[46m[%_BASENAME%][0m
@@ -172,6 +177,29 @@ goto :eof
 call :graal java11
 if not %_EXITCODE%==0 goto :eof
 if defined _GRAAL_HOME set _JAVA11_HOME=%_GRAAL_HOME%
+goto :eof
+
+@rem output parameter: _MAVEN_PATH
+:maven
+where /q mvn.cmd
+if %ERRORLEVEL%==0 goto :eof
+
+if defined MAVEN_HOME (
+    set "_MAVEN_HOME=%MAVEN_HOME%"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MAVEN_HOME 1>&2
+) else (
+    set _PATH=C:\opt
+    for /f %%f in ('dir /ad /b "!_PATH!\apache-maven-*" 2^>NUL') do set "_MAVEN_HOME=!_PATH!\%%f"
+    if defined _MAVEN_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Maven installation directory !_MAVEN_HOME! 1>&2
+    )
+)
+if not exist "%_MAVEN_HOME%\bin\mvn.cmd" (
+    echo %_ERROR_LABEL% Maven executable not found ^(%_MAVEN_HOME%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_MAVEN_PATH=;%_MAVEN_HOME%\bin"
 goto :eof
 
 @rem output parameter: _PYTHON_PATH
@@ -433,7 +461,7 @@ if not exist "%_CYGWIN_HOME%\bin\make.exe" (
     goto :eof
 )
 @rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set _CYGWIN_HOME=%%~sf
+for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set "_CYGWIN_HOME=%%~sf"
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
 
 @rem i.e. make.exe, gcc.exe
@@ -585,11 +613,11 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
-        set "PATH=%PATH%%_PYTHON_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        set "PATH=%PATH%%_MAVEN_PATH%%_PYTHON_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if %_BASH%==1 (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2
-            call %_GIT_HOME%\bin\bash.exe --login
+            call "%_GIT_HOME%\bin\bash.exe" --login
         )
     )
     if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
