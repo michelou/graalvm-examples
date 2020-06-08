@@ -65,7 +65,7 @@ set _DEBUG_LABEL=[46m[%_BASENAME%][0m
 set _ERROR_LABEL=[91mError[0m:
 set _WARNING_LABEL=[93mWarning[0m:
 
-set "_SOURCE_DIR=%_ROOT_DIR%src\main\java"
+set "_SOURCE_DIR=%_ROOT_DIR%src"
 set "_TARGET_DIR=%_ROOT_DIR%target"
 set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 
@@ -168,7 +168,7 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _RUN=%_RUN% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _PACK=%_PACK% _RUN=%_RUN% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
@@ -183,7 +183,7 @@ echo     -timer      display total elapsed time
 echo     -verbose    display progress messages
 echo.
 echo   Subcommands:
-echo     clean       delete generated object files
+echo     clean       delete generated files
 echo     check       analyze Java source files with CheckStyle
 echo     compile     compile Java source files
 echo     help        display this help message
@@ -236,8 +236,9 @@ if not %ERRORLEVEL%==0 (
 )
 :checkstyle_analyze
 set __SOURCE_FILES=
-for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do set __SOURCE_FILES=!__SOURCE_FILES! %%f
-
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
+    set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
+)
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
 ) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration !__XML_FILE:%USERPROFILE%\=! 1>&2
 )
@@ -251,12 +252,27 @@ goto :eof
 :compile
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
 
+set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
+
+call :compile_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+if %_COMPILE_REQUIRED%==0 goto :eof
+
+call :compile_java
+if not %_EXITCODE%==0 goto :eof
+
+for /f %%i in ('powershell -C "Get-Date -uformat %%Y%%m%%d%%H%%M%%S"') do (
+    echo %%i> "%__TIMESTAMP_FILE%"
+)
+goto :eof
+
+:compile_java
+
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
 echo %_JAVAC_OPTS% -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
-for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%" *.java') do (
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     echo %%f>> "%__SOURCES_FILE%"
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
@@ -266,6 +282,46 @@ call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
+)
+goto :eof
+
+@rem input parameter: 1=timestamp file 2=path (wildcards accepted)
+@rem output parameter: _COMPILE_REQUIRED
+:compile_required
+set __TIMESTAMP_FILE=%~1
+set __PATH=%~2
+
+set __SOURCE_TIMESTAMP=00000000000000
+for /f "usebackq" %%i in (`powershell -c "gci -recurse '%__PATH%' | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S"`) do (
+    set __SOURCE_TIMESTAMP=%%i
+)
+if exist "%__TIMESTAMP_FILE%" ( set /p __GENERATED_TIMESTAMP=<%__TIMESTAMP_FILE%
+) else ( set __GENERATED_TIMESTAMP=00000000000000
+)
+if %_DEBUG%==1 echo %_DEBUG_LABEL% %__GENERATED_TIMESTAMP% %__TIMESTAMP_FILE% 1>&2
+
+call :newer %__SOURCE_TIMESTAMP% %__GENERATED_TIMESTAMP%
+set _COMPILE_REQUIRED=%_NEWER%
+if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
+    echo No compilation needed ^("!__PATH:%_ROOT_DIR%=!"^) 1>&2
+)
+goto :eof
+
+@rem output parameter: _NEWER
+:newer
+set __TIMESTAMP1=%~1
+set __TIMESTAMP2=%~2
+
+set __TIMESTAMP1_DATE=%__TIMESTAMP1:~0,8%
+set __TIMESTAMP1_TIME=%__TIMESTAMP1:~-6%
+
+set __TIMESTAMP2_DATE=%__TIMESTAMP2:~0,8%
+set __TIMESTAMP2_TIME=%__TIMESTAMP2:~-6%
+
+if %__TIMESTAMP1_DATE% gtr %__TIMESTAMP2_DATE% ( set _NEWER=1
+) else if %__TIMESTAMP1_DATE% lss %__TIMESTAMP2_DATE% ( set _NEWER=0
+) else if %__TIMESTAMP1_TIME% gtr %__TIMESTAMP2_TIME% ( set _NEWER=1
+) else ( set _NEWER=0
 )
 goto :eof
 

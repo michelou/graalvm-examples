@@ -185,12 +185,12 @@ echo     -timer      display total elapsed time
 echo     -verbose    display progress messages
 echo.
 echo   Subcommands:
-echo     clean       delete generated object files
+echo     clean       delete generated files
 echo     check       analyze Java source files with CheckStyle
 echo     compile     compile Java source files
 echo     help        display this help message
-echo     run         execute JMH benchmark
-echo     test        execute JMH benchmark
+echo     run         execute JMH benchmarks
+echo     test        execute JMH benchmarks
 goto :eof
 
 :clean
@@ -217,6 +217,7 @@ if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
+@rem "checkstyle-all" version not available from Maven Central
 set __JAR_NAME=checkstyle-%_CHECKSTYLE_VERSION%-all.jar
 set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%_CHECKSTYLE_VERSION%/%__JAR_NAME%
 set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
@@ -228,12 +229,11 @@ if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 set __PS1_VERBOSE[0]=
 set __PS1_VERBOSE[1]=-Verbose
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -Outfile '%__JAR_FILE%'" 1>&2
-) else if %_VERBOSE%==1 ( echo Downloading: Component catalog %__CATALOG_NAME% 1>&2
-) else ( echo Downloading: Component catalog
+) else if %_VERBOSE%==1 ( echo Download file %__JAR_NAME% 1>&2
 )
 powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to download file %__CATALOG_NAME% 1>&2
+    echo %_ERROR_LABEL% Failed to download file %__JAR_NAME% 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -378,7 +378,7 @@ for /f "delims=; tokens=1,*" %%f in ("%__CPATH_TAIL%") do (
 set __JAR_OPTS=cfm "%_BENCH_JAR_FILE%" "%__MANIFEST_FILE%" -C "%_CLASSES_DIR%" .
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
-) else if %_VERBOSE%==1 ( echo Create Java benchmark archive "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
+) else if %_VERBOSE%==1 ( echo Create Java benchmarks archive "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAR_CMD%" %__JAR_OPTS%
 if not %ERRORLEVEL%==0 (
@@ -440,7 +440,7 @@ set __N=0
 for /f %%f in ('dir /s /b "%_SOURCE_DIR%\main\resources\*.csv"') do (
     set "__CHART_FILE=%%f"
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% copy "!__CHART_FILE!" "%_TARGET_DIR%\" 1^>NUL 1>&2
-    ) else if %_VERBOSE%==1 ( echo Copy chart file to directory "!_TARGET_DIR:%_ROOT_DIR%:!" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Copy chart file to directory "!_TARGET_DIR:%_ROOT_DIR%=!" 1>&2
     )
     copy "!__CHART_FILE!" "%_TARGET_DIR%\" 1>NUL
     if not !ERRORLEVEL!==0 (

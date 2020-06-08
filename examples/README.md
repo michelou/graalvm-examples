@@ -22,7 +22,7 @@ In this document we present the following code examples in more detail:
 
 Project [**`ClassInitialization\`**](ClassInitialization/) consists of the two classes [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java) and [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java).
 
-> **:mag_right:** The example comes from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article "[Updates on Class Initialization in GraalVM Native Image Generation](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7)", published on September 12, 2019
+> **:mag_right:** The example comes from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article "[Updates on Class Initialization in GraalVM Native Image Generation](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7)", published on September 12, 2019.
 
 Command [**`build`**](ClassInitialization/build.bat) with no argument displays the available options and subcommands:
 
@@ -48,7 +48,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 Command [**`build clean run`**](ClassInitialization/build.bat) produces the following output:
 
 <pre style="font-size:80%;">
-<b>&gt; build clean run</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a> clean run</b>
 Startup: Fri Nov 15 22:43:31 CET 2019
 Now:     Fri Nov 15 22:43:31 CET 2019
 </pre>
@@ -146,7 +146,7 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 
 ## <span id="CountUppercase">`CountUppercase`</span>
 
-Code example [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
+Project [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
 - program arguments are concatenated into a sentence which is used as test input. 
 
@@ -171,7 +171,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 Command [**`build clean run`**](CountUppercase/build.bat) produces the following output (system property **`iterations=5`** by default):
 
 <pre style="font-size:80%;">
-<b>&gt; build clean run</b>
+<b>&gt; <a href="CountUppercase/build.bat">build</a> clean run</b>
 -- iteration 1 --
 1 (375 ms)
 2 (187 ms)
@@ -199,7 +199,7 @@ total: 69999993 (1375 ms)
 
 > **:mag_right:** Executing the above command with option <b><code>-debug</code></b> also displays operations performed internally. The interesting parts are prefixed with label <b><code>[build]</code></b> (e.g. <b><code>-Diterations=5</code></b>):
 > <pre style="font-size:80%;">
-> <b>&gt; build run -debug | findstr /b "[debug]"</b>
+> <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | findstr /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
 > [build] C:\opt\graalvm-ce-java8-19.3.1\bin\javac.exe -d G:\examples\COUNTU~1\target\classes @G:\examples\COUNTU~1\target\source_list.txt
 > [build] C:\opt\graalvm-ce-java8-19.3.1\bin\java.exe -cp G:\examples\COUNTU~1\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\COUNTU~1\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
@@ -266,7 +266,12 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 Command [**`build clean run`**](Ranking/build.bat) builds and executes the JVM variant of the [JMH] benchmark (`target\benchmarks.jar`):
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="(Ranking/build.bat">build</a> clean run</b>
+<b>&gt; <a href="(Ranking/build.bat">build</a> -verbose clean run</b>
+Delete directory "target"
+Compile Java source files to directory "target\classes"
+Create Java benchmarks archive "target\benchmarks.jar"
+Copy chart file to directory "target"
+Execute JMH benchmark (JVM)
 # JMH version: 1.23
 # VM version: JDK 1.8.0_252, OpenJDK 64-Bit Server VM GraalVM CE 20.2.0-dev, 25.252-b09-jvmci-20.1-b02
 # VM invoker: C:\opt\graalvm-ce-java8-20.2.0-dev\jre\bin\java.exe
@@ -307,7 +312,7 @@ Command [**`build -verbose -native clean run`**](Ranking/build.bat) builds and e
 <b>&gt; <a href="(Ranking/build.bat">build</a> -verbose -native clean run</b>
 Delete directory "target"
 Compile Java source files to directory "target\classes"
-Create Java benchmark archive "target\benchmarks.jar"
+Create Java benchmarks archive "target\benchmarks.jar"
 Create native image "target\Ranking"
 [G:\examples\Ranking\target\Ranking:11144]    classlist:   3,451.69 ms,  1.16 GB
 [G:\examples\Ranking\target\Ranking:11144]        (cap):   3,689.91 ms,  1.63 GB
@@ -350,7 +355,7 @@ The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is availabl
 <li><code>google_checks.xml</code> (<a href="https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html">Google Java Style</a>).</li> 
 </ul>
 <p style="margin:0 0 1em 20px;">
-Note that the above CheckStyle distribtion (aka "<code>checkstyle-all</code>") is not available from <a href="https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle">Maven Central</a> and must be retrieved separately.
+Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") is not available from <a href="https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle">Maven Central</a> and must be retrieved separately.
 </p>
 
 ***

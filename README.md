@@ -28,8 +28,8 @@ For instance our development environment looks as follows (*April 2020*) </i><su
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.27.0\                                    <i>(278 MB)</i>
-C:\opt\graalvm-ce-java11-20.2.0\                      <i>(724 MB)</i>
-C:\opt\graalvm-ce-java8-20.2.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(633 MB)</i>
+C:\opt\graalvm-ce-java11-20.2.0-dev\                  <i>(724 MB)</i>
+C:\opt\graalvm-ce-java8-20.2.0-dev\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                <i>(633 MB)</i>
 C:\opt\Python-2.7.18\                                 <i>(162 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -119,9 +119,9 @@ We distinguish different sets of batch commands:
 Command [**`setenv`**](setenv.bat) is executed once to setup our development environment; it makes external tools such as [**`javac.exe`**][javac_cli], [**`cl.exe`**][cl_cli] and [**`git.exe`**][git_cli] directly available from the command prompt:
 
 <pre style="font-size:80%;">
-<b>&gt; setenv</b>
+<b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_252, python 2.7.18, pylint 1.9.2, mx 2.263.1
+   javac 1.8.0_252, python 2.7.18, pylint 1.9.2, mx 5.264.4
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.27.0.windows.1
 
@@ -134,9 +134,9 @@ C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
 Command **`setenv -verbose`** also displays the tool paths:
 
 <pre style="font-size:80%;">
-<b>&gt; setenv -verbose</b>
+<b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_252, python 2.7.18, pylint 1.9.2, mx 2.263.1
+   javac 1.8.0_252, python 2.7.18, pylint 1.9.2, mx 5.264.4
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.27.0.windows.1
 Tool paths:
@@ -205,33 +205,36 @@ Version 20 of GraalVM brings major improvements to Windows users:
 <ul>
 <li>Command <code>gu.cmd</code> is finally part of the Windows distribution !
 <pre style="font-size:80%;">
-<b>&gt; where /r c:\opt\graalvm-ce-java8-20.2.0\ gu.*</b>
-c:\opt\graalvm-ce-java8-20.2.0\bin\gu.cmd
-c:\opt\graalvm-ce-java8-20.2.0\lib\installer\bin\gu.exe
+<b>&gt; where /r c:\opt\graalvm-ce-java8-20.2.0-dev\ gu.*</b>
+c:\opt\graalvm-ce-java8-20.2.0-dev\bin\gu.cmd
+c:\opt\graalvm-ce-java8-20.2.0-dev\lib\installer\bin\gu.exe
 </pre>
 </li>
 <li><a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.1.0"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
 <pre style="font-size:80%;">
-<b>&gt; bin\gu.cmd install --file native-image-installable-svm-java8-windows-amd64-20.1.0.jar --verbose
-Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.1.0.jar</b>
-Preparing to install native-image-installable-svm-java8-windows-amd64-20.1.0.jar, contains org.graalvm.native-image, version 20.1.0 (org.graalvm.native-image)
-Checking requirements of component Native Image (native-image), version 20.1.0
-        Requires Graal Version = 20.1.0, GraalVM provides: 20.1.0
+<b>&gt; echo %JAVA_HOME%</b>
+C:\opt\graalvm-ce-java8-20.2.0-dev
+&nbsp;
+<b>&gt; %JAVA_HOME%\bin\gu.cmd install --file native-image-installable-svm-java8-windows-amd64-20.2.0-dev.jar --verbose</b>
+Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.2.0-dev.jar
+Preparing to install native-image-installable-svm-java8-windows-amd64-20.2.0-dev.jar, contains org.graalvm.native-image, version 20.2.0-dev (org.graalvm.native-image)
+Checking requirements of component Native Image (native-image), version 20.2.0-dev
+        Requires Graal Version = 20.2.0-dev, GraalVM provides: 20.2.0-dev
         Requires Java Version = 8, GraalVM provides: 8
         Requires Architecture = amd64, GraalVM provides: amd64
         Requires Operating System = windows, GraalVM provides: Windows
-Installing new component: Native Image (org.graalvm.native-image, version 20.1.0)
+Installing new component: Native Image (org.graalvm.native-image, version 20.2.0-dev)
 Extracting: LICENSE_NATIVEIMAGE.txt
 Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
 [..]
-<b>&gt; c:\opt\graalvm-ce-java8-20.2.0\bin\native-image.cmd --version</b>
-GraalVM Version 20.2.0 CE
+<b>&gt; c:\opt\graalvm-ce-java8-20.2.0-dev\bin\native-image.cmd --version</b>
+GraalVM Version 20.2.0-dev (Java Version 1.8.0_252)
 </pre></li>
-<li>Command <code>polyglot.exe</code> is finally part of the Windows distribution (<i>and</i> is native).
+<li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/"><code>polyglot.exe</code></a> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
-<b>&gt; c:\opt\graalvm-ce-java8-20.2.0\jre\bin\polyglot.exe --version</b>
-GraalVM CE Native polyglot launcher 20.2.0
+<b>&gt; c:\opt\graalvm-ce-java8-20.2.0-dev\jre\bin\polyglot.cmd --version</b>
+GraalVM CE Native polyglot launcher 20.2.0-dev
 </pre></li>
 </ul>
 
