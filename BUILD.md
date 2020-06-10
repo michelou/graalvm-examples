@@ -3,8 +3,7 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/">GraalVM</a> examples coming from various websites and books.<br/>
-  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting">batch files</a> for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on a Windows machine.
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/">GraalVM</a> software distribution on a Windows machine.
   </td>
   </tr>
 </table>

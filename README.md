@@ -13,7 +13,7 @@
 
 ## <span id="proj_deps">Project dependencies</span>
 
-This project relies on the following external software for the **Microsoft Windows** plaform:
+This project relies on the following external software for the **Microsoft Windows** platform:
 
 - [Git 2.27][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 20.2 LTS][graalvm_downloads] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
@@ -23,7 +23,7 @@ This project relies on the following external software for the **Microsoft Windo
 
 > **:mag_right:** Git for Windows provides a BASH emulation used to run [**`git`**][git_cli] from the command line (as well as over 250 Unix commands like [**`awk`**][man1_awk], [**`diff`**][man1_diff], [**`file`**][man1_file], [**`grep`**][man1_grep], [**`more`**][man1_more], [**`mv`**][man1_mv], [**`rmdir`**][man1_rmdir], [**`sed`**][man1_sed] and [**`wc`**][man1_wc]).
 
-For instance our development environment looks as follows (*April 2020*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
+For instance our development environment looks as follows (*June 2020*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -52,7 +52,7 @@ graal\                              <i>(Git submodule)</i>
 mx\                                 <i>(created by</i> <a href="setenv.bat"><b><code>setenv.bat</code></b></a><i>)</i>
 <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_252-jvmci-20.1-b02\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
 README.md
-RESOURCES.md
+<a href="RESOURCES.md">RESOURCES.md</a>
 setenv.bat
 </pre>
 
