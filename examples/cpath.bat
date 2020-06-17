@@ -20,29 +20,29 @@ set _LIBS_CPATH=
 set _JMH_VERSION=1.23
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
-call :add_jar "%_JMH_VERSION%" "jmh-core" "org/openjdk/jmh"
+call :add_jar "org/openjdk/jmh" "jmh-core" "%_JMH_VERSION%"
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
-call :add_jar "%_JMH_VERSION%" "jmh-generator-annprocess" "org/openjdk/jmh"
+call :add_jar "org/openjdk/jmh" "jmh-generator-annprocess" "%_JMH_VERSION%"
 
 @rem https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
-call :add_jar "5.0.4" "jopt-simple" "net/sf/jopt-simple"
+call :add_jar "net/sf/jopt-simple" "jopt-simple" "5.0.4"
 
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
-call :add_jar "3.6.1" "commons-math3" "org/apache/commons"
+call :add_jar "org/apache/commons" "commons-math3" "3.6.1"
 
 goto end
 
 @rem #########################################################################
 @rem ## Subroutines
 
-@rem input parameters: %1=version, %2=artifact ID, %3=group ID
+@rem input parameters: %1=group ID, %2=artifact ID, %3=version
 @rem global variable: _LIBS_CPATH
 :add_jar
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
-set __VERSION=%~1
+set __GROUP_ID=%~1
 set __ARTIFACT_ID=%~2
-set __GROUP_ID=%~3
+set __VERSION=%~3
 
 set __JAR_NAME=%__ARTIFACT_ID%-%__VERSION%.jar
 set __JAR_PATH=%__GROUP_ID:/=\%\%__ARTIFACT_ID:/=\%

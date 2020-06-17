@@ -7,16 +7,12 @@ set _DEBUG=0
 @rem #########################################################################
 @rem ## Environment setup
 
-set _BASENAME=%~n0
-
 set _EXITCODE=0
-
-for %%f in ("%~dp0..") do set "_ROOT_DIR=%%~sf"
 
 call :env
 if not %_EXITCODE%==0 goto end
 
-call :ini
+call :props
 if not %_EXITCODE%==0 goto end
 
 call :args %*
@@ -52,26 +48,27 @@ goto :end
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
 @rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
 :env
-@rem ANSI colors in standard Windows 10 shell
-@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _VERBOSE_LABEL=
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
+set _BASENAME=%~n0
+for %%f in ("%~dp0\.") do set "_ROOT_DIR=%%~dpf"
 
-for %%f in ("%~dp0") do set _TRAVIS_BUILD_DIR=%%~sf
-set _TMP_DIR=%_ROOT_DIR%\tmp
+call :env_colors
+set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
+set _ERROR_LABEL=%_STRONG_FG_RED%Error%_RESET%:
+set _WARNING_LABEL=%_STRONG_FG_YELLOW%Warning%_RESET%:
+
+set "_TRAVIS_BUILD_DIR=%~dp0"
+set "_TMP_DIR=%_ROOT_DIR%\tmp"
 
 set _GRAAL_URL=https://github.com/oracle/graal.git
-set _GRAAL_PATH=%_TRAVIS_BUILD_DIR%
+set "_GRAAL_PATH=%_TRAVIS_BUILD_DIR%"
 
 set _MX_URL=https://github.com/graalvm/mx.git
-set _MX_PATH=%_ROOT_DIR%\mx
+set "_MX_PATH=%_ROOT_DIR%\mx"
 
 set _GIT_CMD=git.exe
 set _GIT_OPTS=
 
-set _MX_CMD=%_MX_PATH%\mx.cmd
+set "_MX_CMD=%_MX_PATH%\mx.cmd"
 set _MX_OPTS=
 
 set _TAR_CMD=tar.exe
@@ -85,13 +82,59 @@ set _JDK8_UPDATE_VERSION_SUFFIX=
 set _JDK8_PLATFORM=windows-amd64
 goto :eof
 
+:env_colors
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+set _RESET=[0m
+set _BOLD=[1m
+set _UNDERSCORE=[4m
+set _INVERSE=[7m
+
+@rem normal foreground colors
+set _NORMAL_FG_BLACK=[30m
+set _NORMAL_FG_RED=[31m
+set _NORMAL_FG_GREEN=[32m
+set _NORMAL_FG_YELLOW=[33m
+set _NORMAL_FG_BLUE=[34m
+set _NORMAL_FG_MAGENTA=[35m
+set _NORMAL_FG_CYAN=[36m
+set _NORMAL_FG_WHITE=[37m
+
+@rem normal background colors
+set _NORMAL_BG_BLACK=[40m
+set _NORMAL_BG_RED=[41m
+set _NORMAL_BG_GREEN=[42m
+set _NORMAL_BG_YELLOW=[43m
+set _NORMAL_BG_BLUE=[44m
+set _NORMAL_BG_MAGENTA=[45m
+set _NORMAL_BG_CYAN=[46m
+set _NORMAL_BG_WHITE=[47m
+
+@rem strong foreground colors
+set _STRONG_FG_BLACK=[90m
+set _STRONG_FG_RED=[91m
+set _STRONG_FG_GREEN=[92m
+set _STRONG_FG_YELLOW=[93m
+set _STRONG_FG_BLUE=[94m
+set _STRONG_FG_MAGENTA=[95m
+set _STRONG_FG_CYAN=[96m
+set _STRONG_FG_WHITE=[97m
+
+@rem strong background colors
+set _STRONG_BG_BLACK=[100m
+set _STRONG_BG_RED=[101m
+set _STRONG_BG_GREEN=[102m
+set _STRONG_BG_YELLOW=[103m
+set _STRONG_BG_BLUE=[104m
+goto :eof
+
 @rem output parameters: _INI, _INI_N
 @rem see https://en.wikipedia.org/wiki/INI_file
 @rem - properties: name=value
 @rem - sections  : [section]
 @rem - comments  : ; commented text
-:ini
-set "__INI_FILE=%~dp0%_BASENAME%.ini"
+:props
+set "__INI_FILE=%_GRAAL_PATH%%_BASENAME%.ini"
 if not exist "%__INI_FILE%" goto :eof
 
 set _INI=
@@ -181,20 +224,31 @@ if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TI
 goto :eof
 
 :help
+if %_VERBOSE%==1 (
+    set __BEG_P=%_STRONG_FG_CYAN%%_UNDERSCORE%
+    set __BEG_O=%_STRONG_FG_GREEN%
+    set __BEG_N=%_NORMAL_FG_YELLOW%
+    set __END=%_RESET%
+) else (
+    set __BEG_P=
+    set __BEG_O=
+    set __BEG_N=
+    set __END=
+)
 set /a "__N_MAX=_INI_N-1"
-echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
+echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
-echo   Options:
-echo     -debug       show commands executed by this batch file
-echo     -timer       display total elapsed time
-echo     -verbose     display progress messages
+echo   %__BEG_P%Options:%__END%
+echo     %__BEG_O%-debug%__END%       show commands executed by this batch file
+echo     %__BEG_O%-timer%__END%       display total elapsed time
+echo     %__BEG_O%-verbose%__END%     display progress messages
 echo.
-echo   Subcommands:
-echo     clean        delete generated files
-echo     dist[:^<n^>]   generate distribution with environment n=1-%__N_MAX% ^(default=2^)
-echo                  ^(see environment definitions in file build.ini^)
-echo     help         display this help message
-echo     update       fetch/merge local directories graal/mx
+echo   %__BEG_P%Subcommands:%__END%
+echo     %__BEG_O%clean%__END%        delete generated files
+echo     %__BEG_O%dist[:^<n^>]%__END%   generate distribution with environment n=1-%__N_MAX% ^(default=2^)
+echo                  ^(see environment definitions in file %__BEG_O%build.ini%__END%^)
+echo     %__BEG_O%help%__END%         display this help message
+echo     %__BEG_O%update%__END%       fetch/merge local directories graal/mx
 goto :eof
 
 :clean
@@ -208,14 +262,14 @@ for /f %%d in ('dir /ad /b "%_GRAAL_PATH%\DumpPathTest*" 2^>NUL') do (
 for /f %%f in ('dir /a-d /b "%_GRAAL_PATH%\hs_err_pid*.log" 2^>NUL') do (
     call :del "%_GRAAL_PATH%\%%f"
 )
-@rem Workaround: mx tool has troubles with long file paths on Windows.
+@rem workaround: mx tool has troubles with long file paths on Windows.
 if exist "%_GRAAL_PATH%\truffle\mxbuild\src" (
-    call :del "%_GRAAL_PATH%\truffle\mxbuild\src"
+    call :rmdir "%_GRAAL_PATH%\truffle\mxbuild\src"
 )
 goto :eof
 
 :rmdir
-set __DIR=%~1
+set "__DIR=%~1"
 if not exist "%__DIR%\" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Remove directory %__DIR% 1>&2
@@ -228,7 +282,7 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :del
-set __FILE=%~1
+set "__FILE=%~1"
 if not exist "%__FILE%" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% del /q "%__FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Remove file %__FILE% 1>&2
@@ -251,24 +305,24 @@ goto :eof
 :update_graal
 if not exist "%_GRAAL_PATH%\.travis.yml" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is !_GRAAL_PATH:%_ROOT_DIR%=! 1>&2
-) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Current directory is !_GRAAL_PATH:%_ROOT_DIR%=! 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is "%_GRAAL_PATH%" 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Current directory is "!_GRAAL_PATH:%_ROOT_DIR%=!" 1>&2
 )
 pushd "%_GRAAL_PATH%"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% fetch upstream master 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% fetch upstream master 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update local directory %_GRAAL_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% fetch upstream master
+call "%_GIT_CMD%" %_GIT_OPTS% fetch upstream master
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% merge upstream/master 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% merge upstream/master 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update local directory %_GRAAL_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% merge upstream/master
+call "%_GIT_CMD%" %_GIT_OPTS% merge upstream/master
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
@@ -280,15 +334,15 @@ goto :eof
 :update_mx
 if not exist "%_MX_CMD%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is !_MX_PATH:%_ROOT_DIR%=! 1>&2
-) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Current directory is !_MX_PATH:%_ROOT_DIR%=! 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is "%_MX_PATH%" 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Current directory is "!_MX_PATH:%_ROOT_DIR%=!" 1>&2
 )
 pushd "%_MX_PATH%"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% fetch 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update MX suite repository into directory %_MX_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% fetch
+call "%_GIT_CMD%" %_GIT_OPTS% fetch
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
@@ -297,7 +351,7 @@ if not %ERRORLEVEL%==0 (
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% merge 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update MX suite repository into directory %_MX_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% merge
+call "%_GIT_CMD%" %_GIT_OPTS% merge
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
@@ -317,10 +371,10 @@ goto :eof
 :clone_graal
 if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% clone %_GRAAL_URL% %_GRAAL_PATH% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %_GRAAL_URL% %_GRAAL_PATH% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory %_GRAAL_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% clone "%_GRAAL_URL%" "%_GRAAL_PATH%"
+call "%_GIT_CMD%" %_GIT_OPTS% clone "%_GRAAL_URL%" "%_GRAAL_PATH%"
 if not %ERRORLEVEL%==0 (
     echo %_ERROR_LABEL% Failed to clone graal remote Git repository 1>&2
     set _EXITCODE=1
@@ -336,10 +390,10 @@ goto :eof
 :clone_mx
 if exist "%_MX_CMD%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_GIT_CMD% %_GIT_OPTS% clone %_MX_URL% %_MX_PATH% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %_MX_URL% %_MX_PATH% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone MX suite repository into directory %_MX_PATH% 1>&2
 )
-call %_GIT_CMD% %_GIT_OPTS% clone "%_MX_URL%" "%_MX_PATH%"
+call "%_GIT_CMD%" %_GIT_OPTS% clone "%_MX_URL%" "%_MX_PATH%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -355,14 +409,14 @@ goto :eof
 :style
 if "%GATE:style=%"=="%GATE%" goto :eof
 
-set "__ECLIPSE_TGZ_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/eclipse-SDK-4.5.2-linux-gtk-x86_64.tar.gz"
-set "__ECLIPSE_TGZ_FILE=%_ROOT_DIR%eclipse.tar.gz"
-if exist "%__ECLIPSE_TGZ_FILE%" goto :eof
+set "__TGZ_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/eclipse-SDK-4.5.2-linux-gtk-x86_64.tar.gz"
+set "__TGZ_FILE=%_ROOT_DIR%eclipse.tar.gz"
+if exist "%__TGZ_FILE%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri '%__ECLIPSE_TGZ_URL%'" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__TGZ_FILE%' -Uri '%__TGZ_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__ECLIPSE_TGZ_FILE%' -Uri '%__ECLIPSE_TGZ_URL%'"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__TGZ_FILE%' -Uri '%__TGZ_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -375,20 +429,20 @@ goto :eof
 if "%GATE:fullbuild=%"=="%GATE%" goto :eof
 if not %JDK%==jdk8 goto :eof
 
-set "__JDT_JAR_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/ecj-4.5.2.jar"
-set "__JDT_JAR_FILE=%_MX_PATH%\ecj.jar"
-if exist "%__JDT_JAR_FILE%" goto fullbuild_done
+set "__JAR_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/ecj-4.5.2.jar"
+set "__JAR_FILE=%_MX_PATH%\ecj.jar"
+if exist "%__JAR_FILE%" goto fullbuild_done
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JDT_JAR_FILE%' -Uri '%__JDT_JAR_URL%'" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JAR_FILE%' -Uri '%__JAR_URL%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JDT_JAR_FILE%' -Uri '%__JDT_JAR_URL%'"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JAR_FILE%' -Uri '%__JAR_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
 :fullbuild_done
-set "JDT=%__JDT_JAR_FILE%"
+set "JDT=%__JAR_FILE%"
 goto :eof
 
 @rem depends on :dist_env
@@ -414,11 +468,11 @@ if not %ERRORLEVEL%==0 (
 :jvmci_extract
 if not exist "%_TMP_DIR%" mkdir "%_TMP_DIR%"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_TAR_CMD% -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_TAR_CMD%" -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Extract archive %__JDK_TGZ_FILE% into directory %_ROOT_DIR% 1>&2
 )
 @rem NB. tar on Windows dislike it when <dir1>=<dir2>, given -xf <dir2>\*.tar.gz and -C <dir1>
-call %_TAR_CMD% -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%"
+call "%_TAR_CMD%" -C "%_TMP_DIR%" -xf "%__JDK_TGZ_FILE%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -442,6 +496,7 @@ call :dist_env
 
 set "__PRIMARY_PATH=%_TRAVIS_BUILD_DIR%\%PRIMARY%"
 if not exist "%__PRIMARY_PATH%" (
+    echo %_ERROR_LABEL% Primary directory not found ^(%PRIMARY%^) 1>&2
     set _EXITCODE=1
     goto dist_done
 )
@@ -455,16 +510,16 @@ call :jvmci
 if not %_EXITCODE%==0 goto dist_done
 
 echo %JAVA_HOME%
-%JAVA_HOME%\bin\java.exe -version
+call "%JAVA_HOME%\bin\java.exe" -version
 
 if %_DEBUG%==1 ( set __MX_OPTS=-V %_MX_OPTS%
 ) else if %_VERBOSE%==1 ( set __MX_OPTS=-v %_MX_OPTS%
 ) else ( set __MX_OPTS=%_MX_OPTS%
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_MX_CMD% %__MX_OPTS% --primary-suite-path %__PRIMARY_PATH% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MX_CMD%" %__MX_OPTS% --primary-suite-path %__PRIMARY_PATH% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Create GraalVM build with tags %GATE% 1>&2
 )
-call %_MX_CMD% %__MX_OPTS% --primary-suite-path "%__PRIMARY_PATH%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
+call "%_MX_CMD%" %__MX_OPTS% --primary-suite-path "%__PRIMARY_PATH%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto dist_done
@@ -538,9 +593,9 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
     set __KIT_UCRT=ucrt\x86
 )
 @rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
-set INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
-set LIB=%MSVC_HOME%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
-set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%MSVC_HOME%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
+set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt"
+set "LIB=%MSVC_HOME%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
+set "LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%MSVC_HOME%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
 goto :eof
 
 :dist_env_msvc2019
@@ -557,12 +612,12 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
 )
 
 @rem TODO Change hard-coded path
-set __MSVC_2019=C:\PROGRA~2\MIB055~1\2019\COMMUN~1\VC\Tools\MSVC\1422~1.279\
+set "__MSVC_2019=%ProgramFiles(x86)%\MIB055~1\2019\COMMUN~1\VC\Tools\MSVC\1422~1.279\"
 
 @rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
-set INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt
-set LIB=%__MSVC_2019%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
-set LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%__MSVC_2019%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%
+set "INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt"
+set "LIB=%__MSVC_2019%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
+set "LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%__MSVC_2019%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
 goto :eof
 
 @rem output parameter: _DURATION
@@ -580,7 +635,7 @@ goto :eof
 if %_TIMER%==1 (
     for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
     call :duration "%_TIMER_START%" "!__TIMER_END!"
-    echo Elapsed time: !_DURATION! 1>&2
+    echo Total elapsed time: !_DURATION! 1>&2
 )
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
 exit /b %_EXITCODE%

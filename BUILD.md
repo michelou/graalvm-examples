@@ -3,7 +3,7 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/">GraalVM</a> software distribution on a Windows machine.
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/" rel="external">GraalVM</a> software distribution on a Windows machine.
   </td>
   </tr>
 </table>
@@ -17,7 +17,7 @@ Build environments are defined in configuration file [**`build.ini`**](bin/graal
 <b>&gt; cd</b>
 G:\graal
 &nbsp;
-<b>&gt; more build.ini</b>
+<b>&gt; more <a href="bin/graal/build.ini">build.ini</a></b>
 [env1]
 JDK=jdk8
 GATE=style,fullbuild
@@ -132,18 +132,20 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 15.03.2020  16:35       276 749 506 graalvm-unknown-java8.zip
 </pre>
 
-Archive file **`graalvm-ce-java8-loc.zip`** is the [GraalVM] software distribution; it contains the following command files:
+Archive file **`graalvm-3398ab5293-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; unzip -l sdk\mxbuild\windows-amd64\dists\graalvm-unknown-java8.zip | findstr cmd</b>
-       67  2020-03-15 15:34   graalvm-unknown-java8-20.1.0-dev/bin/polyglot.cmd
-     9728  2020-01-09 15:25   graalvm-unknown-java8-20.1.0-dev/bin/jcmd.exe
+<b>&gt; unzip -l sdk\mxbuild\windows-amd64\dists\graalvm-3398ab5293-java8.zip | findstr cmd</b>
+       67  2020-03-15 15:34   graalvm-3398ab5293-java8-20.1.0-dev/bin/polyglot.cmd
+      387  2020-03-15 15:34   graalvm-3398ab5293-java8-20.2.0-dev/jre/bin/polyglot.cmd
+    10084  2020-03-15 15:34   graalvm-3398ab5293-java8-20.2.0-dev/jre/lib/polyglot/bin/polyglot.cmd
+     9728  2020-01-09 15:25   graalvm-3398ab5293-java8-20.1.0-dev/bin/jcmd.exe
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
 
 <pre style="font-size:80%;">
-<b>&gt; build -verbose update</b>
+<b>&gt; <a href="bin/graal/build.bat">build</a> -verbose update</b>
  Current directory is graal\
  Update local directory G:\graal\
 remote: Enumerating objects: 9784, done.
@@ -175,7 +177,7 @@ Fast-forward
 Graal projects rely on the [**`mx`**][mx_cli] command-line tool to build, test, run and update the [GraalVM] software.
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="bin/graal/bulid.bat">build</a> -timer -verbose clean dist:1</b>
+<b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:1</b>
 [...]
 gate: 29 Oct 2019 17:38:46(+00:01) BEGIN: Pylint
 Running: mx [...] pylint --primary

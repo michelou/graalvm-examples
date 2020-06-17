@@ -76,11 +76,56 @@ goto end
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
 
+call :env_colors
+set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
+set _ERROR_LABEL=%_STRONG_FG_RED%Error%_RESET%:
+set _WARNING_LABEL=%_STRONG_FG_YELLOW%Warning%_RESET%:
+goto :eof
+
+:env_colors
 @rem ANSI colors in standard Windows 10 shell
 @rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
+set _RESET=[0m
+set _BOLD=[1m
+set _UNDERSCORE=[4m
+set _INVERSE=[7m
+
+@rem normal foreground colors
+set _NORMAL_FG_BLACK=[30m
+set _NORMAL_FG_RED=[31m
+set _NORMAL_FG_GREEN=[32m
+set _NORMAL_FG_YELLOW=[33m
+set _NORMAL_FG_BLUE=[34m
+set _NORMAL_FG_MAGENTA=[35m
+set _NORMAL_FG_CYAN=[36m
+set _NORMAL_FG_WHITE=[37m
+
+@rem normal background colors
+set _NORMAL_BG_BLACK=[40m
+set _NORMAL_BG_RED=[41m
+set _NORMAL_BG_GREEN=[42m
+set _NORMAL_BG_YELLOW=[43m
+set _NORMAL_BG_BLUE=[44m
+set _NORMAL_BG_MAGENTA=[45m
+set _NORMAL_BG_CYAN=[46m
+set _NORMAL_BG_WHITE=[47m
+
+@rem strong foreground colors
+set _STRONG_FG_BLACK=[90m
+set _STRONG_FG_RED=[91m
+set _STRONG_FG_GREEN=[92m
+set _STRONG_FG_YELLOW=[93m
+set _STRONG_FG_BLUE=[94m
+set _STRONG_FG_MAGENTA=[95m
+set _STRONG_FG_CYAN=[96m
+set _STRONG_FG_WHITE=[97m
+
+@rem strong background colors
+set _STRONG_BG_BLACK=[100m
+set _STRONG_BG_RED=[101m
+set _STRONG_BG_GREEN=[102m
+set _STRONG_BG_YELLOW=[103m
+set _STRONG_BG_BLUE=[104m
 goto :eof
 
 @rem input parameter: %*
@@ -120,15 +165,26 @@ if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _BASH=%_BASH% _VERBOSE=%_VERBOS
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
+if %_VERBOSE%==1 (
+    set __BEG_P=%_STRONG_FG_CYAN%%_UNDERSCORE%
+    set __BEG_O=%_STRONG_FG_GREEN%
+    set __BEG_N=%_NORMAL_FG_YELLOW%
+    set __END=%_RESET%
+) else (
+    set __BEG_P=
+    set __BEG_O=
+    set __BEG_N=
+    set __END=
+)
+echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
-echo   Options:
-echo     -bash       start Git bash shell instead of Windows command prompt
-echo     -debug      show commands executed by this script
-echo     -verbose    display environment settings
+echo   %__BEG_P%Options:%__END%
+echo     %__BEG_O%-bash%__END%       start Git bash shell instead of Windows command prompt
+echo     %__BEG_O%-debug%__END%      show commands executed by this script
+echo     %__BEG_O%-verbose%__END%    display environment settings
 echo.
-echo   Subcommands:
-echo     help        display this help message
+echo   %__BEG_P%Subcommands:%__END%
+echo     %__BEG_O%help%__END%        display this help message
 goto :eof
 
 @rem input parameter: %1=Java version
@@ -141,8 +197,8 @@ set __JAVAC_CMD=
 for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
-    for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpsi"
-    for %%f in ("!__GRAAL_BIN_DIR!..") do set "_GRAAL_HOME=%%~sf"
+    for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
+    for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAAL_HOME=%%~dpf"
     goto :eof
 ) else if defined GRAAL_HOME (
     set "_GRAAL_HOME=%GRAAL_HOME%"
@@ -233,15 +289,11 @@ if not exist "%__PYTHON_HOME%\python.exe" (
     goto :eof
 )
 if not exist "%__PYTHON_HOME%\Scripts\pylint.exe" (
-    echo %_ERROR_LABEL% Pylint executable not found ^(%__PYTHON_HOME^) 1>&2
+    echo %_ERROR_LABEL% Pylint executable not found ^(%__PYTHON_HOME%^) 1>&2
     echo ^(execute command: python -m pip install pylint^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-@rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%__PYTHON_HOME%") do set __PYTHON_HOME=%%~sf
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python installation directory %__PYTHON_HOME% 1>&2
-
 set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
 goto :eof
 
@@ -251,13 +303,13 @@ set _LLVM_HOME=
 set _LLVM_PATH=
 
 set __LLVM_VERSION=9
-set __CLANG_EXE=
-for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_EXE=%%f"
-if defined __CLANG_EXE (
+set __CLANG_CMD=
+for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_CMD=%%f"
+if defined __CLANG_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Clang executable found in PATH 1>&2
-    for /f "delims=" %%i in ("%__CLANG_EXE%") do set __LLVM_BIN_DIR=%%~dpi
-    for %%f in ("!__LLVM_BIN_DIR!..") do set _LLVM_HOME=%%~sf
-    rem keep _LLVM_PATH undefined since executable already in path
+    for /f "delims=" %%i in ("%__CLANG_CMD%") do set "__LLVM_BIN_DIR=%%~dpi"
+    for %%f in ("!__LLVM_BIN_DIR!\.") do set "_LLVM_HOME=%%~dpf"
+    @rem keep _LLVM_PATH undefined since executable already in path
     goto :eof
 ) else if defined LLVM_HOME (
     set "_LLVM_HOME=%LLVM_HOME%"
@@ -286,7 +338,9 @@ set _MSVC_HOME=
 set _MSVS_PATH=
 set _MSVS_HOME=
 
-for /f "delims=" %%f in ("%ProgramFiles(x86)%\Microsoft Visual Studio 10.0") do set "_MSVS_HOME=%%~f"
+for /f "delims=" %%f in ("%ProgramFiles(x86)%\Microsoft Visual Studio 10.0") do (
+    set "_MSVS_HOME=%%~f"
+)
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 10 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -323,7 +377,7 @@ set _MSVS_HOME=
 set _MSVS_PATH=
 
 set "__WSWHERE_CMD=%_ROOT_DIR%bin\vswhere.exe"
-for /f "delims=" %%f in ('%__WSWHERE_CMD% -property installationPath 2^>NUL') do set _MSVS_HOME=%%~sf
+for /f "delims=" %%f in ('%__WSWHERE_CMD% -property installationPath 2^>NUL') do set "_MSVS_HOME=%%~f"
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 2019 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -396,7 +450,7 @@ goto :eof
 set _SDK_HOME=
 set _SDK_PATH=
 
-for /f "delims=" %%f in ("%ProgramFiles%\Microsoft SDKs\Windows\v7.1") do set _SDK_HOME=%%~sf
+for /f "delims=" %%f in ("%ProgramFiles%\Microsoft SDKs\Windows\v7.1") do set "_SDK_HOME=%%~f"
 if not exist "%_SDK_HOME%" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Windows SDK 7.1 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -435,12 +489,12 @@ goto :eof
 set _CYGWIN_HOME=
 set _CYGWIN_PATH=
 
-set __MAKE_EXE=
-for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_EXE=%%f"
-if defined __MAKE_EXE (
+set __MAKE_CMD=
+for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
+if defined __MAKE_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
-    for /f "delims=" %%i in ("%__MAKE_EXE%") do set __MAKE_BIN_DIR=%%~dpi
-    for %%f in ("!__MAKE_BIN_DIR!..\..") do set _CYGWIN_HOME=%%~sf
+    for /f "delims=" %%i in ("%__MAKE_CMD%") do set __MAKE_BIN_DIR=%%~dpi""
+    for %%f in ("!__MAKE_BIN_DIR!..\.") do set "_CYGWIN_HOME=%%~dpf"
     @rem keep _CYGWIN_PATH undefined since executable already in path
     goto :eof
 ) else if defined CYGWIN_HOME (
@@ -460,11 +514,6 @@ if not exist "%_CYGWIN_HOME%\bin\make.exe" (
     set _EXITCODE=1
     goto :eof
 )
-@rem path name of installation directory may contain spaces
-for /f "delims=" %%f in ("%_CYGWIN_HOME%") do set "_CYGWIN_HOME=%%~sf"
-if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Cygwin installation directory %_CYGWIN_HOME%
-
-@rem i.e. make.exe, gcc.exe
 set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
 goto :eof
 
@@ -478,7 +527,7 @@ for /f %%f in ('where git.exe 2^>NUL') do set "__GIT_CMD=%%f"
 if defined __GIT_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Git executable found in PATH 1>&2
     for %%i in ("%__GIT_CMD%") do set "__GIT_BIN_DIR=%%~dpi"
-    for %%f in ("!__GIT_BIN_DIR!..") do set "_GIT_HOME=%%f"
+    for %%f in ("!__GIT_BIN_DIR!\.") do set "_GIT_HOME=%%~dpf"
     @rem Executable git.exe is present both in bin\ and \mingw64\bin\
     if not "!_GIT_HOME:mingw=!"=="!_GIT_HOME!" (
         for %%f in ("!_GIT_HOME!\..") do set "_GIT_HOME=%%f"

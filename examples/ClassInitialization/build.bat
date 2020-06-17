@@ -59,11 +59,10 @@ goto end
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
 
-@rem ANSI colors in standard Windows 10 shell
-@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
+call :env_ansi
+set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
+set _ERROR_LABEL=%_STRONG_FG_RED%Error%_RESET%
+set _WARNING_LABEL=%_STRONG_FG_YELLOW%Warning%_RESET%
 
 set "_SOURCE_DIR=%_ROOT_DIR%src"
 set "_TARGET_DIR=%_ROOT_DIR%target"
@@ -86,6 +85,48 @@ set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
 
 set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
 set _JAR_OPTS=
+goto :eof
+
+:env_ansi
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+set _RESET=[0m
+set _BOLD=[1m
+set _UNDERSCORE=[4m
+set _INVERSE=[7m
+
+@rem normal foreground colors
+set _NORMAL_FG_BLACK=[30m
+set _NORMAL_FG_RED=[31m
+set _NORMAL_FG_GREEN=[32m
+set _NORMAL_FG_YELLOW=[33m
+set _NORMAL_FG_BLUE=[34m
+set _NORMAL_FG_MAGENTA=[35m
+set _NORMAL_FG_CYAN=[36m
+
+@rem normal background colors
+set _NORMAL_BG_BLACK=[40m
+set _NORMAL_BG_RED=[41m
+set _NORMAL_BG_GREEN=[42m
+set _NORMAL_BG_YELLOW=[43m
+set _NORMAL_BG_BLUE=[44m
+set _NORMAL_BG_MAGENTA=[45m
+set _NORMAL_BG_CYAN=[46m
+set _NORMAL_BG_WHITE=[47m
+
+@rem strong foreground colors
+set _STRONG_FG_BLACK=[90m
+set _STRONG_FG_RED=[91m
+set _STRONG_FG_GREEN=[92m
+set _STRONG_FG_YELLOW=[93m
+set _STRONG_FG_BLUE=[94m
+
+@rem strong background colors
+set _STRONG_BG_BLACK=[100m
+set _STRONG_BG_RED=[101m
+set _STRONG_BG_GREEN=[102m
+set _STRONG_BG_YELLOW=[103m
+set _STRONG_BG_BLUE=[104m
 goto :eof
 
 @rem output parameters: _CHECKSTYLE_VERSION
@@ -178,22 +219,41 @@ if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TI
 goto :eof
 
 :help
+if %_VERBOSE%==1 (
+    set __P_START=%_NORMAL_FG_GREEN%%_UNDERSCORE%
+    set __P_END=%_RESET%
+    set __O_START=%_STRONG_FG_GREEN%
+    set __O_END=%_RESET%
+) else (
+    set __P_START=
+    set __P_END=
+    set __O_START=
+    set __O_END=
+)
 echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
 echo.
-echo   Options:
-echo     -cached     select main class with cached startup time
-echo     -debug      display commands executed by this script
-echo     -jvmci      add JVMCI options
-echo     -native     generate both JVM files and native image
-echo     -timer      display total elapsed time
-echo     -verbose    display progress messages
+if %_VERBOSE%==0 goto help_params
+echo   %__P_START%Generation of native image%__P_END% ^(option %__O_START%-native%__O_END%^):
+echo     Command %__O_START%native-image.cmd%__O_END% is part of the GraalVM distribution
+echo     and relies on the two environment variables %__O_START%INCLUDE%__O_END% and %__O_START%LIB%_O_END%
+echo     to access the include files and to the library files from
+echo     %_STRONG_FG_YELLOW%Microsoft Visual Studio 10%_RESET% and %_STRONG_FG_YELLOW%Microsoft Windows SDK 7.1%_RESET%.
 echo.
-echo   Subcommands:
-echo     clean       delete generated object files
-echo     check       analyze Java source files with CheckStyle
-echo     compile     compile Java source files
-echo     help        display this help message
-echo     run         execute main program
+:help_params
+echo   %__P_START%Options%__P_END%:
+echo     %__O_START%-cached%__O_END%     select main class with cached startup time
+echo     %__O_START%-debug%__O_END%      display commands executed by this script
+echo     %__O_START%-jvmc%__O_END%i      add JVMCI options
+echo     %__O_START%-native%__O_END%     generate both JVM files and native image
+echo     %__O_START%-timer%__O_END%      display total elapsed time
+echo     %__O_START%-verbose%__O_END%    display progress messages
+echo.
+echo   %__P_START%Subcommands%__P_END%:
+echo     %__O_START%clean%__O_END%       delete generated object files
+echo     %__O_START%check%__O_END%       analyze Java source files with CheckStyle
+echo     %__O_START%compile%__O_END%     compile Java source files
+echo     %__O_START%help%__O_END%        display this help message
+echo     %__O_START%run%__O_END%         execute main program
 goto :eof
 
 :clean
@@ -366,10 +426,10 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
 set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include"
 set "LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%"
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
+    echo %_DEBUG_LABEL% %_STRONG_FG_GREEN%===== B U I L D   V A R I A B L E S =====%_RESET% 1>&2
     echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
     echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% ========================================= 1>&2
+    echo %_DEBUG_LABEL% %_STRONG_FG_GREEN%=========================================%_RESET% 1>&2
 )
 goto :eof
 
