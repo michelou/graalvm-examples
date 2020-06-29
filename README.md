@@ -3,8 +3,8 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img style="border:0;" src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/">GraalVM</a> examples coming from various websites and books.<br/>
-  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting">batch files</a> for experimenting with <a href="https://www.graalvm.org/">GraalVM</a> on the <b>Microsoft Windows</b> platform.
+  <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/" rel="external">GraalVM</a> examples coming from various websites and books.<br/>
+  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting" rel="external">batch files</a> for experimenting with <a href="https://www.graalvm.org/" rel="external">GraalVM</a> on the <b>Microsoft Windows</b> platform.
   </td>
   </tr>
 </table>
@@ -52,9 +52,9 @@ This repository is organized as follows:
 docs\
 examples\
 graal\                              <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.7-jvmci-20.1-b02\</a>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.7-jvmci-20.2-b01\</a>  <i>(309 MB)</i>
 mx\                                 <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases">openjdk1.8.0_252-jvmci-20.1-b02\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup>  <i>(created by </i><a href="bin/graal/build.bat"><b><code>build.bat</code></b></a><i>)</i>
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_252-jvmci-20.2-b01\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup> <i>(214 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
 <a href="setenv.bat">setenv.bat</a>
@@ -192,10 +192,10 @@ In our case we downloaded the following installation files (see <a href="#sectio
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-20.1.0.zip</a>                     <i>(154 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-20.1.0.zip</a>                    <i>(230 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-20.1-b01">labsjdk-ce-11.0.7+10-jvmci-20.1-b02-windows-amd64.tar.gz</a>      <i>(174 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-20.2-b01">labsjdk-ce-11.0.7+10-jvmci-20.2-b01-debug-windows-amd64.tar.gz</a <i>(183 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-20.2.0.jar</a>   <i>(  9 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-20.2.0.jar</a>  <i>(  6 MB)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.1-b01">openjdk-8u252-jvmci-20.1-b02-windows-amd64.tar.gz</a>             <i>(102 MB)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.2-b01">openjdk-8u252-jvmci-20.2-b01-windows-amd64.tar.gz</a>             <i>(102 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.27.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.18.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
