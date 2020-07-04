@@ -41,6 +41,10 @@ if %_COMPILE%==1 (
         if not !_EXITCODE!==0 goto end
     )
 )
+if %_DOC%==1 (
+    call :doc
+    if not !_EXITCODE!==0 goto end
+)
 if %_PACK%==1 (
     call :pack
     if not !_EXITCODE!==0 goto end
@@ -59,15 +63,15 @@ goto end
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
 
-@rem ANSI colors in standard Windows 10 shell
-@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _DEBUG_LABEL=[46m[%_BASENAME%][0m
-set _ERROR_LABEL=[91mError[0m:
-set _WARNING_LABEL=[93mWarning[0m:
+call :env_colors
+set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
+set _ERROR_LABEL=%_STRONG_FG_RED%Error%_RESET%:
+set _WARNING_LABEL=%_STRONG_FG_YELLOW%Warning%_RESET%:
 
 set "_SOURCE_DIR=%_ROOT_DIR%src"
 set "_TARGET_DIR=%_ROOT_DIR%target"
 set "_CLASSES_DIR=%_TARGET_DIR%\classes"
+set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 
 set _PKG_NAME=
 set _MAIN_NAME=CountUppercase
@@ -82,6 +86,9 @@ set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
 set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 
+set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
+set _JAVADOC_OPTS=
+
 set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
 
@@ -89,10 +96,56 @@ set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
 set _JAR_OPTS=
 goto :eof
 
+:env_colors
+@rem ANSI colors in standard Windows 10 shell
+@rem see https://gist.github.com/mlocati/#file-win10colors-cmd
+set _RESET=[0m
+set _BOLD=[1m
+set _UNDERSCORE=[4m
+set _INVERSE=[7m
+
+@rem normal foreground colors
+set _NORMAL_FG_BLACK=[30m
+set _NORMAL_FG_RED=[31m
+set _NORMAL_FG_GREEN=[32m
+set _NORMAL_FG_YELLOW=[33m
+set _NORMAL_FG_BLUE=[34m
+set _NORMAL_FG_MAGENTA=[35m
+set _NORMAL_FG_CYAN=[36m
+
+@rem normal background colors
+set _NORMAL_BG_BLACK=[40m
+set _NORMAL_BG_RED=[41m
+set _NORMAL_BG_GREEN=[42m
+set _NORMAL_BG_YELLOW=[43m
+set _NORMAL_BG_BLUE=[44m
+set _NORMAL_BG_MAGENTA=[45m
+set _NORMAL_BG_CYAN=[46m
+set _NORMAL_BG_WHITE=[47m
+
+@rem strong foreground colors
+set _STRONG_FG_BLACK=[90m
+set _STRONG_FG_RED=[91m
+set _STRONG_FG_GREEN=[92m
+set _STRONG_FG_YELLOW=[93m
+set _STRONG_FG_BLUE=[94m
+
+@rem strong background colors
+set _STRONG_BG_BLACK=[100m
+set _STRONG_BG_RED=[101m
+set _STRONG_BG_GREEN=[102m
+set _STRONG_BG_YELLOW=[103m
+set _STRONG_BG_BLUE=[104m
+goto :eof
+
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.33
+set _CHECKSTYLE_VERSION=8.34
+
+for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
+set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
+set _PROJECT_VERSION=0.1-SNAPSHOT
 
 set "__PROPS_FILE=%_ROOT_DIR%build.properties"
 if exist "%__PROPS_FILE%" (
@@ -106,6 +159,9 @@ if exist "%__PROPS_FILE%" (
         )
     )
     if defined _checkstyle_version set _CHECKSTYLE_VERSION=!_checkstyle_version!
+    if defined _project_name set _PROJECT_NAME=!_project_name!
+    if defined _project_url set _PROJECT_URL=!_project_url!
+    if defined _project_version set _PROJECT_VERSION=!_project_version!
 )
 goto :eof
 
@@ -114,6 +170,7 @@ goto :eof
 set _CHECKSTYLE=0
 set _CLEAN=0
 set _COMPILE=0
+set _DOC=0
 set _HELP=0
 set _JVMCI=0
 set _PACK=0
@@ -130,11 +187,11 @@ if not defined __ARG (
 )
 if "%__ARG:~0,1%"=="-" (
     @rem option
-    if /i "%__ARG%"=="-debug" ( set _DEBUG=1
-    ) else if /i "%__ARG%"=="-jvmci" ( set _JVMCI=1
-    ) else if /i "%__ARG%"=="-native" ( set _TARGET=native
-    ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
-    ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
+    if "%__ARG%"=="-debug" ( set _DEBUG=1
+    ) else if "%__ARG%"=="-jvmci" ( set _JVMCI=1
+    ) else if "%__ARG%"=="-native" ( set _TARGET=native
+    ) else if "%__ARG%"=="-timer" ( set _TIMER=1
+    ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
         set _EXITCODE=1
@@ -142,12 +199,13 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if /i "%__ARG%"=="clean" ( set _CLEAN=1
-    ) else if /i "%__ARG%"=="check" ( set _CHECKSTYLE=1
-    ) else if /i "%__ARG%"=="compile" ( set _COMPILE=1
-    ) else if /i "%__ARG%"=="help" ( set _HELP=1
-    ) else if /i "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
-    ) else if /i "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
+    if "%__ARG%"=="check" ( set _CHECKSTYLE=1
+    ) else if "%__ARG%"=="clean" ( set _CLEAN=1
+    ) else if "%__ARG%"=="compile" ( set _COMPILE=1
+    ) else if "%__ARG%"=="doc" ( set _DOC=1
+    ) else if "%__ARG%"=="help" ( set _HELP=1
+    ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
+    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -168,26 +226,49 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _PACK=%_PACK% _RUN=%_RUN% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% 1>&2
+    echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+)
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
-echo Usage: %_BASENAME% { ^<option^> ^| ^<subcommand^> }
+if %_VERBOSE%==1 (
+    set __BEG_P=%_NORMAL_FG_GREEN%%_UNDERSCORE%
+    set __BEG_O=%_STRONG_FG_GREEN%
+    set __BEG_N=%_NORMAL_FG_YELLOW%
+    set __END=%_RESET%
+) else (
+    set __BEG_P=
+    set __BEG_O=
+    set __BEG_N=
+    set __END=
+)
+echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
-echo   Options:
-echo     -debug      display commands executed by this script
-echo     -jvmci      add JVMCI options
-echo     -native     generate both JVM files and native image
-echo     -timer      display total elapsed time
-echo     -verbose    display progress messages
+if %_VERBOSE%==0 goto help_params
+echo   %__BEG_P%Generation of native image%__END% ^(option %__BEG_O%-native%__END%^):
+echo     Command %__BEG_O%native-image.cmd%__END% is part of the GraalVM distribution
+echo     and relies on the two environment variables %__BEG_O%INCLUDE%__END% and %__BEG_O%LIB%__END%
+echo     to access the include files and to the library files from
+echo     %__BEG_N%Microsoft Visual Studio 10%_RESET% and %__BEG_N%Microsoft Windows SDK 7.1%__END%.
 echo.
-echo   Subcommands:
-echo     clean       delete generated files
-echo     check       analyze Java source files with CheckStyle
-echo     compile     compile Java source files
-echo     help        display this help message
-echo     run         execute main program
+:help_params
+echo   %__BEG_P%Options:%__END%
+echo     %__BEG_O%-debug%__END%      display commands executed by this script
+echo     %__BEG_O%-jvmci%__END%      add JVMCI options
+echo     %__BEG_O%-native%__END%     generate both JVM files and native image
+echo     %__BEG_O%-timer%__END%      display total elapsed time
+echo     %__BEG_O%-verbose%__END%    display progress messages
+echo.
+echo   %__BEG_P%Subcommands:%__END%
+echo     %__BEG_O%clean%__END%       delete generated files
+echo     %__BEG_O%check%__END%       analyze Java source files with %__BEG_N%CheckStyle%__END%
+echo     %__BEG_O%compile%__END%     compile Java source files
+echo     %__BEG_O%doc%__END%         generate HTML documentation
+echo     %__BEG_O%help%__END%        display this help message
+echo     %__BEG_O%run%__END%         execute main program
 goto :eof
 
 :clean
@@ -240,7 +321,7 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration !__XML_FILE:%USERPROFILE%\=! 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -260,9 +341,7 @@ if %_COMPILE_REQUIRED%==0 goto :eof
 call :compile_java
 if not %_EXITCODE%==0 goto :eof
 
-for /f %%i in ('powershell -C "Get-Date -uformat %%Y%%m%%d%%H%%M%%S"') do (
-    echo %%i> "%__TIMESTAMP_FILE%"
-)
+echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
 :compile_java
@@ -272,11 +351,13 @@ echo %_JAVAC_OPTS% -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
+set __N=0
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     echo %%f>> "%__SOURCES_FILE%"
+    set /a __N+=1
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Compile Java source files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+) else if %_VERBOSE%==1 ( echo Compile %__N% Java source files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
@@ -285,22 +366,26 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-@rem input parameter: 1=timestamp file 2=path (wildcards accepted)
+@rem input parameter: 1=target file 2=path (wildcards accepted)
 @rem output parameter: _COMPILE_REQUIRED
 :compile_required
-set __TIMESTAMP_FILE=%~1
+set __TARGET_FILE=%~1
 set __PATH=%~2
 
+set __TARGET_TIMESTAMP=00000000000000
+for /f "usebackq" %%i in (`powershell -c "gci '%__TARGET_FILE%' | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S"`) do (
+    set __TARGET_TIMESTAMP=%%i
+)
+if %_DEBUG%==1 echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% %__TARGET_FILE% 1>&2
+if %__TARGET_TIMESTAMP%==00000000000000 (
+    set _COMPILE_REQUIRED=1
+    goto :eof
+)
 set __SOURCE_TIMESTAMP=00000000000000
 for /f "usebackq" %%i in (`powershell -c "gci -recurse '%__PATH%' | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S"`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
-if exist "%__TIMESTAMP_FILE%" ( set /p __GENERATED_TIMESTAMP=<%__TIMESTAMP_FILE%
-) else ( set __GENERATED_TIMESTAMP=00000000000000
-)
-if %_DEBUG%==1 echo %_DEBUG_LABEL% %__GENERATED_TIMESTAMP% %__TIMESTAMP_FILE% 1>&2
-
-call :newer %__SOURCE_TIMESTAMP% %__GENERATED_TIMESTAMP%
+call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
 set _COMPILE_REQUIRED=%_NEWER%
 if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
     echo No compilation needed ^("!__PATH:%_ROOT_DIR%=!"^) 1>&2
@@ -331,13 +416,13 @@ call :native_env_msvc
 
 if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
 )
-call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% %_STDOUT_REDIRECT%
+call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
 if not %ERRORLEVEL%==0 (
     endlocal
-    echo %_ERROR_LABEL% Failed to create native image !_MAIN_NATIVE_FILE:%_ROOT_DIR%=! 1>&2
+    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -345,6 +430,13 @@ endlocal
 goto :eof
 
 :native_env_msvc
+if %_VERBOSE%==1 (
+    set __BEG=%_STRONG_FG_GREEN%
+    set __END=%_RESET%
+) else (
+    set __BEG=
+    set __END=
+)
 if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
     set __MSVC_ARCH=\amd64
     set __NET_ARCH=Framework64\v4.0.30319
@@ -360,14 +452,54 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
 set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include"
 set "LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%"
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
+    echo %_DEBUG_LABEL% %__BEG%===== B U I L D   V A R I A B L E S =====%__END% 1>&2
     echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
     echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% ========================================= 1>&2
+    echo %_DEBUG_LABEL% %__BEG%=========================================%__END% 1>&2
+)
+goto :eof
+
+:doc
+if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
+
+call :compile_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
+if %_COMPILE_REQUIRED%==0 goto :eof
+
+set "__SOURCES_FILE=%_TARGET_DIR%\javadoc_sources.txt"
+for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
+    echo %%i>> "%__SOURCES_FILE%"
+)
+set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
+echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Generation of HTML documentation failed 1>&2
+    set _EXITCODE=1
+    goto :eof
 )
 goto :eof
 
 :pack
+set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
+(
+    echo Manifest-Version: 1.0
+    echo Main-Class: %_MAIN_CLASS%
+) > "%__MANIFEST_FILE%"
+
+set __JAR_OPTS=cfm "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%__MANIFEST_FILE%" -C "%_CLASSES_DIR%" .
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
+) else if %_VERBOSE%==1 ( echo Create Java archive into directory "!__TARGET_DIR:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAR_CMD%" %__JAR_OPTS%
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
 goto :eof
 
 :run_jvm

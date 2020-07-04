@@ -68,7 +68,7 @@ if not exist "%__JAR_FILE%" (
         )
         call "%_MVN_CMD%" %_MVN_OPTS% install:install-file -Dfile="!__JAR_FILE!" -DgroupId="%__GROUP_ID:/=.%" -DartifactId=%__ARTIFACT_ID% -Dversion=%__VERSION% -Dpackaging=jar
         if not !ERRORLEVEL!==0 (
-            rem echo %_ERROR_LABEL% Failed to install Maven package "%__GROUP_ID:/=.%:%__ARTIFACT_ID%:%__VERSION%" 1>&2
+            @rem echo %_ERROR_LABEL% Failed to install Maven package "%__GROUP_ID:/=.%:%__ARTIFACT_ID%:%__VERSION%" 1>&2
             set _EXITCODE=1
             goto :eof
         )

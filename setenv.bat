@@ -71,7 +71,6 @@ goto end
 @rem ## Subroutines
 
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
-@rem                    _PROGRAM_FILES, _PROGRAM_FILES_X86
 :env
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
@@ -140,9 +139,9 @@ if not defined __ARG goto args_done
 
 if "%__ARG:~0,1%"=="-" (
     @rem option
-    if /i "%__ARG%"=="-bash" ( set _BASH=1
-    ) else if /i "%__ARG%"=="-debug" ( set _DEBUG=1
-    ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
+    if "%__ARG%"=="-bash" ( set _BASH=1
+    ) else if "%__ARG%"=="-debug" ( set _DEBUG=1
+    ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
         set _EXITCODE=1
@@ -150,7 +149,7 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if /i "%__ARG%"=="help" ( set _HELP=1
+    if "%__ARG%"=="help" ( set _HELP=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -274,7 +273,7 @@ if defined __PYTHON_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable PYTHON_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    if exist "!__PATH!\Python\" ( set __PYTHON_HOME=!__PATH!\Python
+    if exist "!__PATH!\Python\" ( set "__PYTHON_HOME=!__PATH!\Python"
     ) else (
         for /f %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "__PYTHON_HOME=!__PATH!\%%f"
         if not defined __PYTHON_HOME (
@@ -493,7 +492,7 @@ set __MAKE_CMD=
 for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
 if defined __MAKE_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
-    for /f "delims=" %%i in ("%__MAKE_CMD%") do set __MAKE_BIN_DIR=%%~dpi""
+    for /f "delims=" %%i in ("%__MAKE_CMD%") do set "__MAKE_BIN_DIR=%%~dpi"
     for %%f in ("!__MAKE_BIN_DIR!..\.") do set "_CYGWIN_HOME=%%~dpf"
     @rem keep _CYGWIN_PATH undefined since executable already in path
     goto :eof

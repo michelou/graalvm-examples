@@ -3,10 +3,10 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;">
-    <a href="https://www.graalvm.org/"><img style="border:0;width:120px;" src="https://www.graalvm.org/resources/img/graalvm.png" alt="GraalVM logo"/></a>
+    <a href="https://www.graalvm.org/" rel="external"><img style="border:0;width:120px;" src="https://www.graalvm.org/resources/img/graalvm.png" alt="GraalVM logo"/></a>
   </td>
   <td style="border:0;padding:0;vertical-align:text-top;">
-    Directory <a href="."><strong><code>examples\</code></strong></a> contains <a href="https://llvm.org/img/LLVM-Logo-Derivative-1.png" alt="GraalVM">GraalVM</a> code examples coming from various websites - mostly from the <a href="https://www.graalvm.org/">GraalVM</a> project and tested on a Windows machine.
+    Directory <a href="."><strong><code>examples\</code></strong></a> contains <a href="https://llvm.org/img/LLVM-Logo-Derivative-1.png" alt="GraalVM">GraalVM</a> code examples coming from various websites - mostly from the <a href="https://www.graalvm.org/" rel="external">GraalVM</a> project and tested on a Windows machine.
   </td>
   </tr>
 </table>
@@ -39,8 +39,9 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Subcommands:
     clean       delete generated files
-    check       analyze Java source files with CheckStyle
+    check       analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     compile     generate executable
+    doc         generate HTML documentation
     help        display this help message
     run         run the generated executable
 </pre>
@@ -56,7 +57,7 @@ Now:     Fri Nov 15 22:43:31 CET 2019
 Command [**`build -verbose clean run`**](ClassInitialization/build.bat) also displays progress messages:
 
 <pre style="font-size:80%;">
-<b>&gt; build -verbose clean run</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a> -verbose clean run</b>
 Delete directory target
 Compile Java source files to directory target\classes
 Execute Java main class org.graalvm.example.HelloStartupTime
@@ -92,7 +93,7 @@ Now:     Fri Nov 15 22:50:01 CET 2019
 Command [**`build -native -cached clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloCachedTime.exe`** for source file [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java):
 
 <pre style="font-size:80%;">
-<b>&gt; build -native -cached clean compile</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -cached clean compile</b>
 <b>&gt; tree /a /f target | findstr /v "^[A-Z]"</b>
 |   HelloCachedTime.exe
 |   HelloCachedTime.exp
@@ -117,30 +118,30 @@ Now:     Fri Nov 15 22:53:31 CET 2019
 Command [**`build -native -debug compile`**](ClassInitialization/build.bat) shows the the settings of commands **`javac.exe`** and **`native-image.cmd`** during the generation of executable **`target\HelloStartupTime.exe`**:
 
 <pre style="font-size:80%;">
-<b>&gt; build -native -debug compile</b>
+<b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
 [build] _CLEAN=0 _COMPILE=1 _RUN=0 _CACHED=0 _TARGET=native _VERBOSE=0
-[build] javac.exe -d G:\examples\CLASSI~1\target\classes @G:\examples\CLASSI~1\target\source_list.txt
+[build] javac.exe -d G:\examples\ClassInitialization\target\classes @G:\examples\ClassInitialization\target\source_list.txt
 [build] <b>===== B U I L D   V A R I A B L E S =====</b>
 [build] <b>INCLUDE=C:\PROGRA~2\MICROS~1.0\VC\include;C:\PROGRA~1\MICROS~4\Windows\v7.1\include</b>
 [build] <b>LIB=C:\PROGRA~2\MICROS~1.0\VC\Lib\amd64;C:\PROGRA~1\MICROS~4\Windows\v7.1\lib\x64</b>
 [build] <b>=========================================</b>
-[build] native-image.cmd -H:+TraceClassInitialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\CLASSI~1\target\classes org.graalvm.example.HelloStartupTime G:\examples\CLASSI~1\target\HelloStartupTime
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    classlist:   3,315.44 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        (cap):   8,256.38 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        setup:   9,749.13 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]   (typeflow):   7,767.53 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    (objects):   6,367.10 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]   (features):     528.67 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     analysis:  14,991.11 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     (clinit):     277.61 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     universe:     645.47 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      (parse):     962.09 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]     (inline):   2,159.67 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]    (compile):   9,242.30 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      compile:  13,148.71 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        image:   1,521.88 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]        write:     734.72 ms
-[G:\examples\CLASSI~1\target\HelloStartupTime:12528]      [total]:  44,387.22 ms
+[build] native-image.cmd -H:+TraceClassInitialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    classlist:   3,315.44 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        (cap):   8,256.38 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        setup:   9,749.13 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]   (typeflow):   7,767.53 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    (objects):   6,367.10 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]   (features):     528.67 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     analysis:  14,991.11 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     (clinit):     277.61 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     universe:     645.47 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      (parse):     962.09 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     (inline):   2,159.67 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    (compile):   9,242.30 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      compile:  13,148.71 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        image:   1,521.88 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        write:     734.72 ms
+[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      [total]:  44,387.22 ms
 [build] _EXITCODE=0
 </pre>
 
@@ -157,13 +158,17 @@ Command [**`build`**](CountUppercase/build.bat) with no argument displays the av
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
-    -debug      show commands executed by this script
+    -debug      display commands executed by this script
+    -jvmci      add JVMCI options
+    -native     generate both JVM files and native image
+    -timer      display total elapsed time
     -verbose    display progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
-    check       analyze Java source files with CheckStyle
+    check       analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     compile     generate executable
+    doc         generate HTML documentation
     help        display this help message
     run         run executable
 </pre>
@@ -219,7 +224,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
-> checkstyle-8.30-all.jar
+> checkstyle-8.34-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; more %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -259,6 +264,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
     clean       delete generated files
     check       analyze Java source files with CheckStyle
     compile     generate executable
+    doc         generate HTML documentation
     help        display this help message
     test        execute micro benchmark
 </pre>
@@ -360,7 +366,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/June 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/July 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
