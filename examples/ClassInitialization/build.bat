@@ -76,23 +76,21 @@ set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 set _PKG_NAME=org.graalvm.example
 @rem both _MAIN_NAME and _MAIN_NATIVE_FILE are defined in args
 
+if not defined JAVA_HOME (
+    echo %_ERROR_LABEL% Java SDK not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
-set _JAVAC_OPTS=
+set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
 set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback "--initialize-at-build-time=%_PKG_NAME%" "--initialize-at-run-time=%_PKG_NAME%.Startup"
 
 set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
-
-set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
-set _JAVADOC_OPTS=
-
-set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
-set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
-
-set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
-set _JAR_OPTS=
 goto :eof
 
 :env_colors
@@ -232,8 +230,8 @@ if %_CACHED%==1 set _NATIVE_IMAGE_OPTS="--initialize-at-run-time=%_MAIN_CLASS%" 
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% 1>&2
     echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -510,21 +508,21 @@ goto :eof
 
 :run_jvm
 set __MAIN_ARGS=
-if %_DEBUG%==1 ( set __JAVA_OPTS=%_JAVA_OPTS% %_GRAALVM_OPTS%
-) else ( set __JAVA_OPTS=%_JAVA_OPTS%
+if %_DEBUG%==1 ( set __JAVA_OPTS=-cp "%_CLASSES_DIR%" %_GRAALVM_OPTS%
+) else ( set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
 )
 if %_JVMCI%==1 (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
     ) else if %_VERBOSE%==1 ( echo GraalVM compiler is disabled 1>&2
     )
-    set __JAVA_OPTS=%_JAVA_OPTS% -XX:-UseJVMCICompiler
+    set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
 )
-
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
 ) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
 )
 call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Execution failed ^(%_MAIN_CLASS%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )

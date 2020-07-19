@@ -75,7 +75,7 @@ set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
 @rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-20.1-b02
+set _JVMCI_VERSION=jvmci-20.2-b02
 set _JDK8_UPDATE_VERSION=252
 set _JDK8_UPDATE_VERSION_SUFFIX=
 @rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
