@@ -227,7 +227,7 @@ Audit done.
 > checkstyle-8.34-all.jar
 > graal_checks.xml
 > &nbsp;
-> <b>&gt; more %USERPROFILE%\.graal\graal_checks.xml</b>
+> <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> %USERPROFILE%\.graal\graal_checks.xml</b>
 > &lt;?xml version="1.0"?&gt;
 > &lt;!DOCTYPE module PUBLIC
 >          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
@@ -351,7 +351,7 @@ Caused by: java.lang.IllegalArgumentException: int is not a value type
 
 ## <span id="footnotes">Footnotes</a>
 
-<a name="footnote_01">[1]</a> ***CheckStyle configuration*** [↩](#anchor_01)
+<b name="footnote_01">[1]</b> ***CheckStyle configuration*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
 The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is available as a Java archive file <a href="https://github.com/checkstyle/checkstyle/releases/"><b><code>checkstyle-*-all.jar</code></b></a> which contains two example configuration files:
@@ -366,7 +366,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/July 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

@@ -53,6 +53,10 @@ if %_RUN%==1 (
     call :run_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
+if %_TEST%==1 (
+    call :test_%_TARGET%
+    if not !_EXITCODE!==0 goto end
+)
 goto end
 
 @rem #########################################################################
@@ -77,23 +81,27 @@ set _PKG_NAME=
 set _MAIN_NAME=CountUppercase
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
+if not exist "%JAVA_HOME%\bin\javac.exe" (
+   echo %_ERROR_LABEL% Java SDK installation not found 1>&2
+   set _EXITCODE=1
+   goto :eof
+)
+set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
-set _JAVAC_OPTS=
+set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
+if not exist "%JAVA_HOME%\bin\native-image.cmd" (
+   echo %_ERROR_LABEL% native-image is not installed or Java SDK is not a GraalVM installation 1>&2
+   echo %_ERROR_LABEL% ^(JAVA_HOME=%JAVA_HOME%^) 1>&2
+   set _EXITCODE=1
+   goto :eof
+)
 set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
 
 set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
-
-set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
-set _JAVADOC_OPTS=
-
-set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
-set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
-
-set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
-set _JAR_OPTS=
 goto :eof
 
 :env_colors
@@ -145,7 +153,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.34
+set _CHECKSTYLE_VERSION=8.35
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -180,6 +188,7 @@ set _JVMCI=0
 set _PACK=0
 set _RUN=0
 set _TARGET=jvm
+set _TEST=0
 set _TIMER=0
 set _VERBOSE=0
 set __N=0
@@ -209,7 +218,8 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="doc" ( set _DOC=1
     ) else if "%__ARG%"=="help" ( set _HELP=1
     ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
-    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
+    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _PACK=1& set _RUN=1
+    ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -231,8 +241,9 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% 1>&2
-    echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
+    echo %_DEBUG_LABEL% Variables  : JAVA_HOME=%JAVA_HOME% 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -273,6 +284,7 @@ echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
 echo     %__BEG_O%run%__END%         execute main program
+echo     %__BEG_O%test%__END%        execute JMH benchmarks
 goto :eof
 
 :clean
@@ -321,11 +333,13 @@ if not %ERRORLEVEL%==0 (
 )
 :checkstyle_analyze
 set __SOURCE_FILES=
+set __N=0
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
+    set /a __N+=1
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=!" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -335,7 +349,7 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :compile
-if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
+if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
 
@@ -349,9 +363,8 @@ echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
 :compile_java
-
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo %_JAVAC_OPTS% -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -370,28 +383,38 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-@rem input parameter: 1=target file 2=path (wildcards accepted)
+@rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
 @rem output parameter: _COMPILE_REQUIRED
 :compile_required
-set __TARGET_FILE=%~1
-set __PATH=%~2
+set "__TARGET_FILE=%~1"
 
+set __PATH_ARRAY=
+set __PATH_ARRAY1=
+:compile_path
+shift
+set __PATH=%~1
+if not defined __PATH goto :compile_next
+set __PATH_ARRAY=%__PATH_ARRAY%,'%__PATH%'
+set __PATH_ARRAY1=%__PATH_ARRAY1%,'!__PATH:%_ROOT_DIR%=!'
+goto :compile_path
+
+:compile_next
 set __TARGET_TIMESTAMP=00000000000000
 for /f "usebackq" %%i in (`powershell -c "gci -path '%__TARGET_FILE%' -ea Stop | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
      set __TARGET_TIMESTAMP=%%i
 )
 set __SOURCE_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci -recurse -path '%__PATH%' -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+for /f "usebackq" %%i in (`powershell -c "gci -recurse -path %__PATH_ARRAY:~1% -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
 set _COMPILE_REQUIRED=%_NEWER%
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% "%__TARGET_FILE%" 1>&2
-    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% "%__PATH%" 1>&2
+    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '%__TARGET_FILE%' 1>&2
+    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
     echo %_DEBUG_LABEL% _COMPILE_REQUIRED=%_COMPILE_REQUIRED% 1>&2
 ) else if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No compilation needed ^("!__PATH:%_ROOT_DIR%=!"^) 1>&2
+    echo No compilation needed ^(%__PATH_ARRAY1:~1%^) 1>&2
 )
 goto :eof
 
@@ -400,15 +423,15 @@ goto :eof
 set __TIMESTAMP1=%~1
 set __TIMESTAMP2=%~2
 
-set __TIMESTAMP1_DATE=%__TIMESTAMP1:~0,8%
-set __TIMESTAMP1_TIME=%__TIMESTAMP1:~-6%
+set __DATE1=%__TIMESTAMP1:~0,8%
+set __TIME1=%__TIMESTAMP1:~-6%
 
-set __TIMESTAMP2_DATE=%__TIMESTAMP2:~0,8%
-set __TIMESTAMP2_TIME=%__TIMESTAMP2:~-6%
+set __DATE2=%__TIMESTAMP2:~0,8%
+set __TIME2=%__TIMESTAMP2:~-6%
 
-if %__TIMESTAMP1_DATE% gtr %__TIMESTAMP2_DATE% ( set _NEWER=1
-) else if %__TIMESTAMP1_DATE% lss %__TIMESTAMP2_DATE% ( set _NEWER=0
-) else if %__TIMESTAMP1_TIME% gtr %__TIMESTAMP2_TIME% ( set _NEWER=1
+if %__DATE1% gtr %__DATE2% ( set _NEWER=1
+) else if %__DATE1% lss %__DATE2% ( set _NEWER=0
+) else if %__TIME1% gtr %__TIME2% ( set _NEWER=1
 ) else ( set _NEWER=0
 )
 goto :eof
@@ -487,6 +510,9 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :pack
+call :compile_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
+if %_COMPILE_REQUIRED%==0 goto :eof
+
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
 (
     echo Manifest-Version: 1.0
@@ -509,14 +535,15 @@ goto :eof
 set __MAIN_ARGS=In 2019 I would like to run ALL languages in one VM.
 set __ITERATIONS=5
 
-if %_DEBUG%==1 ( set __JAVA_OPTS=%_JAVA_OPTS% -Diterations=%__ITERATIONS% %_GRAALVM_OPTS%
-) else ( set __JAVA_OPTS=%_JAVA_OPTS% -Diterations=%__ITERATIONS%
+set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
+if %_DEBUG%==1 ( set __JAVA_OPTS=%__JAVA_OPTS% -Diterations=%__ITERATIONS% %_GRAALVM_OPTS%
+) else ( set __JAVA_OPTS=%__JAVA_OPTS% -Diterations=%__ITERATIONS%
 )
 if %_JVMCI%==1 (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
     ) else if %_VERBOSE%==1 ( echo GraalVM compiler is disabled 1>&2
     )
-    set __JAVA_OPTS=%_JAVA_OPTS% -XX:-UseJVMCICompiler
+    set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
 )
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
@@ -547,6 +574,14 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
+goto :eof
+
+:test_jvm
+echo %_WARNING_LABEL% Not yet implemented 1>&2
+goto :eof
+
+:test_native
+echo %_WARNING_LABEL% Not yet implemented 1>&2
 goto :eof
 
 @rem input parameter: %1=XML file path

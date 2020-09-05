@@ -17,7 +17,7 @@ Build environments are defined in configuration file [**`build.ini`**](bin/graal
 <b>&gt; cd</b>
 G:\graal
 &nbsp;
-<b>&gt; more <a href="bin/graal/build.ini">build.ini</a></b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> <a href="bin/graal/build.ini">build.ini</a></b>
 [env1]
 JDK=jdk8
 GATE=style,fullbuild
@@ -33,16 +33,16 @@ NO_FEMBED_BITCODE=
 
 ## <span id="usage_examples">Usage examples</span>
 
-#### `graal\build.bat`
+### **`graal\build.bat`**
 
 Command **`build clean dist:2`** generates the [GraalVM] build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_252-jvmci-20.2-b01
-openjdk version "1.8.0_252"
-OpenJDK Runtime Environment (build 1.8.0_252-b09)
-OpenJDK 64-Bit Server VM (build 25.252-b09-jvmci-20.2-b01, mixed mode)
+G:\\openjdk1.8.0_262-jvmci-20.2-b03
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10-jvmci-20.2-b03, mixed mode)
  Create GraalVM build with tags build,test
 [...]
 gate: 08 Jun 2020 00:38:26(+00:00) BEGIN: Gate
@@ -52,7 +52,7 @@ Python version: sys.version_info(major=2, minor=7, micro=17, releaselevel='final
 gate: 08 Jun 2020 00:38:27(+00:00) END:   Versions [0:00:00.979000]
 gate: 08 Jun 2020 00:38:27(+00:00) BEGIN: JDKReleaseInfo
 ==== G:\\openjdk1.8.0_252-jvmci-20.2-b01 ====
-JAVA_VERSION="1.8.0_252"
+JAVA_VERSION="1.8.0_262"
 OS_NAME="Windows"
 OS_VERSION="5.2"
 OS_ARCH="amd64"
@@ -70,9 +70,9 @@ gate: 08 Jun 2020 00:38:41(+00:14) END:   Clean [0:00:13.536000]
 gate: 08 Jun 2020 00:38:41(+00:14) BEGIN: BuildWithJavac
 Running: mx [...] build -p --warning-as-error --force-javac
 WARNING: parallel builds are not supported on windows: can not use -p
-JAVA_HOME: G:\\openjdk1.8.0_252-jvmci-20.2-b01
+JAVA_HOME: G:\\openjdk1.8.0_262-jvmci-20.2-b03
 [...]
-[Stopped javac-daemon on port 50330 for Java 1.8.0_252 (1.8) from G:\openjdk1.8.0_252-jvmci-20.2-b01]
+[Stopped javac-daemon on port 50330 for Java 1.8.0_262 (1.8) from G:\openjdk1.8.0_262-jvmci-20.2-b03]
 Shutting down
 gate: 08 Jun 2020 00:51:08(+12:42) END:   BuildWithJavac [0:12:27.865000]
 gate: 08 Jun 2020 00:51:08(+12:42) BEGIN: UnitTests: hosted-product compiler
@@ -106,40 +106,41 @@ gate: 08 Jun 2020 01:01:42(+23:15) BEGIN: DaCapo_pmd:PreserveFramePointer
 gate: 08 Jun 2020 09:23:01(+23:59) END:   DaCapo_pmd:PreserveFramePointer [0:00:13.985000]
 gate: 08 Jun 2020 09:23:01(+23:59) END:   Gate [0:23:59.406000]
 Gate task times:
-  0:00:01.197000        Versions [always]
-  0:00:00       JDKReleaseInfo [always]
-  0:00:00.370000        VerifyMultiReleaseProjects [always]
-  0:00:16.294000        Clean [build,fullbuild,ecjbuild]
-  0:12:33.788000        BuildWithJavac [build,fullbuild]
-  0:08:42.446000        UnitTests: hosted-product compiler [test,fulltest,coverage]
-  0:00:43.219000        XcompUnitTests: hosted-product compiler [test,fulltest]
-  0:01:02.180000        MakeGraalJDK [test,fulltest]
-  0:00:13.143000        DaCapo_pmd:BatchMode [test,fulltest]
-  0:00:07.206000        DaCapo_pmd:BenchmarkCounters [test,fulltest]
-  0:00:05.578000        XCompMode:product [test,fulltest]
-  0:00:13.985000        DaCapo_pmd:PreserveFramePointer [test,fulltest]
+  0:00:01.509000        Versions [always]
+  0:00:00.015000        JDKReleaseInfo [always]
+  0:00:00.417000        VerifyMultiReleaseProjects [always]
+  0:00:29.816000        Clean [build,fullbuild,ecjbuild]
+  0:31:58.855000        BuildWithJavac [build,fullbuild]
+  0:26:42.410000        UnitTests: hosted-product compiler [test,fulltest,coverage]
+  0:01:05.481000        XcompUnitTests: hosted-product compiler [test,fulltest]
+  0:06:02.268000        MakeGraalJDK [test,fulltest]
+  0:00:11.421000        DaCapo_pmd:BatchMode [test,fulltest]
+  0:00:07.078000        DaCapo_pmd:BenchmarkCounters [test,fulltest]
+  0:00:05.374000        XCompMode:product [test,fulltest]
+  0:00:13.541000        DaCapo_pmd:PreserveFramePointer [test,fulltest]
   =======
-  0:23:59.406000
-Total elapsed time: 00:24:06
+  1:06:58.201000
+Total elapsed time: 01:07:40
 </pre>
 
 Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archives:
 
 <pre style="font-size:80%;">
 <b>&gt; dir sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
-08.06.2020  09:11       278 959 185 graalvm-3398ab5293-java8.zip
+17.08.2020  13:42       286 282 835 graalvm-3398ab5293-java8.zip
+05.09.2020  20:43       287 993 272 graalvm-3bf9265b58-java8.zip
 15.03.2020  16:35       276 745 135 graalvm-unknown-java8-stage1.zip
 15.03.2020  16:35       276 749 506 graalvm-unknown-java8.zip
 </pre>
 
-Archive file **`graalvm-3398ab5293-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
+Archive file **`graalvm-3bf9265b58-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; unzip -l sdk\mxbuild\windows-amd64\dists\graalvm-3398ab5293-java8.zip | findstr cmd</b>
-       67  2020-03-15 15:34   graalvm-3398ab5293-java8-20.1.0-dev/bin/polyglot.cmd
-      387  2020-03-15 15:34   graalvm-3398ab5293-java8-20.2.0-dev/jre/bin/polyglot.cmd
-    10084  2020-03-15 15:34   graalvm-3398ab5293-java8-20.2.0-dev/jre/lib/polyglot/bin/polyglot.cmd
-     9728  2020-01-09 15:25   graalvm-3398ab5293-java8-20.1.0-dev/bin/jcmd.exe
+<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | findstr cmd</b>
+      378  2020-09-05 20:42   graalvm-3bf9265b58-java8-20.3.0-dev/bin/polyglot.cmd
+      387  2020-09-05 20:42   graalvm-3bf9265b58-java8-20.3.0-dev/jre/bin/polyglot.cmd
+     8126  2020-09-05 20:39   graalvm-3bf9265b58-java8-20.3.0-dev/jre/lib/polyglot/bin/polyglot.cmd
+     9728  2020-07-16 21:07   graalvm-3bf9265b58-java8-20.3.0-dev/bin/jcmd.exe
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
@@ -203,32 +204,46 @@ We observe that the [**`mx`**][mx_cli] configuration accepts a restricted set of
 <b>&gt; cd</b>
 c:\opt\Python-2.7.18
 &nbsp;
-<b>&gt; python -m pip uninstall pylint</b>
+<b>&gt; <a href="https://docs.python.org/3/using/cmdline.html">python</a> -m pip uninstall pylint</b>
 [...]
   Successfully uninstalled pylint-2.3.1
 &nbsp;
 <b>&gt; python -m pip install pylint==1.9.5</b>
 Collecting pylint==1.9.5
 [...]
-<b>&gt; Scripts\pylint.exe --version</b>
+<b>&gt; Scripts\<a href="http://pylint.pycqa.org/en/latest/user_guide/run.html">pylint.exe</a> --version</b>
 No config file found, using default configuration
 pylint 1.9.5,
 astroid 1.6.6
 Python 2.7.18 (v2.7.18:8d21aa21f2, Apr 20 2020, 13:25:05) [MSC v.1500 64 bit (AMD64)]
 </pre>
 
-<!--
-## Footnotes
 
-<a name="footnote_01">[1]</a> ***2 GraalVM editions*** [↩](#anchor_01)
+## <span id="footnotes">Footnotes</span>
+
+<b name="footnote_01">[1]</b> ***MX suite directories*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
 </p>
--->
+<pre style="margin:0 0 1em 20px;font-size:80%;">
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> /r . suite.py</b>
+G:\graal\compiler\mx.compiler\suite.py
+G:\graal\examples\mx.examples\suite.py
+G:\graal\java-benchmarks\mx.java-benchmarks\suite.py
+G:\graal\regex\mx.regex\suite.py
+G:\graal\sdk\mx.sdk\suite.py
+G:\graal\substratevm\mx.substratevm\suite.py
+G:\graal\sulong\mx.sulong\suite.py
+G:\graal\tools\mx.tools\suite.py
+G:\graal\truffle\mx.truffle\suite.py
+G:\graal\vm\mx.vm\suite.py
+G:\graal\vscode\mx.vscode\suite.py
+G:\graal\wasm\mx.wasm\suite.py
+</pre>
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/July 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

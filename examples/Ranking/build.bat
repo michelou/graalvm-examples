@@ -62,6 +62,7 @@ goto end
 :env
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
+set _TIMER=0
 
 call :env_colors
 set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
@@ -77,24 +78,29 @@ set "_BENCH_JAR_FILE=%_TARGET_DIR%\benchmarks.jar"
 
 set _PKG_NAME=
 set _MAIN_NAME=Ranking
+set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
+if not exist "%JAVA_HOME%\bin\javac.exe" (
+   echo %_ERROR_LABEL% Java SDK installation not found 1>&2
+   set _EXITCODE=1
+   goto :eof
+)
+set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
-set _JAVAC_OPTS=
+set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
+if not exist "%JAVA_HOME%\bin\native-image.cmd" (
+   echo %_ERROR_LABEL% native-image is not installed or Java SDK is not a GraalVM installation 1>&2
+   echo %_ERROR_LABEL% ^(JAVA_HOME=%JAVA_HOME%^) 1>&2
+   set _EXITCODE=1
+   goto :eof
+)
 set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --allow-incomplete-classpath
 
 set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
 set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
-
-set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
-set _JAVADOC_OPTS=
-
-set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
-set _JAVA_OPTS=-cp "%_CLASSES_DIR%"
-
-set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
-set _JAR_OPTS=
 goto :eof
 
 :env_colors
@@ -146,7 +152,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.34
+set _CHECKSTYLE_VERSION=8.35
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -177,9 +183,9 @@ set _CLEAN=0
 set _COMPILE=0
 set _DOC=0
 set _HELP=0
+set _JVMCI=0
 set _PACK=0
 set _RUN=0
-set _JVMCI=0
 set _TARGET=jvm
 set _TEST=0
 set _TIMER=0
@@ -234,8 +240,9 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
+    echo %_DEBUG_LABEL% Variables  : JAVA_HOME=%JAVA_HOME% 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -351,7 +358,7 @@ call :libs_cpath
 if not %_EXITCODE%==0 goto :eof
 
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo %_JAVAC_OPTS% -classpath "%_LIBS_CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -classpath "%_LIBS_CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -370,28 +377,38 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-@rem input parameter: 1=target file 2=path (wildcards accepted)
+@rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
 @rem output parameter: _COMPILE_REQUIRED
 :compile_required
-set __TARGET_FILE=%~1
-set __PATH=%~2
+set "__TARGET_FILE=%~1"
 
+set __PATH_ARRAY=
+set __PATH_ARRAY1=
+:compile_path
+shift
+set __PATH=%~1
+if not defined __PATH goto :compile_next
+set __PATH_ARRAY=%__PATH_ARRAY%,'%__PATH%'
+set __PATH_ARRAY1=%__PATH_ARRAY1%,'!__PATH:%_ROOT_DIR%=!'
+goto :compile_path
+
+:compile_next
 set __TARGET_TIMESTAMP=00000000000000
 for /f "usebackq" %%i in (`powershell -c "gci -path '%__TARGET_FILE%' -ea Stop | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
      set __TARGET_TIMESTAMP=%%i
 )
 set __SOURCE_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci -recurse -path '%__PATH%' -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+for /f "usebackq" %%i in (`powershell -c "gci -recurse -path %__PATH_ARRAY:~1% -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
 set _COMPILE_REQUIRED=%_NEWER%
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% "%__TARGET_FILE%" 1>&2
-    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% "%__PATH%" 1>&2
+    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '%__TARGET_FILE%' 1>&2
+    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
     echo %_DEBUG_LABEL% _COMPILE_REQUIRED=%_COMPILE_REQUIRED% 1>&2
 ) else if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No compilation needed ^("!__PATH:%_ROOT_DIR%=!"^) 1>&2
+    echo No compilation needed ^(%__PATH_ARRAY1:~1%^) 1>&2
 )
 goto :eof
 
@@ -400,15 +417,15 @@ goto :eof
 set __TIMESTAMP1=%~1
 set __TIMESTAMP2=%~2
 
-set __TIMESTAMP1_DATE=%__TIMESTAMP1:~0,8%
-set __TIMESTAMP1_TIME=%__TIMESTAMP1:~-6%
+set __DATE1=%__TIMESTAMP1:~0,8%
+set __TIME1=%__TIMESTAMP1:~-6%
 
-set __TIMESTAMP2_DATE=%__TIMESTAMP2:~0,8%
-set __TIMESTAMP2_TIME=%__TIMESTAMP2:~-6%
+set __DATE2=%__TIMESTAMP2:~0,8%
+set __TIME2=%__TIMESTAMP2:~-6%
 
-if %__TIMESTAMP1_DATE% gtr %__TIMESTAMP2_DATE% ( set _NEWER=1
-) else if %__TIMESTAMP1_DATE% lss %__TIMESTAMP2_DATE% ( set _NEWER=0
-) else if %__TIMESTAMP1_TIME% gtr %__TIMESTAMP2_TIME% ( set _NEWER=1
+if %__DATE1% gtr %__DATE2% ( set _NEWER=1
+) else if %__DATE1% lss %__DATE2% ( set _NEWER=0
+) else if %__TIME1% gtr %__TIME2% ( set _NEWER=1
 ) else ( set _NEWER=0
 )
 goto :eof
@@ -444,6 +461,9 @@ goto :eof
 call :libs_cpath
 if not %_EXITCODE%==0 goto :eof
 
+call :compile_required "%_BENCH_JAR_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+if %_COMPILE_REQUIRED%==0 goto :eof
+
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
 (
     echo Manifest-Version: 1.0
@@ -456,17 +476,17 @@ for /f "delims=; tokens=1,*" %%f in ("%__CPATH_TAIL%") do (
     set "__JAR_FILE=%%f"
     if not "!__JAR_FILE:jopt-simple=!"=="!__JAR_FILE!" (
         pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% call "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
         call "%_JAR_CMD%" xf "!__JAR_FILE!"
         popd
     ) else if not "!__JAR_FILE:jmh-core=!"=="!__JAR_FILE!" (
         pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% call "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
         call "%_JAR_CMD%" xf "!__JAR_FILE!"
         popd
     ) else if not "!__JAR_FILE:commons-math3=!"=="!__JAR_FILE!" (
         pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% call "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
         call "%_JAR_CMD%" xf "!__JAR_FILE!"
         popd
     )

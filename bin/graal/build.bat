@@ -75,8 +75,8 @@ set _TAR_CMD=tar.exe
 set _TAR_OPTS=
 
 @rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-20.2-b02
-set _JDK8_UPDATE_VERSION=252
+set _JVMCI_VERSION=jvmci-20.2-b03
+set _JDK8_UPDATE_VERSION=262
 set _JDK8_UPDATE_VERSION_SUFFIX=
 @rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
@@ -516,10 +516,10 @@ if %_DEBUG%==1 ( set __MX_OPTS=-V %_MX_OPTS%
 ) else if %_VERBOSE%==1 ( set __MX_OPTS=-v %_MX_OPTS%
 ) else ( set __MX_OPTS=%_MX_OPTS%
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MX_CMD%" %__MX_OPTS% --primary-suite-path %__PRIMARY_PATH% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MX_CMD%" %__MX_OPTS% --primary-suite-path %PRIMARY% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Create GraalVM build with tags %GATE% 1>&2
 )
-call "%_MX_CMD%" %__MX_OPTS% --primary-suite-path "%__PRIMARY_PATH%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
+call "%_MX_CMD%" %__MX_OPTS% --primary-suite-path "%PRIMARY%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto dist_done
