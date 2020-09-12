@@ -125,7 +125,7 @@ Tool versions:
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.28.0.windows.1
 
-<b>&gt; where cl java link</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
 C:\opt\graalvm-ce-java8-20.1.0\bin\java.exe
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
@@ -158,7 +158,7 @@ Tool paths:
 Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal][oracle_graal] repository; it is setup as follows:
 <pre style="font-size:80%;">
 <b>&gt; cp bin\graal\build.* graal</b>
-<b>&gt; cd graal</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cd">cd</a> graal</b>
 </pre>
 
 Usage examples of command **`build.bat`** are presented in document [BUILD.md](BUILD.md).
@@ -212,7 +212,7 @@ c:\opt\graalvm-ce-java8-20.2.0\lib\installer\bin\gu.exe
 </li>
 <li><a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.2.0" rel="external"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
 <pre style="font-size:80%;">
-<b>&gt; echo %JAVA_HOME%</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/echo">echo</a> %JAVA_HOME%</b>
 C:\opt\graalvm-ce-java8-20.2.0
 &nbsp;
 <b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java8-windows-amd64-20.2.0.jar --verbose</b>
@@ -231,8 +231,13 @@ Extracting: bin/rebuild-images.cmd
 <b>&gt; c:\opt\graalvm-ce-java8-20.2.0\bin\<a href="https://www.graalvm.org/reference-manual/native-image/" rel="external">native-image.cmd</a> --version</b>
 GraalVM Version 20.2.0 (Java Version 1.8.0_262)
 </pre></li>
-<li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/" rel="external"><code>polyglot.exe</code></a> is finally part of the Windows distribution (<i>and</i> is native).
+<li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/" rel="external"><code>polyglot.cmd</code></a> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java8-20.2.0\ polyglot.cmd</b>
+c:\opt\graalvm-ce-java8-20.2.0\bin\polyglot.cmd
+c:\opt\graalvm-ce-java8-20.2.0\jre\bin\polyglot.cmd
+c:\opt\graalvm-ce-java8-20.2.0\jre\lib\polyglot\bin\polyglot.cmd
+&nbsp;
 <b>&gt; c:\opt\graalvm-ce-java8-20.2.0\jre\bin\<a href="https://www.graalvm.org/reference-manual/polyglot-programming/#polyglot-launcher" rel="external">polyglot.cmd</a> --version</b>
 GraalVM CE polyglot launcher 20.2.0
 </pre></li>

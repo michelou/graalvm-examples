@@ -20,6 +20,8 @@
 ## <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
+- [Running Camunda on GraalVM Native Image](https://javahippie.net/java/graal-vm/native-image/camunda/2020/05/31/camundanative.html) by Tim Zöller, May 2020.
 - [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/), by Naoko, April 2019.
 - [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
 - [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
