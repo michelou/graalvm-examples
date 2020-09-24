@@ -29,7 +29,7 @@ if %_CLEAN%==1 (
     call :clean
     if not !_EXITCODE!==0 goto end
 )
-if %_CHECKSTYLE%==1 (
+if %_LINT%==1 (
     call :checkstyle
     if not !_EXITCODE!==0 goto end
 )
@@ -53,6 +53,10 @@ if %_RUN%==1 (
     call :run_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
+if %_TEST%==1 (
+    call :test_%_TARGET%
+    if not !_EXITCODE!==0 goto end
+)
 goto end
 
 @rem #########################################################################
@@ -74,10 +78,10 @@ set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 
 set _PKG_NAME=org.graalvm.example
-@rem both _MAIN_NAME and _MAIN_NATIVE_FILE are defined in args
+@rem both _MAIN_NAME and _MAIN_NATIVE_FILE are defined in args (option -native)
 
-if not defined JAVA_HOME (
-    echo %_ERROR_LABEL% Java SDK not found 1>&2
+if not exist "%JAVA_HOME%\bin\javac.exe" (
+    echo %_ERROR_LABEL% Java SDK installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -86,11 +90,14 @@ set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
 set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
+if not exist "%JAVA_HOME%\bin\native-image.cmd" (
+    echo %_ERROR_LABEL% GraalVM installation not found 1>&2
+    echo %_ERROR_LABEL% ^(JAVA_HOME=%JAVA_HOME%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
 set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback "--initialize-at-build-time=%_PKG_NAME%" "--initialize-at-run-time=%_PKG_NAME%.Startup"
-
-set "_GRAALVM_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
-set _GRAALVM_OPTS=-Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=%_GRAALVM_LOG_FILE%
 goto :eof
 
 :env_colors
@@ -109,6 +116,7 @@ set _NORMAL_FG_YELLOW=[33m
 set _NORMAL_FG_BLUE=[34m
 set _NORMAL_FG_MAGENTA=[35m
 set _NORMAL_FG_CYAN=[36m
+set _NORMAL_FG_WHITE=[37m
 
 @rem normal background colors
 set _NORMAL_BG_BLACK=[40m
@@ -126,6 +134,9 @@ set _STRONG_FG_RED=[91m
 set _STRONG_FG_GREEN=[92m
 set _STRONG_FG_YELLOW=[93m
 set _STRONG_FG_BLUE=[94m
+set _STRONG_FG_MAGENTA=[95m
+set _STRONG_FG_CYAN=[96m
+set _STRONG_FG_WHITE=[97m
 
 @rem strong background colors
 set _STRONG_BG_BLACK=[100m
@@ -138,7 +149,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.34
+set _CHECKSTYLE_VERSION=8.36.1
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -147,9 +158,11 @@ set _PROJECT_VERSION=0.1-SNAPSHOT
 set "__PROPS_FILE=%_ROOT_DIR%build.properties"
 if exist "%__PROPS_FILE%" (
     for /f "tokens=1,* delims==" %%i in (%__PROPS_FILE%) do (
+        set __NAME=
+        set __VALUE=
         for /f "delims= " %%n in ("%%i") do set __NAME=%%n
         @rem line comments start with "#"
-        if not "!__NAME!"=="" if not "!__NAME:~0,1!"=="#" (
+        if defined __NAME if not "!__NAME:~0,1!"=="#" (
             @rem trim value
             for /f "tokens=*" %%v in ("%%~j") do set __VALUE=%%v
             set "_!__NAME:.=_!=!__VALUE!"
@@ -165,15 +178,16 @@ goto :eof
 @rem input parameter %*
 :args
 set _CACHED=0
-set _CHECKSTYLE=0
 set _CLEAN=0
 set _COMPILE=0
 set _DOC=0
 set _HELP=0
 set _JVMCI=0
+set _LINT=0
 set _PACK=0
 set _RUN=0
 set _TARGET=jvm
+set _TEST=0
 set _TIMER=0
 set _VERBOSE=0
 set __N=0
@@ -198,13 +212,14 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if "%__ARG%"=="check" ( set _CHECKSTYLE=1
-    ) else if "%__ARG%"=="clean" ( set _CLEAN=1
+    if "%__ARG%"=="clean" ( set _CLEAN=1
     ) else if "%__ARG%"=="compile" ( set _COMPILE=1
     ) else if "%__ARG%"=="doc" ( set _DOC=1
     ) else if "%__ARG%"=="help" ( set _HELP=1
+    ) else if "%__ARG%"=="lint" ( set _LINT=1
     ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
     ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
+    ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -230,8 +245,10 @@ if %_CACHED%==1 set _NATIVE_IMAGE_OPTS="--initialize-at-run-time=%_MAIN_CLASS%" 
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
     echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
-    echo %_DEBUG_LABEL% Subcommands: _CHECKSTYLE=%_CHECKSTYLE% _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _PACK=%_PACK% _RUN=%_RUN% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
+    echo %_DEBUG_LABEL% Variables  : JAVA_HOME="%JAVA_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -250,14 +267,6 @@ if %_VERBOSE%==1 (
 )
 echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
-if %_VERBOSE%==0 goto help_params
-echo   %__BEG_P%Generation of native image%__END% ^(option %__BEG_O%-native%__END%^):
-echo     Command %__BEG_O%native-image.cmd%__END% is part of the GraalVM distribution
-echo     and relies on the two environment variables %__BEG_O%INCLUDE%__END% and %__BEG_O%LIB%__END%
-echo     to access the include files and to the library files from
-echo     %__BEG_N%Microsoft Visual Studio 10%_RESET% and %__BEG_N%Microsoft Windows SDK 7.1%__END%.
-echo.
-:help_params
 echo   %__BEG_P%Options:%__END%
 echo     %__BEG_O%-cached%__END%     select main class with cached startup time
 echo     %__BEG_O%-debug%__END%      display commands executed by this script
@@ -268,11 +277,19 @@ echo     %__BEG_O%-verbose%__END%    display progress messages
 echo.
 echo   %__BEG_P%Subcommands:%__END%
 echo     %__BEG_O%clean%__END%       delete generated files
-echo     %__BEG_O%check%__END%       analyze Java source files with %__BEG_N%CheckStyle%__END%
 echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
+echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
 echo     %__BEG_O%run%__END%         execute main program
+echo     %__BEG_O%test%__END%        execute JMH benchmarks
+if %_VERBOSE%==0 goto :eof
+echo.
+echo   %__BEG_P%Generation of native image%__END% ^(option %__BEG_O%-native%__END%^):
+echo     Command %__BEG_O%native-image.cmd%__END% is part of the GraalVM distribution;
+echo     it relies on the two environment variables %__BEG_O%INCLUDE%__END% and %__BEG_O%LIB%__END%
+echo     to access header/library files from the software tools
+echo     %__BEG_N%Microsoft Visual Studio 10%_RESET% and %__BEG_N%Microsoft Windows SDK 7.1%__END%.
 goto :eof
 
 :clean
@@ -321,11 +338,13 @@ if not %ERRORLEVEL%==0 (
 )
 :checkstyle_analyze
 set __SOURCE_FILES=
+set __N=0
 for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
+    set /a __N+=1
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% %_JAVA_CMD% -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=!" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=%%USERPROFILE%%!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -335,7 +354,7 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :compile
-if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%"
+if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
 
@@ -349,9 +368,8 @@ echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
 :compile_java
-
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo %_JAVAC_OPTS% -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -370,29 +388,38 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-@rem input parameter: 1=target file 2=path (wildcards accepted)
+@rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
 @rem output parameter: _COMPILE_REQUIRED
 :compile_required
-set __TARGET_FILE=%~1
-set __PATH=%~2
+set "__TARGET_FILE=%~1"
 
+set __PATH_ARRAY=
+set __PATH_ARRAY1=
+:compile_path
+shift
+set __PATH=%~1
+if not defined __PATH goto :compile_next
+set __PATH_ARRAY=%__PATH_ARRAY%,'%__PATH%'
+set __PATH_ARRAY1=%__PATH_ARRAY1%,'!__PATH:%_ROOT_DIR%=!'
+goto :compile_path
+
+:compile_next
 set __TARGET_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci '%__TARGET_FILE%' | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S"`) do (
-    set __TARGET_TIMESTAMP=%%i
-)
-if %_DEBUG%==1 echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% %__TARGET_FILE% 1>&2
-if %__TARGET_TIMESTAMP%==00000000000000 (
-    set _COMPILE_REQUIRED=1
-    goto :eof
+for /f "usebackq" %%i in (`powershell -c "gci -path '%__TARGET_FILE%' -ea Stop | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+     set __TARGET_TIMESTAMP=%%i
 )
 set __SOURCE_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci -recurse '%__PATH%' | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S"`) do (
+for /f "usebackq" %%i in (`powershell -c "gci -recurse -path %__PATH_ARRAY:~1% -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
 set _COMPILE_REQUIRED=%_NEWER%
-if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No compilation needed ^("!__PATH:%_ROOT_DIR%=!"^) 1>&2
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '%__TARGET_FILE%' 1>&2
+    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
+    echo %_DEBUG_LABEL% _COMPILE_REQUIRED=%_COMPILE_REQUIRED% 1>&2
+) else if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
+    echo No compilation needed ^(%__PATH_ARRAY1:~1%^) 1>&2
 )
 goto :eof
 
@@ -401,15 +428,15 @@ goto :eof
 set __TIMESTAMP1=%~1
 set __TIMESTAMP2=%~2
 
-set __TIMESTAMP1_DATE=%__TIMESTAMP1:~0,8%
-set __TIMESTAMP1_TIME=%__TIMESTAMP1:~-6%
+set __DATE1=%__TIMESTAMP1:~0,8%
+set __TIME1=%__TIMESTAMP1:~-6%
 
-set __TIMESTAMP2_DATE=%__TIMESTAMP2:~0,8%
-set __TIMESTAMP2_TIME=%__TIMESTAMP2:~-6%
+set __DATE2=%__TIMESTAMP2:~0,8%
+set __TIME2=%__TIMESTAMP2:~-6%
 
-if %__TIMESTAMP1_DATE% gtr %__TIMESTAMP2_DATE% ( set _NEWER=1
-) else if %__TIMESTAMP1_DATE% lss %__TIMESTAMP2_DATE% ( set _NEWER=0
-) else if %__TIMESTAMP1_TIME% gtr %__TIMESTAMP2_TIME% ( set _NEWER=1
+if %__DATE1% gtr %__DATE2% ( set _NEWER=1
+) else if %__DATE1% lss %__DATE2% ( set _NEWER=0
+) else if %__TIME1% gtr %__TIME2% ( set _NEWER=1
 ) else ( set _NEWER=0
 )
 goto :eof
@@ -488,6 +515,9 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :pack
+call :compile_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
+if %_COMPILE_REQUIRED%==0 goto :eof
+
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
 (
     echo Manifest-Version: 1.0
@@ -508,8 +538,11 @@ goto :eof
 
 :run_jvm
 set __MAIN_ARGS=
-if %_DEBUG%==1 ( set __JAVA_OPTS=-cp "%_CLASSES_DIR%" %_GRAALVM_OPTS%
-) else ( set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
+
+set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
+if %_DEBUG%==1 (
+    set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
+    set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"
 )
 if %_JVMCI%==1 (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
@@ -526,9 +559,9 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 if exist "%_GRAALVM_LOG_FILE%" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%_GRAALVM_LOG_FILE%" 1>&2
-    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!_GRAALVM_LOG_FILE:%_ROOT_DIR%=!" 1>&2
+if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%__GRAAL_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
 )
 goto :eof
@@ -546,6 +579,14 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
+goto :eof
+
+:test_jvm
+echo %_WARNING_LABEL% JVM tests not yet implemented 1>&2
+goto :eof
+
+:test_native
+echo %_WARNING_LABEL% Native tests not yet implemented 1>&2
 goto :eof
 
 @rem input parameter: %1=XML file path
