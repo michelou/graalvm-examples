@@ -208,7 +208,7 @@ c:\opt\Python-2.7.18
 [...]
   Successfully uninstalled pylint-2.3.1
 &nbsp;
-<b>&gt; python -m pip install pylint==1.9.5</b>
+<b>&gt; <a href="https://docs.python.org/3/using/cmdline.html">python</a> -m pip install pylint==1.9.5</b>
 Collecting pylint==1.9.5
 [...]
 <b>&gt; Scripts\<a href="http://pylint.pycqa.org/en/latest/user_guide/run.html">pylint.exe</a> --version</b>

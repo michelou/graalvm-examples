@@ -46,7 +46,7 @@ goto :end
 @rem ## Subroutines
 
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
-@rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD, _TAR_OPTS
+@rem                    _GIT_CMD, _GIT_OPTS, _MX_CMD, _MX_OPTS, _TAR_CMD
 :env
 set _BASENAME=%~n0
 for %%f in ("%~dp0\.") do set "_ROOT_DIR=%%~dpf"
@@ -65,14 +65,18 @@ set "_GRAAL_PATH=%_TRAVIS_BUILD_DIR%"
 set _MX_URL=https://github.com/graalvm/mx.git
 set "_MX_PATH=%_ROOT_DIR%\mx"
 
-set _GIT_CMD=git.exe
+set "_GIT_CMD=%GIT_HOME%\bin\git.exe"
 set _GIT_OPTS=
 
 set "_MX_CMD=%_MX_PATH%\mx.cmd"
 set _MX_OPTS=
 
-set _TAR_CMD=tar.exe
-set _TAR_OPTS=
+if not exist "%GIT_HOME%\usr\bin\tar.exe" (
+    echo %_ERROR_LABEL% Git installation not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_TAR_CMD=%GIT_HOME%\usr\bin\tar.exe"
 
 @rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
 set _JVMCI_VERSION=jvmci-20.2-b03
@@ -183,10 +187,10 @@ if not defined __ARG (
 )
 if "%__ARG:~0,1%"=="-" (
     @rem option
-    if /i "%__ARG%"=="-debug" ( set _DEBUG=1
-    ) else if /i "%__ARG%"=="-help" ( set _HELP=1
-    ) else if /i "%__ARG%"=="-timer" ( set _TIMER=1
-    ) else if /i "%__ARG%"=="-verbose" ( set _VERBOSE=1
+    if "%__ARG%"=="-debug" ( set _DEBUG=1
+    ) else if "%__ARG%"=="-help" ( set _HELP=1
+    ) else if "%__ARG%"=="-timer" ( set _TIMER=1
+    ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
         echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
         set _EXITCODE=1
@@ -194,11 +198,11 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if /i "%__ARG%"=="clean" ( set _CLEAN=1
-    ) else if /i "%__ARG%"=="dist" ( set _DIST=1
-    ) else if /i "%__ARG%"=="help" ( set _HELP=1
-    ) else if /i "%__ARG%"=="update" ( set _UPDATE=1
-    ) else if /i "%__ARG:~0,5%"=="dist:" (
+    if "%__ARG%"=="clean" ( set _CLEAN=1
+    ) else if "%__ARG%"=="dist" ( set _DIST=1
+    ) else if "%__ARG%"=="help" ( set _HELP=1
+    ) else if "%__ARG%"=="update" ( set _UPDATE=1
+    ) else if "%__ARG:~0,5%"=="dist:" (
         set /a "__N_MAX=_INI_N-1"
         set /a "__N=%__ARG:~5%+0"
         if 1 leq !__N! if !__N! leq !__N_MAX! (
@@ -272,7 +276,7 @@ goto :eof
 set "__DIR=%~1"
 if not exist "%__DIR%\" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
-) else if %_VERBOSE%==1 ( echo Remove directory %__DIR% 1>&2
+) else if %_VERBOSE%==1 ( echo Remove directory "!__DIR:%_ROOT_DIR%\=!" 1>&2
 )
 rmdir /s /q "%__DIR%"
 if not %ERRORLEVEL%==0 (
@@ -285,7 +289,7 @@ goto :eof
 set "__FILE=%~1"
 if not exist "%__FILE%" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% del /q "%__FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Remove file %__FILE% 1>&2
+) else if %_VERBOSE%==1 ( echo Remove file "!__FILE:%_ROOT_DIR%\=!" 1>&2
 )
 del /q "%__FILE%"
 if not %ERRORLEVEL%==0 (

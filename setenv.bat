@@ -651,6 +651,7 @@ goto :eof
 :end
 endlocal & (
     if %_EXITCODE%==0 (
+        if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
         if not defined JAVA_HOME set "JAVA_HOME=%_JAVA_HOME%"
         if not defined JAVA11_HOME set "JAVA11_HOME=%_JAVA11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"

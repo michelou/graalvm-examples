@@ -127,7 +127,7 @@ Tool versions:
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
-C:\opt\graalvm-ce-java8-20.1.0\bin\java.exe
+C:\opt\graalvm-ce-java8-20.2.0\bin\java.exe
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
 </pre>
 
@@ -140,7 +140,7 @@ Tool versions:
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 10.00.40219.01, nmake 10.00.40219.01, git 2.28.0.windows.1
 Tool paths:
-   C:\opt\graalvm-ce-java8-20.1.0\bin\javac.exe
+   C:\opt\graalvm-ce-java8-20.2.0\bin\javac.exe
    C:\opt\Python-2.7.18\python.exe
    C:\opt\Python-2.7.18\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
@@ -216,7 +216,7 @@ c:\opt\graalvm-ce-java8-20.2.0\lib\installer\bin\gu.exe
 C:\opt\graalvm-ce-java8-20.2.0
 &nbsp;
 <b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java8-windows-amd64-20.2.0.jar --verbose</b>
-Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.1.0.jar
+Processing Component archive: native-image-installable-svm-java8-windows-amd64-20.2.0.jar
 Preparing to install native-image-installable-svm-java8-windows-amd64-20.2.0.jar, contains org.graalvm.native-image, version 20.2.0 (org.graalvm.native-image)
 Checking requirements of component Native Image (native-image), version 20.1.0
         Requires Graal Version = 20.2.0, GraalVM provides: 20.2.0
@@ -266,7 +266,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
 [graalvm_releases]: https://github.com/graalvm/graalvm-ce-builds/releases
-[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/20_1/
+[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/20_2/
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kotlin_examples]: https://github.com/michelou/kotlin-examples

@@ -255,7 +255,7 @@ goto :eof
 
 :help
 if %_VERBOSE%==1 (
-    set __BEG_P=%_NORMAL_FG_GREEN%%_UNDERSCORE%
+    set __BEG_P=%_STRONG_FG_CYAN%%_UNDERSCORE%
     set __BEG_O=%_STRONG_FG_GREEN%
     set __BEG_N=%_NORMAL_FG_YELLOW%
     set __END=%_RESET%
@@ -296,9 +296,10 @@ goto :eof
 call :rmdir "%_TARGET_DIR%"
 goto :eof
 
+@rem input parameter(s): %1=directory path
 :rmdir
 set "__DIR=%~1"
-if not exist "%__DIR%" goto :eof
+if not exist "%__DIR%\" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
 )
@@ -560,12 +561,12 @@ if not %ERRORLEVEL%==0 (
     goto :eof
 )
 if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%__GRAAL_LOG_FILE%" 1>&2
-    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to file "%__GRAAL_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to file "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
 )
 goto :eof
-
+file
 :run_native
 set "__EXE_FILE=%_MAIN_NATIVE_FILE%.exe"
 if not exist "%__EXE_FILE%" (
