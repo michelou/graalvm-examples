@@ -24,7 +24,7 @@ Project [**`ClassInitialization\`**](ClassInitialization/) consists of the two c
 
 > **:mag_right:** The example comes from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article "[Updates on Class Initialization in GraalVM Native Image Generation](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7)", published on September 12, 2019.
 
-Command [**`build`**](ClassInitialization/build.bat) with no argument displays the available options and subcommands:
+Command [**`build`**](ClassInitialization/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a></b>
@@ -35,15 +35,17 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
     -debug      display commands executed by this script
     -jvmci      add JVMCI options
     -native     generate both JVM files and native image
+    -timer      display total elapsed time
     -verbose    display progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
-    check       analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     compile     generate executable
     doc         generate HTML documentation
     help        display this help message
+    lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     run         run the generated executable
+    test        execute JMH benchmarks
 </pre>
 
 Command [**`build clean run`**](ClassInitialization/build.bat) produces the following output:
@@ -151,7 +153,7 @@ Project [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
 - program arguments are concatenated into a sentence which is used as test input. 
 
-Command [**`build`**](CountUppercase/build.bat) with no argument displays the available options and subcommands:
+Command [**`build`**](CountUppercase/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="CountUppercase/build.bat">build</a></b>
@@ -166,10 +168,10 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Subcommands:
     clean       delete generated files
-    check       analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     compile     generate executable
     doc         generate HTML documentation
     help        display this help message
+    lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     run         run executable
 </pre>
 
@@ -250,7 +252,7 @@ Project [**`Ranking\`**](Ranking/) is a micro-benchmark.
 
 > **:mag_right:** The example comes from Berger's article "[An introduction to GraalVM](https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples)", published on June 28, 2019.
 
-Command [**`build`**](Ranking/build.bat) with no argument displays the available options and subcommands:
+Command [**`build`**](Ranking/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a hre="Ranking/build.bat">build</a></b>
@@ -258,14 +260,17 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
     -debug      show commands executed by this script
+    -jvmci      add JVMCI options
+    -native     generate both JVM files and native image
+    -timer      display total elapsed time
     -verbose    display progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
-    check       analyze Java source files with CheckStyle
     compile     generate executable
     doc         generate HTML documentation
     help        display this help message
+    lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     test        execute micro benchmark
 </pre>
 
@@ -366,7 +371,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/September 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/October 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

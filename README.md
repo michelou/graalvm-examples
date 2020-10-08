@@ -24,7 +24,7 @@ This project relies on the following external software for the **Microsoft Windo
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*September 2020*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
+For instance our development environment looks as follows (*October 2020*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -114,7 +114,7 @@ We distinguish different sets of batch commands:
 
 ## <span id="usage_examples">Usage examples</span>
 
-#### `setenv.bat`
+### **`setenv.bat`**
 
 Command [**`setenv`**](setenv.bat) is executed once to setup our development environment; it makes external tools such as [**`javac.exe`**][javac_cli], [**`cl.exe`**][cl_cli] and [**`git.exe`**][git_cli] directly available from the command prompt:
 
@@ -153,7 +153,7 @@ Tool paths:
    C:\opt\Git-2.28.0\mingw64\bin\git.exe
 </pre>
 
-#### `graal\build.bat`
+### **`graal\build.bat`**
 
 Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal][oracle_graal] repository; it is setup as follows:
 <pre style="font-size:80%;">
@@ -163,7 +163,7 @@ Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal][o
 
 Usage examples of command **`build.bat`** are presented in document [BUILD.md](BUILD.md).
 
-#### `examples\**\build.bat`
+### **`examples\**\build.bat`**
 
 See document [**`examples\README.md`**](examples/README.md).
 
@@ -173,7 +173,7 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 
 ## <span id="footnotes">Footnotes</span>
 
-<b name="footnote_01">[1]</b> ***2 GraalVM editions*** [↩](#anchor_01)
+<b name="footnote_01">[1]</b> ***Two GraalVM editions*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
 <a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_262</a>.
@@ -251,7 +251,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/September 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/October 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

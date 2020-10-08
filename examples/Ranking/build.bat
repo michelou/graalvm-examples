@@ -97,7 +97,6 @@ if not exist "%JAVA_HOME%\bin\native-image.cmd" (
     goto :eof
 )
 set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
-set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --allow-incomplete-classpath
 goto :eof
 
 :env_colors
@@ -236,8 +235,6 @@ if defined _PKG_NAME ( set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
 )
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
-if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
-
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
@@ -365,7 +362,7 @@ if not %_EXITCODE%==0 goto :eof
 
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
 set "__CPATH=%_LIBS_CPATH%%_CLASSES_DIR%"
-echo -classpath "%__CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -deprecation -classpath "%__CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -535,10 +532,13 @@ call :native_env_msvc
 
 if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" 1>&2
+set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --allow-incomplete-classpath
+if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %__NATIVE_IMAGE_OPTS%
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
 )
-call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
+call "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
 if not %ERRORLEVEL%==0 (
     endlocal
     echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
