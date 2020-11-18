@@ -96,7 +96,7 @@ Command [**`build -native -cached clean compile`**](ClassInitialization/build.ba
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -cached clean compile</b>
-<b>&gt; tree /a /f target | findstr /v "^[A-Z]"</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/tree">tree</a> /a /f target | findstr /v "^[A-Z]"</b>
 |   HelloCachedTime.exe
 |   HelloCachedTime.exp
 |   HelloCachedTime.lib
@@ -121,29 +121,30 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
-[build] _CLEAN=0 _COMPILE=1 _RUN=0 _CACHED=0 _TARGET=native _VERBOSE=0
-[build] javac.exe -d G:\examples\ClassInitialization\target\classes @G:\examples\ClassInitialization\target\source_list.txt
+[build] Options    : _CACHED=0 _TARGET=native _TIMER=0 _VERBOSE=0
+[build] Subcommands: _CLEAN=0 _COMPILE=1 _DOC=0 _LINT=0 _PACK=0 _RUN=0 _TEST=0
+[build] Variables  : JAVA_HOME="C:\opt\graalvm-ce-java8-20.3.0"
 [build] <b>===== B U I L D   V A R I A B L E S =====</b>
-[build] <b>INCLUDE=C:\PROGRA~2\MICROS~1.0\VC\include;C:\PROGRA~1\MICROS~4\Windows\v7.1\include</b>
-[build] <b>LIB=C:\PROGRA~2\MICROS~1.0\VC\Lib\amd64;C:\PROGRA~1\MICROS~4\Windows\v7.1\lib\x64</b>
+[build] <b>INCLUDE=C:\PROGRA~2\MICROS~1.0\VC\include;C:\PROGRA~1\Microsoft SDKs\Windows\v7.1\include</b>
+[build] <b>LIB=C:\PROGRA~2\MICROS~1.0\VC\Lib\amd64;C:\PROGRA~1\Microsoft SDKs\Windows\v7.1\lib\x64</b>
 [build] <b>=========================================</b>
-[build] native-image.cmd -H:+TraceClassInitialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    classlist:   3,315.44 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        (cap):   8,256.38 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        setup:   9,749.13 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]   (typeflow):   7,767.53 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    (objects):   6,367.10 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]   (features):     528.67 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     analysis:  14,991.11 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     (clinit):     277.61 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     universe:     645.47 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      (parse):     962.09 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]     (inline):   2,159.67 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]    (compile):   9,242.30 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      compile:  13,148.71 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        image:   1,521.88 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]        write:     734.72 ms
-[G:\examples\ClassInitialization\target\HelloStartupTime:12528]      [total]:  44,387.22 ms
+[build] "C:\opt\graalvm-ce-java8-20.3.0\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]    classlist:   1,423.32 ms,  1.16 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]        (cap):   7,889.67 ms,  1.16 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]        setup:   9,858.53 ms,  1.16 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]     (clinit):     153.50 ms,  1.49 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]   (typeflow):   4,169.94 ms,  1.49 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]    (objects):   3,461.33 ms,  1.49 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]   (features):     220.37 ms,  1.49 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]     analysis:   8,152.19 ms,  1.49 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]     universe:     415.99 ms,  1.57 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]      (parse):     766.40 ms,  1.57 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]     (inline):     898.37 ms,  1.58 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]    (compile):   5,273.11 ms,  1.82 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]      compile:   7,280.26 ms,  1.82 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]        image:     630.74 ms,  1.82 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]        write:   1,235.45 ms,  1.82 GB
+[G:\examples\ClassInitialization\target\HelloStartupTime:12076]      [total]:  29,404.27 ms,  1.82 GB
 [build] _EXITCODE=0
 </pre>
 
@@ -208,9 +209,9 @@ total: 69999993 (1375 ms)
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | findstr /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java8-19.3.1\bin\javac.exe -d G:\examples\COUNTU~1\target\classes @G:\examples\COUNTU~1\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java8-19.3.1\bin\java.exe -cp G:\examples\COUNTU~1\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\COUNTU~1\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
-> [build] Compilation log written to G:\examples\COUNTU~1\target\graal_log.txt
+> [build] C:\opt\graalvm-ce-java8-20.2.0\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java8-20.2.0\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] Compilation log written to G:\examples\CountUppercase\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
 
@@ -226,7 +227,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
-> checkstyle-8.34-all.jar
+> checkstyle-8.37-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -283,9 +284,9 @@ Compile Java source files to directory "target\classes"
 Create Java benchmarks archive "target\benchmarks.jar"
 Copy chart file to directory "target"
 Execute JMH benchmark (JVM)
-# JMH version: 1.23
-# VM version: JDK 1.8.0_252, OpenJDK 64-Bit Server VM GraalVM CE 20.2.0-dev, 25.252-b09-jvmci-20.1-b02
-# VM invoker: C:\opt\graalvm-ce-java8-20.2.0-dev\jre\bin\java.exe
+# JMH version: 1.25.2
+# VM version: JDK 1.8.0_272, OpenJDK 64-Bit Server VM GraalVM CE 20.3.0, 25.272-b10-jvmci-20.3-b06
+# VM invoker: C:\opt\graalvm-ce-java8-20.3.0\jre\bin\java.exe
 # VM options: -Xmx1G
 # Warmup: 3 iterations, 10 s each
 # Measurement: 3 iterations, 10 s each
@@ -297,24 +298,24 @@ Execute JMH benchmark (JVM)
 # Run progress: 0.00% complete, ETA 00:01:00
 # Fork: 1 of 1
 # Warmup Iteration   1: files=[G:\examples\Ranking\target\chart2000-songyear-0-3-0058.csv]
-16.156 ms/op
-# Warmup Iteration   2: 14.477 ms/op
-# Warmup Iteration   3: 14.463 ms/op
-Iteration   1: 14.419 ms/op
-Iteration   2: 14.939 ms/op
-Iteration   3: 14.542 ms/op
+13.601 ms/op
+# Warmup Iteration   2: 11.303 ms/op
+# Warmup Iteration   3: 11.644 ms/op
+Iteration   1: 11.605 ms/op
+Iteration   2: 11.700 ms/op
+Iteration   3: 11.817 ms/op
 
 
 Result "nl.avisi.Ranking.rank":
-  14.633 ±(99.9%) 4.958 ms/op [Average]
-  (min, avg, max) = (14.419, 14.633, 14.939), stdev = 0.272
-  CI (99.9%): [9.675, 19.591] (assumes normal distribution)
+  11.707 ±(99.9%) 1.934 ms/op [Average]
+  (min, avg, max) = (11.605, 11.707, 11.817), stdev = 0.106
+  CI (99.9%): [9.773, 13.641] (assumes normal distribution)
 
 
 # Run complete. Total time: 00:01:00
 ...
 Benchmark     Mode  Cnt   Score   Error  Units
-Ranking.rank  avgt    3  14.633 ± 4.958  ms/op
+Ranking.rank  avgt    3  11.707 ± 1.934  ms/op
 </pre>
 
 Command [**`build -verbose -native clean run`**](Ranking/build.bat) builds and executes the *native* variant of the [JMH] benchmark (`target\Ranking.exe`):
@@ -371,7 +372,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2020* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

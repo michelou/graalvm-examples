@@ -149,7 +149,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.36.1
+set _CHECKSTYLE_VERSION=8.37
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -242,7 +242,7 @@ if defined _PKG_NAME ( set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if %_CACHED%==1 set _NATIVE_IMAGE_OPTS="--initialize-at-run-time=%_MAIN_CLASS%" %_NATIVE_IMAGE_OPTS%
-if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %_NATIVE_IMAGE_OPTS%
+if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
@@ -311,19 +311,19 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :checkstyle
-set "__USER_GRAAL_DIR=%USERPROFILE%\.graal"
-if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
+set "__CHECKSTYLE_DIR=%LOCALAPPADATA%\Checkstyle"
+if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
-set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
+set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
 @rem "checkstyle-all" version not available from Maven Central
 set __JAR_NAME=checkstyle-%_CHECKSTYLE_VERSION%-all.jar
 set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%_CHECKSTYLE_VERSION%/%__JAR_NAME%
-set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
+set "__JAR_FILE=%__CHECKSTYLE_DIR%\%__JAR_NAME%"
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
-set "__PS1_FILE=%__USER_GRAAL_DIR%\webrequest.ps1"
+set "__PS1_FILE=%__CHECKSTYLE_DIR%\webrequest.ps1"
 if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 
 set __PS1_VERBOSE[0]=

@@ -27,7 +27,6 @@ set _JAVA_HOME=
 set _JAVA11_HOME=
 
 set _MAVEN_PATH=
-set _PYTHON_PATH=
 set _LLVM_PATH=
 set _MSVS_PATH=
 set _SDK_PATH=
@@ -73,6 +72,7 @@ goto end
 @rem output parameters: _DEBUG_LABEL, _ERROR_LABEL, _WARNING_LABEL
 :env
 set _BASENAME=%~n0
+set _DRIVE_NAME=G
 set "_ROOT_DIR=%~dp0"
 
 call :env_colors
@@ -160,7 +160,50 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _HELP=%_HELP% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
+call :subst %_DRIVE_NAME% "%_ROOT_DIR%"
+if not %_EXITCODE%==0 goto :eof
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% Options  : _HELP=%_HELP% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Variables: _DRIVE_NAME=%_DRIVE_NAME% 1>&2
+)
+goto :eof
+
+@rem input parameter(s): %1: drive letter, %2: path to be substituted
+:subst
+set __DRIVE_NAME=%~1
+set "__GIVEN_PATH=%~2"
+
+if not "%__DRIVE_NAME:~-1%"==":" set __DRIVE_NAME=%__DRIVE_NAME%:
+if "%__DRIVE_NAME%"=="%__GIVEN_PATH:~0,2%" goto :eof
+
+if "%__GIVEN_PATH:~-1%"=="\" set "__GIVEN_PATH=%__GIVEN_PATH:~0,-1%"
+if not exist "%__GIVEN_PATH%" (
+    echo %_ERROR_LABEL% Provided path does not exist ^(%__GIVEN_PATH%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+for /f "tokens=1,2,*" %%f in ('subst ^| findstr /b "%__DRIVE_NAME%" 2^>NUL') do (
+    set "__SUBST_PATH=%%h"
+    if "!__SUBST_PATH!"=="!__GIVEN_PATH!" (
+        set __MESSAGE=
+        for /f %%i in ('subst ^| findstr /b "%__DRIVE_NAME%\"') do "set __MESSAGE=%%i"
+        if defined __MESSAGE (
+            if %_DEBUG%==1 ( echo %_DEBUG_LABEL% !__MESSAGE! 1>&2
+            ) else if %_VERBOSE%==1 ( echo !__MESSAGE! 1>&2
+            )
+        )
+        goto :eof
+    )
+)
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% subst "%__DRIVE_NAME%" "%__GIVEN_PATH%" 1>&2
+) else if %_VERBOSE%==1 ( echo Assign path %__GIVEN_PATH% to drive %__DRIVE_NAME% 1>&2
+)
+subst "%__DRIVE_NAME%" "%__GIVEN_PATH%"
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to assigned drive %__DRIVE_NAME% to path 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
 goto :eof
 
 :help
@@ -257,43 +300,45 @@ if not exist "%_MAVEN_HOME%\bin\mvn.cmd" (
 set "_MAVEN_PATH=;%_MAVEN_HOME%\bin"
 goto :eof
 
-@rem output parameter: _PYTHON_PATH
+@rem output parameter: _PYTHON_HOME
 :python
-set _PYTHON_PATH=
+set _PYTHON_HOME=
 
-set __PYTHON_HOME=
 set __PYTHON_CMD=
-for /f %%f in ('where python.exe 2^>NUL') do set "__PYTHON_CMD=%%f"
+for /f %%f in ('where python.exe 2^>NUL') do (
+    set "__PYTHON_CMD=%%f"
+    if not "!__PYTHON_CMD:WindowsApps=!"=="!__PYTHON_CMD!" set __PYTHON_CMD=
+)
 if defined __PYTHON_CMD (
+    for /f "delims=" %%i in ("%__PYTHON_CMD%") do set "_PYTHON_HOME=%%~dpi"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Python executable found in PATH 1>&2
-    @rem keep _PYTHON_PATH undefined since executable already in path
     goto :eof
 ) else if defined PYTHON_HOME (
-    set "__PYTHON_HOME=%PYTHON_HOME%"
+    set "_PYTHON_HOME=%PYTHON_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable PYTHON_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    if exist "!__PATH!\Python\" ( set "__PYTHON_HOME=!__PATH!\Python"
+    if exist "!__PATH!\Python\" ( set "_PYTHON_HOME=!__PATH!\Python"
     ) else (
-        for /f %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "__PYTHON_HOME=!__PATH!\%%f"
-        if not defined __PYTHON_HOME (
+        for /f %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
+        if not defined _PYTHON_HOME (
             set "__PATH=%ProgramFiles%"
-            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "__PYTHON_HOME=!__PATH!\%%f"
+            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
         )
     )
 )
-if not exist "%__PYTHON_HOME%\python.exe" (
-    echo %_ERROR_LABEL% Python executable not found ^(%__PYTHON_HOME%^) 1>&2
+if not exist "%_PYTHON_HOME%\python.exe" (
+    echo %_ERROR_LABEL% Python executable not found ^(%_PYTHON_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-if not exist "%__PYTHON_HOME%\Scripts\pylint.exe" (
-    echo %_ERROR_LABEL% Pylint executable not found ^(%__PYTHON_HOME%^) 1>&2
+if not exist "%_PYTHON_HOME%\Scripts\pylint.exe" (
+    echo %_ERROR_LABEL% Pylint executable not found ^(%_PYTHON_HOME%^) 1>&2
     echo ^(execute command: python -m pip install pylint^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_PYTHON_PATH=;%__PYTHON_HOME%;%__PYTHON_HOME%\Scripts"
+set "_PYTHON_PATH=;%_PYTHON_HOME%;%_PYTHON_HOME%\Scripts"
 goto :eof
 
 @rem output parameter(s): _LLVM_HOME, _LLVM_PATH
@@ -301,14 +346,14 @@ goto :eof
 set _LLVM_HOME=
 set _LLVM_PATH=
 
-set __LLVM_VERSION=9
+set __LLVM_VERSION=10
 set __CLANG_CMD=
 for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_CMD=%%f"
 if defined __CLANG_CMD (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Clang executable found in PATH 1>&2
     for /f "delims=" %%i in ("%__CLANG_CMD%") do set "__LLVM_BIN_DIR=%%~dpi"
     for %%f in ("!__LLVM_BIN_DIR!\.") do set "_LLVM_HOME=%%~dpf"
     @rem keep _LLVM_PATH undefined since executable already in path
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Clang executable found in PATH 1>&2
     goto :eof
 ) else if defined LLVM_HOME (
     set "_LLVM_HOME=%LLVM_HOME%"
@@ -563,22 +608,21 @@ set "__VERSIONS_LINE1=  "
 set "__VERSIONS_LINE2=  "
 set "__VERSIONS_LINE3=  "
 set __WHERE_ARGS=
-set __JAVAC_CMD=
-if defined JAVA_HOME for /f %%f in ('where /r "%JAVA_HOME%" javac.exe') do set "__JAVAC_CMD=%%f"
-if defined __JAVAC_CMD (
-    for /f "tokens=1,2,*" %%i in ('%__JAVAC_CMD% -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
+
+where /q "%JAVA_HOME%\bin:java.exe"
+if %ERRORLEVEL%==0 (
+    for /f "tokens=1,2,*" %%i in ('"%JAVA_HOME%\bin\java.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA_HOME%\bin:javac.exe"
 )
-set __JAVAC_CMD=
-if defined JAVA11_HOME for /f %%f in ('where /r "%JAVA11_HOME%" javac.exe') do set "__JAVAC_CMD=%%f"
-if defined __JAVAC_CMD (
-    for /f "tokens=1,2,*" %%i in ('%__JAVAC_CMD% -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
+where /q "%JAVA11_HOME%\bin:javac.exe"
+if %ERRORLEVEL%==0 (
+    for /f "tokens=1,2,*" %%i in ('"%JAVA11_HOME%\bin\javac.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA11_HOME%\bin:javac.exe"
 )
-where /q python.exe
+where /q "%PYTHON_HOME%:python.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,*" %%i in ('python.exe --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% python %%j,"
-    set __WHERE_ARGS=%__WHERE_ARGS% python.exe
+    for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\python.exe" --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% python %%j,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%PYTHON_HOME%:python.exe"
 )
 where /q pylint.exe
 if %ERRORLEVEL%==0 (
@@ -590,15 +634,15 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,2,3,*" %%i in ('make.exe --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% make.exe
 )
-where /q clang.exe
+where /q "%LLVM_HOME%\bin:clang.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('clang.exe --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% clang %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% clang.exe
+    for /f "tokens=1,2,3,*" %%i in ('"%LLVM_HOME%\bin\clang.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% clang %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%LLVM_HOME%\bin:clang.exe"
 )
-where /q opt.exe
+where /q "%LLVM_HOME%\bin:opt.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('opt.exe --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% opt.exe
+    for /f "tokens=1,2,3,*" %%i in ('"%LLVM_HOME%\bin\opt.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%LLVM_HOME%\bin:opt.exe"
 )
 where /q cl.exe
 if %ERRORLEVEL%==0 (
@@ -642,6 +686,7 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     if defined JAVA_HOME echo    JAVA_HOME=%JAVA_HOME% 1>&2
     if defined JAVA11_HOME echo    JAVA11_HOME=%JAVA11_HOME% 1>&2
     if defined LLVM_HOME echo    LLVM_HOME=%LLVM_HOME% 1>&2
+    if defined PYTHON_HOME echo    PYTHON_HOME=%PYTHON_HOME% 1>&2
 )
 goto :eof
 
@@ -658,15 +703,19 @@ endlocal & (
         if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
         if not defined MSVS_CMAKE_CMD set "MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%"
         if not defined MSVS_HOME set "MSVS_HOME=%_MSVS_HOME%"
+        if not defined PYTHON_HOME set "PYTHON_HOME=%_PYTHON_HOME%"
         if not defined SDK_HOME set "SDK_HOME=%_SDK_HOME%"
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
-        set "PATH=%PATH%%_MAVEN_PATH%%_PYTHON_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if %_BASH%==1 (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2
             call "%_GIT_HOME%\bin\bash.exe" --login
+        ) else if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
+            if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2
+            cd /d %_DRIVE_NAME%:
         )
     )
     if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2

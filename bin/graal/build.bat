@@ -79,8 +79,8 @@ if not exist "%GIT_HOME%\usr\bin\tar.exe" (
 set "_TAR_CMD=%GIT_HOME%\usr\bin\tar.exe"
 
 @rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-20.2-b03
-set _JDK8_UPDATE_VERSION=262
+set _JVMCI_VERSION=jvmci-20.3-b06
+set _JDK8_UPDATE_VERSION=272
 set _JDK8_UPDATE_VERSION_SUFFIX=
 @rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
@@ -223,7 +223,10 @@ if "%__ARG:~0,1%"=="-" (
 shift
 goto :args_loop
 :args_done
-if %_DEBUG%==1 echo %_DEBUG_LABEL% _CLEAN=%_CLEAN% _DIST=%_DIST% _DIST_ENV=%_DIST_ENV% _UPDATE=%_UPDATE% _VERBOSE=%_VERBOSE% 1>&2
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% Options    : _DIST_ENV=%_DIST_ENV% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _DIST=%_DIST% _UPDATE=%_UPDATE% 1>&2
+)
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
@@ -520,14 +523,19 @@ if %_DEBUG%==1 ( set __MX_OPTS=-V %_MX_OPTS%
 ) else if %_VERBOSE%==1 ( set __MX_OPTS=-v %_MX_OPTS%
 ) else ( set __MX_OPTS=%_MX_OPTS%
 )
+set __PATH=%PATH%
+set "PATH=%__PATH%;%PYTHON_HOME%"
+
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MX_CMD%" %__MX_OPTS% --primary-suite-path %PRIMARY% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Create GraalVM build with tags %GATE% 1>&2
 )
 call "%_MX_CMD%" %__MX_OPTS% --primary-suite-path "%PRIMARY%" --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE%
 if not %ERRORLEVEL%==0 (
+    set "PATH=%__PATH%"
     set _EXITCODE=1
     goto dist_done
 )
+set "PATH=%__PATH%"
 :dist_done
 endlocal
 goto :eof
