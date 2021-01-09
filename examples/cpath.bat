@@ -17,7 +17,7 @@ if not exist "%__TEMP_DIR%" mkdir "%__TEMP_DIR%"
 
 set _LIBS_CPATH=
 
-set _JMH_VERSION=1.25.2
+set _JMH_VERSION=1.27
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -30,6 +30,32 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
+
+set _MICRONAUT_VERSION=2.2.0
+
+@rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
+call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
+
+@rem https://mvnrepository.com/artifact/io.micronaut/micronaut-inject
+call :add_jar "io.micronaut" "micronaut-inject" "%_MICRONAUT_VERSION%"
+
+@rem https://mvnrepository.com/artifact/io.micronaut.configuration/micronaut-picocli
+call :add_jar "io.micronaut.configuration" "micronaut-picocli" "1.2.1"
+
+@rem https://mvnrepository.com/artifact/javax.inject/javax.inject
+call :add_jar "javax.inject" "javax.inject" "1"
+
+@rem https://mvnrepository.com/artifact/info.picocli/picocli
+call :add_jar "info.picocli" "picocli" "4.5.2"
+
+@rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
+call :add_jar "org.apache.logging.log4j" "log4j-api" "2.14.0"
+
+@rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+call :add_jar "org.apache.logging.log4j" "log4j-core" "2.14.0"
+
+@rem https://mvnrepository.com/artifact/com.guicedee.services/slf4j
+call :add_jar "com.guicedee.services" "slf4j" "1.1.0.6"
 
 goto end
 

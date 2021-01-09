@@ -20,6 +20,7 @@
 ## <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [CLI applications with GraalVM Native Image](https://medium.com/graalvm/cli-applications-with-graalvm-native-image-d629a40aa0be) by Oleg Selajev, November 2020.
   - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
 - [Running Camunda on GraalVM Native Image](https://javahippie.net/java/graal-vm/native-image/camunda/2020/05/31/camundanative.html) by Tim Zöller, May 2020.
 - [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/), by Naoko, April 2019.
@@ -55,7 +56,7 @@
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/November 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/January 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

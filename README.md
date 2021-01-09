@@ -9,13 +9,13 @@
   </tr>
 </table>
 
-[Dotty][dotty_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples] and [TruffleSqueak][trufflesqueak_examples] are other trending topics we are currently monitoring.
+[Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Scala 3][dotty_examples] and [TruffleSqueak][trufflesqueak_examples] are other trending topics we are currently monitoring.
 
 ## <span id="proj_deps">Project dependencies</span>
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.29][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.30][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 20.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -24,11 +24,11 @@ This project relies on the following external software for the **Microsoft Windo
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*November 2020*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
+For instance our development environment looks as follows (*January 2021*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.29.2\                                    <i>(290 MB)</i>
+C:\opt\Git-2.30.0\                                    <i>(276 MB)</i>
 C:\opt\graalvm-ce-java11-20.3.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java8-20.3.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-2.7.18\                                 <i>(162 MB)</i>
@@ -49,9 +49,9 @@ This repository is organized as follows:
 <a href="bin/graal/build.bat">bin\graal\build.bat</a>
 docs\
 examples\
-graal\                              <i>(<a href=".gitmodules">Git submodule</a>)</i>
+graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.9+10-jvmci-20.3-b06\</a>  <i>(287 MB)</i>
-mx\                                 <i>(<a href=".gitmodules">Git submodule</a>)</i>
+mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 <a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_272+10-jvmci-20.3-b06\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup> <i>(218 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
@@ -125,7 +125,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 Tool versions:
    javac 1.8.0_272, python 2.7.18, pylint 1.9.2, mx 5.275.5
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.29.2.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.30.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -140,7 +140,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 Tool versions:
    javac 1.8.0_272, python 2.7.18, pylint 1.9.2, mx 5.275.5
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.29.2.windows.1
+   link 10.00.40219.01, nmake 10.00.40219.01, git 2.30.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-20.3.0\bin\javac.exe
    C:\opt\Python-2.7.18\python.exe
@@ -149,10 +149,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.29.2\usr\bin\link.exe
+   C:\opt\Git-2.30.0\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.29.2\bin\git.exe
-   C:\opt\Git-2.29.2\mingw64\bin\git.exe
+   C:\opt\Git-2.30.0\bin\git.exe
+   C:\opt\Git-2.30.0\mingw64\bin\git.exe
 </pre>
 
 ### **`graal\build.bat`**
@@ -194,7 +194,7 @@ In our case we downloaded the following installation files (see <a href="#sectio
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-20.3.0.jar</a>   <i>(  9 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-20.3.0.jar</a>  <i>(  6 MB)</i>
 <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-20.2-b03">openjdk-8u262+10-jvmci-20.2-b03-windows-amd64.tar.gz</a>          <i>(103 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.29.2-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.30.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.18.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
@@ -253,7 +253,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/November 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/January 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -262,7 +262,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.29.2.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.30.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/

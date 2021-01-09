@@ -533,7 +533,7 @@ call :native_env_msvc
 if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
 set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --allow-incomplete-classpath
-if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=-H:+TraceClassInitialization %__NATIVE_IMAGE_OPTS%
+if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=--trace-class-initialization %__NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
