@@ -39,10 +39,10 @@ Command **`build clean dist:2`** generates the [GraalVM] build specified by buil
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_272-jvmci-20.2-b03
-openjdk version "1.8.0_272"
-OpenJDK Runtime Environment (build 1.8.0_272-b10)
-OpenJDK 64-Bit Server VM (build 25.262-b10-jvmci-20.2-b03, mixed mode)
+G:\\openjdk1.8.0_282-jvmci-20.3-b09
+openjdk version "1.8.0_282"
+OpenJDK Runtime Environment (build 1.8.0_282-b07)
+OpenJDK 64-Bit Server VM (build 25.282-b07-jvmci-20.3-b09, mixed mode)
  Create GraalVM build with tags build,test
 [...]
 gate: 08 Jun 2020 00:38:26(+00:00) BEGIN: Gate
@@ -51,8 +51,8 @@ gate: 08 Jun 2020 00:38:26(+00:00) BEGIN: Versions
 Python version: sys.version_info(major=2, minor=7, micro=17, releaselevel='final', serial=0)
 gate: 08 Jun 2020 00:38:27(+00:00) END:   Versions [0:00:00.979000]
 gate: 08 Jun 2020 00:38:27(+00:00) BEGIN: JDKReleaseInfo
-==== G:\\openjdk1.8.0_252-jvmci-20.2-b01 ====
-JAVA_VERSION="1.8.0_272"
+==== G:\\openjdk1.8.0_282-jvmci-20.3-b09 ====
+JAVA_VERSION="1.8.0_282"
 OS_NAME="Windows"
 OS_VERSION="5.2"
 OS_ARCH="amd64"
@@ -70,9 +70,9 @@ gate: 08 Jun 2020 00:38:41(+00:14) END:   Clean [0:00:13.536000]
 gate: 08 Jun 2020 00:38:41(+00:14) BEGIN: BuildWithJavac
 Running: mx [...] build -p --warning-as-error --force-javac
 WARNING: parallel builds are not supported on windows: can not use -p
-JAVA_HOME: G:\\openjdk1.8.0_272-jvmci-20.2-b03
+JAVA_HOME: G:\\openjdk1.8.0_282-jvmci-20.3-b09
 [...]
-[Stopped javac-daemon on port 50330 for Java 1.8.0_272 (1.8) from G:\openjdk1.8.0_272-jvmci-20.2-b03]
+[Stopped javac-daemon on port 50330 for Java 1.8.0_282 (1.8) from G:\openjdk1.8.0_282-jvmci-20.3-b09]
 Shutting down
 gate: 08 Jun 2020 00:51:08(+12:42) END:   BuildWithJavac [0:12:27.865000]
 gate: 08 Jun 2020 00:51:08(+12:42) BEGIN: UnitTests: hosted-product compiler
@@ -243,7 +243,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/January 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
