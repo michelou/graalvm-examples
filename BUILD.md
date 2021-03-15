@@ -39,43 +39,43 @@ Command **`build clean dist:2`** generates the [GraalVM] build specified by buil
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_282-jvmci-20.3-b09
-openjdk version "1.8.0_282"
-OpenJDK Runtime Environment (build 1.8.0_282-b07)
-OpenJDK 64-Bit Server VM (build 25.282-b07-jvmci-20.3-b09, mixed mode)
+G:\\openjdk1.8.0_292-jvmci-21.1-b02
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b05)
+OpenJDK 64-Bit Server VM (build 25.292-b05-jvmci-21.1-b02, mixed mode)
  Create GraalVM build with tags build,test
 [...]
-gate: 08 Jun 2020 00:38:26(+00:00) BEGIN: Gate
-gate: 08 Jun 2020 00:38:26(+00:00) BEGIN: Versions
+gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Gate
+gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Versions
 [...]
 Python version: sys.version_info(major=2, minor=7, micro=17, releaselevel='final', serial=0)
-gate: 08 Jun 2020 00:38:27(+00:00) END:   Versions [0:00:00.979000]
-gate: 08 Jun 2020 00:38:27(+00:00) BEGIN: JDKReleaseInfo
-==== G:\\openjdk1.8.0_282-jvmci-20.3-b09 ====
-JAVA_VERSION="1.8.0_282"
+gate: 15 Mar 2021 00:38:27(+00:00) END:   Versions [0:00:00.979000]
+gate: 15 Mar 2021 00:38:27(+00:00) BEGIN: JDKReleaseInfo
+==== G:\\openjdk1.8.0_292-jvmci-21.1-b02 ====
+JAVA_VERSION="1.8.0_292"
 OS_NAME="Windows"
 OS_VERSION="5.2"
 OS_ARCH="amd64"
 SOURCE=" jvmci:afddee857a6c"
-gate: 08 Jun 2020 00:38:27(+00:00) END:   JDKReleaseInfo [0:00:00]
-gate: 08 Jun 2020 00:38:27(+00:00) BEGIN: VerifyMultiReleaseProjects
+gate: 15 Mar 2021 00:38:27(+00:00) END:   JDKReleaseInfo [0:00:00]
+gate: 15 Mar 2021 00:38:27(+00:00) BEGIN: VerifyMultiReleaseProjects
 Running: mx [...] verifymultireleaseprojects
-gate: 08 Jun 2020 00:38:27(+00:01) END:   VerifyMultiReleaseProjects [0:00:00.216000]
-gate: 08 Jun 2020 00:38:27(+00:01) BEGIN: Clean
+gate: 15 Mar 2021 00:38:27(+00:01) END:   VerifyMultiReleaseProjects [0:00:00.216000]
+gate: 15 Mar 2021 00:38:27(+00:01) BEGIN: Clean
 Running: mx [...] clean --all
 Cleaning org.graalvm.compiler.api.directives...
 [...]
 Cleaning TRUFFLE_TEST...
-gate: 08 Jun 2020 00:38:41(+00:14) END:   Clean [0:00:13.536000]
-gate: 08 Jun 2020 00:38:41(+00:14) BEGIN: BuildWithJavac
+gate: 15 Mar 2021 00:38:41(+00:14) END:   Clean [0:00:13.536000]
+gate: 15 Mar 2021 00:38:41(+00:14) BEGIN: BuildWithJavac
 Running: mx [...] build -p --warning-as-error --force-javac
 WARNING: parallel builds are not supported on windows: can not use -p
-JAVA_HOME: G:\\openjdk1.8.0_282-jvmci-20.3-b09
+JAVA_HOME: G:\\openjdk1.8.0_292-jvmci-21.1-b02
 [...]
-[Stopped javac-daemon on port 50330 for Java 1.8.0_282 (1.8) from G:\openjdk1.8.0_282-jvmci-20.3-b09]
+[Stopped javac-daemon on port 50330 for Java 1.8.0_292 (1.8) from G:\openjdk1.8.0_292-jvmci-21.1-b02]
 Shutting down
-gate: 08 Jun 2020 00:51:08(+12:42) END:   BuildWithJavac [0:12:27.865000]
-gate: 08 Jun 2020 00:51:08(+12:42) BEGIN: UnitTests: hosted-product compiler
+gate: 15 Mar 2021 00:51:08(+12:42) END:   BuildWithJavac [0:12:27.865000]
+gate: 15 Mar 2021 00:51:08(+12:42) BEGIN: UnitTests: hosted-product compiler
 Running: mx [...] unittest --suite compiler --verbose --enable-timing --fail-fast -XX:-UseJVMCICompiler
 [...]
 JUnit version 4.12
@@ -85,26 +85,26 @@ Time: 470.271
 
 OK (14248 tests)
 [...]
-gate: 08 Jun 2020 01:00:00(+21:34) END:   UnitTests: hosted-product compiler [0:08:51.916000]
-gate: 08 Jun 2020 01:00:00(+21:34) BEGIN: XcompUnitTests: hosted-product compiler
+gate: 15 Mar 2021 01:00:00(+21:34) END:   UnitTests: hosted-product compiler [0:08:51.916000]
+gate: 15 Mar 2021 01:00:00(+21:34) BEGIN: XcompUnitTests: hosted-product compiler
 [...]
-gate: 08 Jun 2020 01:00:44(+22:18) END:   XcompUnitTests: hosted-product compiler [0:00:43.763000]
-gate: 08 Jun 2020 01:00:44(+22:18) BEGIN: MakeGraalJDK
+gate: 15 Mar 2021 01:00:44(+22:18) END:   XcompUnitTests: hosted-product compiler [0:00:43.763000]
+gate: 15 Mar 2021 01:00:44(+22:18) BEGIN: MakeGraalJDK
 [...]
-gate: 08 Jun 2020 01:01:19(+22:52) END:   MakeGraalJDK [0:00:34.575000]
-gate: 08 Jun 2020 01:01:19(+22:52) BEGIN: DaCapo_pmd:BatchMode
+gate: 15 Mar 2021 01:01:19(+22:52) END:   MakeGraalJDK [0:00:34.575000]
+gate: 15 Mar 2021 01:01:19(+22:52) BEGIN: DaCapo_pmd:BatchMode
 [...]
-gate: 08 Jun 2020 01:01:30(+23:04) END:   DaCapo_pmd:BatchMode [0:00:11.438000]
-gate: 08 Jun 2020 01:01:30(+23:04) BEGIN: DaCapo_pmd:BenchmarkCounters
+gate: 15 Mar 2021 01:01:30(+23:04) END:   DaCapo_pmd:BatchMode [0:00:11.438000]
+gate: 15 Mar 2021 01:01:30(+23:04) BEGIN: DaCapo_pmd:BenchmarkCounters
 [...]
-gate: 08 Jun 2020 01:01:37(+23:10) END:   DaCapo_pmd:BenchmarkCounters [0:00:06.563000]
-gate: 08 Jun 2020 01:01:37(+23:10) BEGIN: XCompMode:product
+gate: 15 Mar 2021 01:01:37(+23:10) END:   DaCapo_pmd:BenchmarkCounters [0:00:06.563000]
+gate: 15 Mar 2021 01:01:37(+23:10) BEGIN: XCompMode:product
 [...]
-gate: 08 Jun 2020 01:01:42(+23:15) END:   XCompMode:product [0:00:04.899000]
-gate: 08 Jun 2020 01:01:42(+23:15) BEGIN: DaCapo_pmd:PreserveFramePointer
+gate: 15 Mar 2021 01:01:42(+23:15) END:   XCompMode:product [0:00:04.899000]
+gate: 15 Mar 2021 01:01:42(+23:15) BEGIN: DaCapo_pmd:PreserveFramePointer
 [...]
-gate: 08 Jun 2020 09:23:01(+23:59) END:   DaCapo_pmd:PreserveFramePointer [0:00:13.985000]
-gate: 08 Jun 2020 09:23:01(+23:59) END:   Gate [0:23:59.406000]
+gate: 15 Mar 2021 09:23:01(+23:59) END:   DaCapo_pmd:PreserveFramePointer [0:00:13.985000]
+gate: 15 Mar 2021 09:23:01(+23:59) END:   Gate [0:23:59.406000]
 Gate task times:
   0:00:01.509000        Versions [always]
   0:00:00.015000        JDKReleaseInfo [always]
@@ -126,21 +126,21 @@ Total elapsed time: 01:07:40
 Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archives:
 
 <pre style="font-size:80%;">
-<b>&gt; dir sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
-17.08.2020  13:42       286 282 835 graalvm-3398ab5293-java8.zip
-05.09.2020  20:43       287 993 272 graalvm-3bf9265b58-java8.zip
-15.03.2020  16:35       276 745 135 graalvm-unknown-java8-stage1.zip
-15.03.2020  16:35       276 749 506 graalvm-unknown-java8.zip
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
+15.03.2021  23:16       278 926 854 graaljdk-ce-6416f73897-java8.zip
+17.08.2020  12:42       286 282 835 graalvm-3398ab5293-java8.zip
+15.03.2021  23:15       900 448 298 graalvm-3bf9265b58-java8.zip
+15.03.2020  15:35       276 745 135 graalvm-unknown-java8-stage1.zip
+15.03.2020  15:35       276 749 506 graalvm-unknown-java8.zip
 </pre>
 
 Archive file **`graalvm-3bf9265b58-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | findstr cmd</b>
-      378  2020-09-05 20:42   graalvm-3bf9265b58-java8-20.3.0-dev/bin/polyglot.cmd
-      387  2020-09-05 20:42   graalvm-3bf9265b58-java8-20.3.0-dev/jre/bin/polyglot.cmd
-     8126  2020-09-05 20:39   graalvm-3bf9265b58-java8-20.3.0-dev/jre/lib/polyglot/bin/polyglot.cmd
-     9728  2020-07-16 21:07   graalvm-3bf9265b58-java8-20.3.0-dev/bin/jcmd.exe
+<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | findstr \.cmd</b>
+      389  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.1.0-dev/bin/polyglot.cmd
+      398  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.1.0-dev/jre/bin/polyglot.cmd
+     7733  2021-03-15 23:12   graalvm-3bf9265b58-java8-21.1.0-dev/jre/lib/polyglot/bin/polyglot.cmd
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
@@ -243,7 +243,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

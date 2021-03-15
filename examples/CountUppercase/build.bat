@@ -66,6 +66,7 @@ goto end
 :env
 set _BASENAME=%~n0
 set "_ROOT_DIR=%~dp0"
+set _TIMER=0
 
 call :env_colors
 set _DEBUG_LABEL=%_NORMAL_BG_CYAN%[%_BASENAME%]%_RESET%
@@ -91,9 +92,17 @@ set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
 set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
 set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
+if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
+    echo %_ERROR_LABEL% MSVS installation not found 1>&2
+    echo %_ERROR_LABEL% ^(MSVS_HOME="%MSVS_HOME%"^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
+
 if not exist "%JAVA_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(JAVA_HOME=%JAVA_HOME%^) 1>&2
+    echo %_ERROR_LABEL% ^(JAVA_HOME="%JAVA_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -150,7 +159,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.36.1
+set _CHECKSTYLE_VERSION=8.41
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -243,13 +252,14 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
     echo %_DEBUG_LABEL% Variables  : JAVA_HOME="%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
 if %_VERBOSE%==1 (
-    set __BEG_P=%_NORMAL_FG_GREEN%%_UNDERSCORE%
+    set __BEG_P=%_NORMAL_FG_GREEN%
     set __BEG_O=%_STRONG_FG_GREEN%
     set __BEG_N=%_NORMAL_FG_YELLOW%
     set __END=%_RESET%
@@ -289,9 +299,10 @@ goto :eof
 call :rmdir "%_TARGET_DIR%"
 goto :eof
 
+@rem input parameter: %1=directory path
 :rmdir
 set "__DIR=%~1"
-if not exist "%__DIR%" goto :eof
+if not exist "%__DIR%\" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
 )
@@ -303,19 +314,19 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :checkstyle
-set "__USER_GRAAL_DIR=%USERPROFILE%\.graal"
-if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
+set "__CHECKSTYLE_DIR=%LOCALAPPADATA%\Checkstyle"
+if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
-set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
+set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
 @rem "checkstyle-all" version not available from Maven Central
 set __JAR_NAME=checkstyle-%_CHECKSTYLE_VERSION%-all.jar
 set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%_CHECKSTYLE_VERSION%/%__JAR_NAME%
-set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
+set "__JAR_FILE=%__CHECKSTYLE_DIR%\%__JAR_NAME%"
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
-set "__PS1_FILE=%__USER_GRAAL_DIR%\webrequest.ps1"
+set "__PS1_FILE=%__CHECKSTYLE_DIR%\webrequest.ps1"
 if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 
 set __PS1_VERBOSE[0]=
@@ -361,11 +372,8 @@ echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
 :compile_java
-@rem call :libs_cpath
-@rem if not %_EXITCODE%==0 goto :eof
-
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -deprecation -cp "%_CLASSES_DIR:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -466,8 +474,17 @@ goto :eof
 
 :native_image
 setlocal
-call :native_env_msvc
-
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
+call "%_VCVARALL_BAT%" x64
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+)
 if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
@@ -481,36 +498,6 @@ if not %ERRORLEVEL%==0 (
     goto :eof
 )
 endlocal
-goto :eof
-
-:native_env_msvc
-if %_VERBOSE%==1 (
-    set __BEG=%_STRONG_FG_GREEN%
-    set __END=%_RESET%
-) else (
-    set __BEG=
-    set __END=
-)
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set __MSVC_ARCH=\amd64
-    set __NET_ARCH=Framework64\v4.0.30319
-    set __SDK_ARCH=\x64
-    set __KIT_ARCH=\x64
-) else (
-    set __MSVC_ARCH=\x86
-    set __NET_ARCH=Framework\v4.0.30319
-    set __SDK_ARCH=
-    set __KIT_ARCH=\x86
-)
-@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
-set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include"
-set "LIB=%MSVC_HOME%\Lib%__MSVC_ARCH%;%SDK_HOME%\lib%__SDK_ARCH%"
-if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% %__BEG%===== B U I L D   V A R I A B L E S =====%__END% 1>&2
-    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% %__BEG%=========================================%__END% 1>&2
-)
 goto :eof
 
 :doc
@@ -574,7 +561,6 @@ if %_JVMCI%==1 (
     )
     set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
 )
-
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
 ) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
 )
@@ -585,8 +571,8 @@ if not %ERRORLEVEL%==0 (
     goto :eof
 )
 if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%__GRAAL_LOG_FILE%" 1>&2
-    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to file "%__GRAAL_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to file "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
 )
 goto :eof
@@ -598,7 +584,7 @@ if not exist "%__EXE_FILE%" (
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Execute JMH benchmark "!__EXE_FILE:%_ROOT_DIR%=!" 1>&2
 )
 call "%__EXE_FILE%"

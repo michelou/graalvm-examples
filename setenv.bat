@@ -28,7 +28,6 @@ set _JAVA11_HOME=
 
 set _MAVEN_PATH=
 set _LLVM_PATH=
-set _MSVS_PATH=
 set _SDK_PATH=
 set _CYGWIN_PATH=
 set _GIT_PATH=
@@ -48,8 +47,8 @@ if not %_EXITCODE%==0 goto end
 call :llvm
 if not %_EXITCODE%==0 goto end
 
-call :msvs
-@rem call :msvs_2019
+@rem call :msvs
+call :msvs_2019
 if not %_EXITCODE%==0 goto end
 
 call :sdk
@@ -375,11 +374,10 @@ if not exist "%_LLVM_HOME%\bin\clang.exe" (
 set "_LLVM_PATH=;%_LLVM_HOME%\bin"
 goto :eof
 
-@rem output parameters: _MSVC_HOME, _MSVC_HOME, _MSVS_PATH
+@rem output parameters: _MSVC_HOME, _MSVC_HOME
 @rem Visual Studio 10
 :msvs
 set _MSVC_HOME=
-set _MSVS_PATH=
 set _MSVS_HOME=
 
 for /f "delims=" %%f in ("%ProgramFiles(x86)%\Microsoft Visual Studio 10.0") do (
@@ -409,19 +407,19 @@ if not exist "%__MSBUILD_HOME%\MSBuild.exe" (
     set _EXITCODE=1
     goto :eof
 )
-set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_HOME%"
+@rem set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_HOME%"
 goto :eof
 
-@rem output parameter(s): _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME, _MSVS_PATH
+@rem output parameter(s): _MSVC_BIN_DIR, _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME
 @rem Visual Studio 2019
 :msvs_2019
+set _MSVC_BIN_DIR=
 set _MSVC_HOME=
 set _MSVS_CMAKE_CMD=
 set _MSVS_HOME=
-set _MSVS_PATH=
 
 set "__WSWHERE_CMD=%_ROOT_DIR%bin\vswhere.exe"
-for /f "delims=" %%f in ('%__WSWHERE_CMD% -property installationPath 2^>NUL') do set "_MSVS_HOME=%%~f"
+for /f "delims=" %%f in ('"%__WSWHERE_CMD%" -property installationPath 2^>NUL') do set "_MSVS_HOME=%%~f"
 if not exist "%_MSVS_HOME%\" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Visual Studio 2019 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -434,10 +432,10 @@ set "_MSVS_HOME=%_SUBST_PATH%"
 
 set "__PATH=%_MSVS_HOME%\VC\Tools\MSVC"
 for /f %%f in ('dir /ad /b "%__PATH%" 2^>NUL') do set "_MSVC_HOME=%__PATH%\%%f"
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __MSVC_ARCH=\Hostx64\x64
-) else ( set __MSVC_ARCH=\Hostx86\x86
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set "_MSVC_BIN_DIR=%_MSVC_HOME%\bin\Hostx64\x64"
+) else ( set "_MSVC_BIN_DIR=%_MSVC_HOME%\bin\Hostx86\x86"
 )
-if not exist "%_MSVC_HOME%\bin%__MSVC_ARCH%\" (
+if not exist "%_MSVC_BIN_DIR%\cl.exe" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft C/C++ compiler 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
     set _EXITCODE=1
@@ -460,14 +458,13 @@ if not exist "%__CMAKE_BIN_DIR%\cmake.exe" (
     goto :eof
 )
 set "_MSVS_CMAKE_CMD=%__CMAKE_BIN_DIR%\cmake.exe"
-set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_BIN_DIR%"
+@rem set "_MSVS_PATH=;%_MSVC_BIN_DIR%;%__MSBUILD_BIN_DIR%"
 goto :eof
 
 @rem input parameter(s): %1=directory path
 @rem output parameter: _SUBST_PATH
 :subst_path
-for %%f in (%~1) do set "_SUBST_PATH=%%f"
-
+set "_SUBST_PATH=%~1"
 set __DRIVE_NAME=X:
 set __ASSIGNED_PATH=
 for /f "tokens=1,2,*" %%f in ('subst ^| findstr /b "%__DRIVE_NAME%" 2^>NUL') do (
@@ -488,11 +485,10 @@ if not defined __ASSIGNED_PATH (
 set _SUBST_PATH=%__DRIVE_NAME%
 goto :eof
 
-@rem output parameter(s): _SDK_HOME, _SDK_PATH
+@rem output parameter: _SDK_HOME
 @rem native-image dependency
 :sdk
 set _SDK_HOME=
-set _SDK_PATH=
 
 for /f "delims=" %%f in ("%ProgramFiles%\Microsoft SDKs\Windows\v7.1") do set "_SDK_HOME=%%~f"
 if not exist "%_SDK_HOME%" (
@@ -501,10 +497,6 @@ if not exist "%_SDK_HOME%" (
     set _EXITCODE=1
     goto :eof
 )
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __SDK_ARCH=\x64
-) else ( set __SDK_ARCH=
-)
-set "_SDK_PATH=;%_SDK_HOME%\bin%__SDK_ARCH%"
 goto :eof
 
 @rem output parameter(s): _KIT_INC_DIR, _KIT_LIB_DIR
@@ -644,10 +636,10 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,2,3,*" %%i in ('"%LLVM_HOME%\bin\opt.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%LLVM_HOME%\bin:opt.exe"
 )
-where /q cl.exe
+where /q "%MSVC_BIN_DIR%:cl.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-6,*" %%i in ('cl -version 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cl %%o,"
-    set __WHERE_ARGS=%__WHERE_ARGS% cl.exe
+    for /f "tokens=1-6,7,*" %%i in ('"%MSVC_BIN_DIR%\cl.exe" -version 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cl %%o,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:cl.exe"
 )
 where /q cmake.exe
 if %ERRORLEVEL%==0 (
@@ -659,20 +651,20 @@ if %ERRORLEVEL%==0 (
     for /f %%i in ('msbuild.exe -version ^| findstr /b "[0-9]"') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% msbuild %%i,"
     set __WHERE_ARGS=%__WHERE_ARGS% msbuild.exe
 )
-where /q link.exe
+where /q "%MSVC_BIN_DIR%:link.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-5,*" %%i in ('link.exe ^| findstr Version 2^>^NUL') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% link %%n,"
-    set __WHERE_ARGS=%__WHERE_ARGS% link.exe
+    for /f "tokens=1-5,*" %%i in ('"%MSVC_BIN_DIR%\link.exe" ^| findstr Version 2^>^NUL') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% link %%n,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:link.exe"
 )
-where /q nmake.exe
+where /q "%MSVC_BIN_DIR%:nmake.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-7,*" %%i in ('nmake.exe /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% nmake %%o,"
-    set __WHERE_ARGS=%__WHERE_ARGS% nmake.exe
+    for /f "tokens=1-7,*" %%i in ('"%MSVC_BIN_DIR%\make.exe" /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% nmake %%o,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:nmake.exe"
 )
-where /q git.exe
+where /q "%GIT_HOME%\bin:git.exe"
 if %ERRORLEVEL%==0 (
-   for /f "tokens=1,2,*" %%i in ('git.exe --version') do set __VERSIONS_LINE3=%__VERSIONS_LINE3% git %%k
-    set __WHERE_ARGS=%__WHERE_ARGS% git.exe
+   for /f "tokens=1,2,*" %%i in ('"%GIT_HOME%\bin\git.exe" --version') do set __VERSIONS_LINE3=%__VERSIONS_LINE3% git %%k
+    set __WHERE_ARGS=%__WHERE_ARGS% "%GIT_HOME%\bin:git.exe"
 )
 echo Tool versions:
 echo %__VERSIONS_LINE1%
@@ -683,9 +675,13 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
+    if defined GIT_HOME echo    GIT_HOME=%GIT_HOME% 1>&2
     if defined JAVA_HOME echo    JAVA_HOME=%JAVA_HOME% 1>&2
     if defined JAVA11_HOME echo    JAVA11_HOME=%JAVA11_HOME% 1>&2
     if defined LLVM_HOME echo    LLVM_HOME=%LLVM_HOME% 1>&2
+    if defined MSVC_BIN_DIR echo    MSVC_BIN_DIR="%MSVC_BIN_DIR%" 1>&2
+    if defined MSVC_HOME echo    MSVC_HOME="%MSVC_HOME%" 1>&2
+    if defined MSVS_HOME echo    MSVS_HOME="%MSVS_HOME%" 1>&2
     if defined PYTHON_HOME echo    PYTHON_HOME=%PYTHON_HOME% 1>&2
 )
 goto :eof
@@ -700,6 +696,7 @@ endlocal & (
         if not defined JAVA_HOME set "JAVA_HOME=%_JAVA_HOME%"
         if not defined JAVA11_HOME set "JAVA11_HOME=%_JAVA11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
+        if not defined MSVC_BIN_DIR set "MSVC_BIN_DIR=%_MSVC_BIN_DIR%"
         if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
         if not defined MSVS_CMAKE_CMD set "MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%"
         if not defined MSVS_HOME set "MSVS_HOME=%_MSVS_HOME%"
@@ -708,14 +705,15 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
-        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_MSVS_PATH%%_SDK_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
+        if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
+            if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2
+            cd /d %_DRIVE_NAME%:
+        )
         if %_BASH%==1 (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% %_GIT_HOME%\bin\bash.exe --login 1>&2
             call "%_GIT_HOME%\bin\bash.exe" --login
-        ) else if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
-            if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2
-            cd /d %_DRIVE_NAME%:
         )
     )
     if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2

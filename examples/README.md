@@ -227,7 +227,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
-> checkstyle-8.37-all.jar
+> checkstyle-8.41-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -372,7 +372,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/December 2020* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

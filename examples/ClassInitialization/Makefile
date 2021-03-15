@@ -4,6 +4,9 @@ SOURCE_DIR  = src
 TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
+OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
+SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
+
 JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR)\"
 JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR);$(CLASSES_DIR)"
 
@@ -22,9 +25,9 @@ build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	[ -d "$(CLASSES_DIR)" ] || mkdir -p "$(CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(TARGET_DIR)/javac_opts.txt"
-	@echo "$(SOURCES)" > "$(TARGET_DIR)/javac_sources.txt"
-	$(JAVAC) "@$(TARGET_DIR)/javac_opts.txt" "@$(TARGET_DIR)/javac_sources.txt"
+	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(OPTS_FILE)"
+	@echo "$(SOURCES)" > "$(SOURCES_FILE)"
+	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
 	@echo "" > "$(TARGET)"
 
 clean:
@@ -32,6 +35,16 @@ clean:
 
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
+
+help:
+	@echo "Usage: make all|build|clean|run|test"
+	@echo ""
+	@echo "  Subcommands:"
+	@echo "    all    alias for build"
+	@echo "    build  compile Java/Scala source files"
+	@echo "    clean  delete generated files"
+	@echo "    help   display this help message"
+	@echo "    test   execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -61,21 +74,24 @@ doc: $(DOC_TARGET)
 TEST_SOURCES = $(shell $(FIND_CMD) $(SOURCE_DIR)/test -name *.java)
 TEST_TARGET  = $(TARGET_DIR)/.latest-test-build
 
+TEST_OPTS_FILE    = $(TARGET_DIR)/javac_test_opts.txt
+TEST_SOURCES_FILE = $(TARGET_DIR)/javac_test_sources.txt
+
 TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
-TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(JUNIT_INTF_JAR)$(PSEP)$(SCALATEST_JAR)$(PSEP)$(SCALACTIC_JAR)$(PSEP)$(SPECS2_CORE_JAR)$(PSEP)$(SPECS2_JUNIT_JAR)$(PSEP)$(SPECS2_MATCHER_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
+TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || mkdir -p "$(TEST_CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TARGET_DIR)/scalac_test_opts.txt"
-	@echo "$(TEST_SOURCES)" > "$(TARGET_DIR)/scalac_test_sources.txt"
-	$(SCALAC) "@$(TARGET_DIR)/scalac_test_opts.txt" "@$(TARGET_DIR)/scalac_test_sources.txt"
+	@echo "-classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TEST_OPTS_FILE)"
+	@echo "$(TEST_SOURCES)" > "$(TEST_SOURCES_FILE)"
+	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@echo "" > "$(TEST_TARGET)"
 
 test: build $(TEST_TARGET)
-	$(JAVA) $(JAVA_OPTS) $(TEST_MAIN_CLASS)
+	$(JAVA) -classpath "$(TEST_CPATH)" org.junit.runner.JUnitCore $(TEST_MAIN_CLASS)
 
 ##############################################################################
 ## phony
 
-.PHONY: all build clean doc run test
+.PHONY: all build clean doc help run test

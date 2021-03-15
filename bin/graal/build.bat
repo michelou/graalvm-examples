@@ -59,28 +59,32 @@ set _WARNING_LABEL=%_STRONG_FG_YELLOW%Warning%_RESET%:
 set "_TRAVIS_BUILD_DIR=%~dp0"
 set "_TMP_DIR=%_ROOT_DIR%\tmp"
 
-set _GRAAL_URL=https://github.com/oracle/graal.git
 set "_GRAAL_PATH=%_TRAVIS_BUILD_DIR%"
-
-set _MX_URL=https://github.com/graalvm/mx.git
 set "_MX_PATH=%_ROOT_DIR%\mx"
 
+if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
+    echo %_ERROR_LABEL% MSVS installation not found 1>&2
+    echo %_ERROR_LABEL% ^(MSVS_HOME="%MSVS_HOME%"^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
+
+if not exist "%GIT_HOME%\bin\git.exe" (
+    echo %_ERROR_LABEL% Git installation directory not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
 set "_GIT_CMD=%GIT_HOME%\bin\git.exe"
-set _GIT_OPTS=
+set "_TAR_CMD=%GIT_HOME%\usr\bin\tar.exe"
 
 set "_MX_CMD=%_MX_PATH%\mx.cmd"
 set _MX_OPTS=
 
-if not exist "%GIT_HOME%\usr\bin\tar.exe" (
-    echo %_ERROR_LABEL% Git installation not found 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-set "_TAR_CMD=%GIT_HOME%\usr\bin\tar.exe"
 
-@rem see https://github.com/graalvm/openjdk8-jvmci-builder/releases
-set _JVMCI_VERSION=jvmci-20.3-b06
-set _JDK8_UPDATE_VERSION=272
+@rem see https://github.com/graalvm/graal-jvmci-8/releases
+set _JVMCI_VERSION=jvmci-21.1-b02
+set _JDK8_UPDATE_VERSION=292
 set _JDK8_UPDATE_VERSION_SUFFIX=
 @rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
 set _JDK8_PLATFORM=windows-amd64
@@ -226,6 +230,7 @@ goto :args_loop
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _DIST_ENV=%_DIST_ENV% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _DIST=%_DIST% _UPDATE=%_UPDATE% 1>&2
+    echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -378,10 +383,12 @@ goto :eof
 :clone_graal
 if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %_GRAAL_URL% %_GRAAL_PATH% 1>&2
+set __GRAAL_URL=https://github.com/oracle/graal.git
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %__GRAAL_URL% %_GRAAL_PATH% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory %_GRAAL_PATH% 1>&2
 )
-call "%_GIT_CMD%" %_GIT_OPTS% clone "%_GRAAL_URL%" "%_GRAAL_PATH%"
+call "%_GIT_CMD%" %_GIT_OPTS% clone "%__GRAAL_URL%" "%_GRAAL_PATH%"
 if not %ERRORLEVEL%==0 (
     echo %_ERROR_LABEL% Failed to clone graal remote Git repository 1>&2
     set _EXITCODE=1
@@ -397,10 +404,12 @@ goto :eof
 :clone_mx
 if exist "%_MX_CMD%" goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %_MX_URL% %_MX_PATH% 1>&2
+set __MX_URL=https://github.com/graalvm/mx.git
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %__MX_URL% %_MX_PATH% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone MX suite repository into directory %_MX_PATH% 1>&2
 )
-call "%_GIT_CMD%" %_GIT_OPTS% clone "%_MX_URL%" "%_MX_PATH%"
+call "%_GIT_CMD%" %_GIT_OPTS% clone "%__MX_URL%" "%_MX_PATH%"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
@@ -412,23 +421,24 @@ if not exist "%_MX_CMD%" (
 )
 goto :eof
 
-@rem depends on :dist_env
+@rem output parameter: JDT
 :style
 if "%GATE:style=%"=="%GATE%" goto :eof
 
-set "__TGZ_URL=https://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/eclipse-SDK-4.5.2-linux-gtk-x86_64.tar.gz"
-set "__TGZ_FILE=%_ROOT_DIR%eclipse.tar.gz"
-if exist "%__TGZ_FILE%" goto :eof
+set "__JAR_URL=https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.24.0/ecj-3.24.0.jar"
+set "__JAR_FILE=%_ROOT_DIR%ecj-3.24.0.jar"
+if exist "%__JAR_FILE%" goto style_done
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__TGZ_FILE%' -Uri '%__TGZ_URL%'" 1>&2
-) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT archive to directory %_MX_PATH% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -C "wget -OutFile '%__JAR_FILE%' -Uri '%__JAR_URL%'" 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Download Eclipse JDT standalone archive to directory %_ROOT_DIR% 1>&2
 )
-powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__TGZ_FILE%' -Uri '%__TGZ_URL%'"
+powershell -C "$progressPreference='silentlyContinue'; wget -OutFile '%__JAR_FILE%' -Uri '%__JAR_URL%'"
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-
+:style_done
+set "JDT=%__JAR_FILE%"
 goto :eof
 
 @rem depends on :dist_env
@@ -524,7 +534,8 @@ if %_DEBUG%==1 ( set __MX_OPTS=-V %_MX_OPTS%
 ) else ( set __MX_OPTS=%_MX_OPTS%
 )
 set __PATH=%PATH%
-set "PATH=%__PATH%;%PYTHON_HOME%"
+set "PATH=%__PATH%;%PYTHON_HOME%;%PYTHON_HOME%\Scripts"
+if %_DEBUG%==1 where python.exe
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MX_CMD%" %__MX_OPTS% --primary-suite-path %PRIMARY% --java-home=%JAVA_HOME% gate --strict-mode --tags %GATE% 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Create GraalVM build with tags %GATE% 1>&2
@@ -545,9 +556,12 @@ goto :eof
 call :dist_env_ini
 if "%JDK%"=="jdk11" set JAVA_HOME=%JAVA11_HOME%
 
-call :dist_env_msvc
-@rem call :dist_env_msvc2019
-
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
+call "%_VCVARALL_BAT%" x64
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
 @rem Official LLVM variables: https://llvm.org/docs/CMake.html#llvm-specific-variables
 if defined LLVM_VERSION (
     set CLANG=clang-%LLVM_VERSION%.exe
@@ -590,46 +604,6 @@ for /l %%i in (1, 1, %_INI_N%) do (
         )
     )
 )
-goto :eof
-
-:dist_env_msvc
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set __MSVC_LIB=Lib\amd64
-    set __NET_FRAMEWORK=Framework64\v4.0.30319
-    set __SDK_LIB=lib\x64
-    set __KIT_UCRT=ucrt\x64
-) else (
-    set __MSVC_LIB=Lib\x86
-    set __NET_FRAMEWORK=Framework\v4.0.30319
-    set __SDK_LIB=lib
-    set __KIT_UCRT=ucrt\x86
-)
-@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
-set "INCLUDE=%MSVC_HOME%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt"
-set "LIB=%MSVC_HOME%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
-set "LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%MSVC_HOME%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
-goto :eof
-
-:dist_env_msvc2019
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set __MSVC_LIB=Lib\amd64
-    set __NET_FRAMEWORK=Framework64\v4.0.30319
-    set __SDK_LIB=lib\x64
-    set __KIT_UCRT=ucrt\x66
-) else (
-    set __MSVC_LIB=Lib\x86
-    set __NET_FRAMEWORK=Framework\v4.0.30319
-    set __SDK_LIB=lib
-    set __KIT_UCRT=ucrt\x86
-)
-
-@rem TODO Change hard-coded path
-set "__MSVC_2019=%ProgramFiles(x86)%\MIB055~1\2019\COMMUN~1\VC\Tools\MSVC\1422~1.279\"
-
-@rem Variables MSVC_HOME, MSVS_HOME and SDK_HOME are defined by setenv.bat
-set "INCLUDE=%__MSVC_2019%\include;%SDK_HOME%\include;%KIT_INC_DIR%\ucrt"
-set "LIB=%__MSVC_2019%\%__MSVC_LIB%;%SDK_HOME%\%__SDK_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
-set "LIBPATH=c:\WINDOWS\Microsoft.NET\%__NET_FRAMEWORK%;%__MSVC_2019%\%__MSVC_LIB%;%KIT_LIB_DIR%\%__KIT_UCRT%"
 goto :eof
 
 @rem output parameter: _DURATION

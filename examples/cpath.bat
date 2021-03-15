@@ -31,7 +31,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
-set _MICRONAUT_VERSION=2.2.0
+set _MICRONAUT_VERSION=2.4.0
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -46,16 +46,18 @@ call :add_jar "io.micronaut.configuration" "micronaut-picocli" "1.2.1"
 call :add_jar "javax.inject" "javax.inject" "1"
 
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
-call :add_jar "info.picocli" "picocli" "4.5.2"
+call :add_jar "info.picocli" "picocli" "4.6.1"
+
+set _LOG4J_VERSION=2.14.0
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
-call :add_jar "org.apache.logging.log4j" "log4j-api" "2.14.0"
+call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-call :add_jar "org.apache.logging.log4j" "log4j-core" "2.14.0"
+call :add_jar "org.apache.logging.log4j" "log4j-core" "%_LOG4J_VERSION%"
 
 @rem https://mvnrepository.com/artifact/com.guicedee.services/slf4j
-call :add_jar "com.guicedee.services" "slf4j" "1.1.0.6"
+call :add_jar "com.guicedee.services" "slf4j" "1.1.1.0"
 
 goto end
 
