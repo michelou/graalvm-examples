@@ -601,9 +601,9 @@ set "__VERSIONS_LINE2=  "
 set "__VERSIONS_LINE3=  "
 set __WHERE_ARGS=
 
-where /q "%JAVA_HOME%\bin:java.exe"
+where /q "%JAVA_HOME%\bin:javac.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,*" %%i in ('"%JAVA_HOME%\bin\java.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
+    for /f "tokens=1,2,*" %%i in ('"%JAVA_HOME%\bin\javac.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA_HOME%\bin:javac.exe"
 )
 where /q "%JAVA11_HOME%\bin:javac.exe"
@@ -658,7 +658,7 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%MSVC_BIN_DIR%:nmake.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-7,*" %%i in ('"%MSVC_BIN_DIR%\make.exe" /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% nmake %%o,"
+    for /f "tokens=1-7,*" %%i in ('"%MSVC_BIN_DIR%\nmake.exe" /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% nmake %%o,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:nmake.exe"
 )
 where /q "%GIT_HOME%\bin:git.exe"

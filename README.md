@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.30][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.31][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 21.0 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -28,7 +28,7 @@ For instance our development environment looks as follows (*March 2021*) </i><su
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.30.2\                                    <i>(278 MB)</i>
+C:\opt\Git-2.31.0\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.0.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java8-21.0.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-2.7.18\                                 <i>(162 MB)</i>
@@ -125,7 +125,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 Tool versions:
    javac 1.8.0_282, python 2.7.18, pylint 1.9.2, mx 5.290.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.30.2.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -140,7 +140,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 Tool versions:
    javac 1.8.0_282, python 2.7.18, pylint 1.9.2, mx 5.290.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 10.00.40219.01, nmake 10.00.40219.01, git 2.30.2.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-21.0.0\bin\javac.exe
    C:\opt\Python-2.7.18\python.exe
@@ -149,10 +149,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.30.2\usr\bin\link.exe
+   C:\opt\Git-2.31.0\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.30.2\bin\git.exe
-   C:\opt\Git-2.30.2\mingw64\bin\git.exe
+   C:\opt\Git-2.31.0\bin\git.exe
+   C:\opt\Git-2.31.0\mingw64\bin\git.exe
 </pre>
 
 ### **`graal\build.bat`**
@@ -194,7 +194,7 @@ In our case we downloaded the following installation files (see <a href="#sectio
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-21.0.0.jar</a>   <i>(  9 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.0.0.jar</a>  <i>(  6 MB)</i>
 <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-21.1-b02">openjdk-8u292+05-jvmci-21.1-b02-windows-amd64.tar.gz</a>          <i>(103 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.30.2-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.31.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/release/python-2717/">python-2.7.18.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
@@ -262,7 +262,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.30.2.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.31.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/
