@@ -123,12 +123,22 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
 [build] Options    : _CACHED=0 _TARGET=native _TIMER=0 _VERBOSE=0
 [build] Subcommands: _CLEAN=0 _COMPILE=1 _DOC=0 _LINT=0 _PACK=0 _RUN=0 _TEST=0
-[build] Variables  : JAVA_HOME="C:\opt\graalvm-ce-java8-20.3.0"
-[build] <b>===== B U I L D   V A R I A B L E S =====</b>
-[build] <b>INCLUDE=C:\PROGRA~2\MICROS~1.0\VC\include;C:\PROGRA~1\Microsoft SDKs\Windows\v7.1\include</b>
-[build] <b>LIB=C:\PROGRA~2\MICROS~1.0\VC\Lib\amd64;C:\PROGRA~1\Microsoft SDKs\Windows\v7.1\lib\x64</b>
-[build] <b>=========================================</b>
-[build] "C:\opt\graalvm-ce-java8-20.3.0\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
+[build] Variables  : JAVA_HOME="C:\opt\graalvm-ce-java8-21.0.0.2"
+[build] Variables  : MSVS_HOME="X:"
+[build] 00000000000000 Target : 'G:\examples\ClassInitialization\target\classes\.latest-build'
+[build] 20191115223804 Sources: 'G:\examples\ClassInitialization\src\main\java\*.java'
+[build] _COMPILE_REQUIRED=1
+[build] "C:\opt\graalvm-ce-java8-21.0.0.2\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
+[build] "X:\VC\Auxiliary\Build\vcvarsall.bat" x64
+**********************************************************************
+** Visual Studio 2019 Developer Command Prompt v16.0
+** Copyright (c) 2021 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+[build] INCLUDE="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\include;..."
+[build] LIB="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
+[build] LIBPATH="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
+[build] "C:\opt\graalvm-ce-java8-21.0.0.2\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]    classlist:   1,423.32 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        (cap):   7,889.67 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        setup:   9,858.53 ms,  1.16 GB
@@ -209,8 +219,8 @@ total: 69999993 (1375 ms)
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | findstr /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java8-20.2.0\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java8-20.2.0\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] C:\opt\graalvm-ce-java8-21.0.0.2\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java8-21.0.0.2\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
 > [build] Compilation log written to G:\examples\CountUppercase\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
@@ -227,7 +237,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; dir /b %USERPROFILE%\.graal</b>
-> checkstyle-8.41-all.jar
+> checkstyle-8.41.1-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -372,7 +382,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/March 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/April 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

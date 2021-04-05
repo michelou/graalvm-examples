@@ -21,17 +21,22 @@ This project relies on the following external software for the **Microsoft Windo
 - [Microsoft Windows SDK 7.1][windows_sdk]
 - [Python 2.7][python_downloads] ([*release notes*][python_relnotes])
 
+Optionally one may also install the following software:
+
+- [UPX 3.96][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">[2]</a></sup> ([*changelog*][upx_changelog])
+
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*March 2021*) </i><sup id="anchor_02"><a href="#footnote_02">[2]</a></sup>:
+For instance our development environment looks as follows (*April 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.31.0\                                    <i>(279 MB)</i>
-C:\opt\graalvm-ce-java11-21.0.0\                      <i>(731 MB)</i>
-C:\opt\graalvm-ce-java8-21.0.0\<sup id="anchor_03">&ensp;<a href="#footnote_03">[3]</a></sup>                    <i>(644 MB)</i>
-C:\opt\Python-2.7.18\                                 <i>(162 MB)</i>
+C:\opt\Git-2.31.1\                                    <i>(279 MB)</i>
+C:\opt\graalvm-ce-java11-21.0.0.2\                    <i>(731 MB)</i>
+C:\opt\graalvm-ce-java8-21.0.0.2\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                  <i>(644 MB)</i>
+C:\opt\Python-3.9.2\                                  <i>( 83 MB)</i>
+C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 </pre>
@@ -50,9 +55,9 @@ This repository is organized as follows:
 docs\
 examples\
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.11-jvmci-21.1-b02\</a>  <i>(287 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.11-jvmci-21.1-b03\</a>  <i>(287 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_292-jvmci-21.1-b02\</a><sup id="anchor_04"><a href="#footnote_04">[4]</a></sup> <i>(218 MB)</i>
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_292-jvmci-21.1-b03\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(218 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
 <a href="setenv.bat">setenv.bat</a>
@@ -123,9 +128,9 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_282, python 2.7.18, pylint 1.9.2, mx 5.290.0
+   javac 1.8.0_282, python 3.9.2, pylint 1.9.2, mx 5.290.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.0.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -138,21 +143,21 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_282, python 2.7.18, pylint 1.9.2, mx 5.290.0
+   javac 1.8.0_282, python 3.9.2, pylint 1.9.2, mx 5.290.0
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.0.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-21.0.0\bin\javac.exe
-   C:\opt\Python-2.7.18\python.exe
-   C:\opt\Python-2.7.18\Scripts\pylint.exe
+   C:\opt\Python-3.9.2\python.exe
+   C:\opt\Python-3.9.2\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.31.0\usr\bin\link.exe
+   C:\opt\Git-2.31.1\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.31.0\bin\git.exe
-   C:\opt\Git-2.31.0\mingw64\bin\git.exe
+   C:\opt\Git-2.31.1\bin\git.exe
+   C:\opt\Git-2.31.1\mingw64\bin\git.exe
 </pre>
 
 ### **`graal\build.bat`**
@@ -175,31 +180,38 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 
 ## <span id="footnotes">Footnotes</span>
 
-<b name="footnote_01">[1]</b> ***Two GraalVM editions*** [↩](#anchor_01)
+<span id="footnote_01">[1]</span> ***Two GraalVM editions*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
 <a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_282</a>.
 </p>
 
-<b name="footnote_02">[2]</b> ***Downloads*** [↩](#anchor_02)
+<span id="footnote_02">[2]</span> ***UPX*** [↩](#anchor_02)
+
+<p style="margin:0 0 1em 20px;">
+<a href="https://upx.github.io/">UPX</a> (<b>U</b>ltimate <b>P</b>acker for e<b>X</b>ecutables) is a free, portable, extendable, high-performance executable packer for several executable formats. It is particularly usefule to reduce the size of executables produced by [`native-image`][native_image_cli].
+</p>
+
+<span id="footnote_03">[3]</span> ***Downloads*** [↩](#anchor_03)
 
 <p style="margin:0 0 1em 20px;">
 In our case we downloaded the following installation files (see <a href="#section_01">section 1</a>):
 </p>
 <pre style="margin:0 0 1em 20px; font-size:80%;">
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-21.0.0.zip</a>                     <i>(251 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-21.0.0.zip</a>                    <i>(329 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-21.0.0.2.zip</a>                   <i>(251 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-21.0.0.2.zip</a>                  <i>(329 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-21.1-b02">labsjdk-ce-11.0.11+5-jvmci-21.1-b02-windows-amd64.tar.gz</a>      <i>(173 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-21.1-b02">labsjdk-ce-11.0.11+7-jvmci-21.1-b03-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-21.0.0.jar</a>   <i>(  9 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.0.0.jar</a>  <i>(  6 MB)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-21.1-b02">openjdk-8u292+05-jvmci-21.1-b02-windows-amd64.tar.gz</a>          <i>(103 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.31.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/release/python-2717/">python-2.7.18.amd64.msi</a>                                       <i>( 19 MB)</i>
+<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-21.1-b02">openjdk-8u292+07-jvmci-21.1-b03-windows-amd64.tar.gz</a>          <i>(111 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.31.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://www.python.org/downloads/release/python-2717/">python-3.9.2.amd64.msi</a>                                        <i>( 19 MB)</i>
+<a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
 
-<b name="footnote_03">[3]</b> ***Improvements in GraalVM 20*** [↩](#anchor_03)
+<span id="footnote_04">[4]</span> ***Improvements in GraalVM 20*** [↩](#anchor_04)
 
 <p style="margin:0 0 1em 20px;">
 Versions 20.x of GraalVM bring major improvements to Windows users:
@@ -207,45 +219,45 @@ Versions 20.x of GraalVM bring major improvements to Windows users:
 <ul>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external"><code>gu.cmd</code></a> is finally part of the Windows distribution !
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java8-21.0.0\ gu.*</b>
-c:\opt\graalvm-ce-java8-21.0.0\bin\gu.cmd
-c:\opt\graalvm-ce-java8-21.0.0\lib\installer\bin\gu.exe
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java8-21.0.0.2\ gu.*</b>
+c:\opt\graalvm-ce-java8-21.0.0.2\bin\gu.cmd
+c:\opt\graalvm-ce-java8-21.0.0.2\lib\installer\bin\gu.exe
 </pre>
 </li>
 <li><a href="https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.0.0" rel="external"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
 <pre style="font-size:80%;">
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/echo">echo</a> %JAVA_HOME%</b>
-C:\opt\graalvm-ce-java8-21.0.0
+C:\opt\graalvm-ce-java8-21.0.0.2
 &nbsp;
-<b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java8-windows-amd64-21.0.0.jar --verbose</b>
+<b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java8-windows-amd64-21.0.0.2.jar --verbose</b>
 Processing Component archive: native-image-installable-svm-java8-windows-amd64-21.0.0.jar
-Preparing to install native-image-installable-svm-java8-windows-amd64-21.0.0.jar, contains org.graalvm.native-image, version 20.3.0 (org.graalvm.native-image)
-Checking requirements of component Native Image (native-image), version 20.3.0
-        Requires Graal Version = 20.3.0, GraalVM provides: 20.3.0
+Preparing to install native-image-installable-svm-java8-windows-amd64-21.0.0.2.jar, contains org.graalvm.native-image, version 21.0.0.2 (org.graalvm.native-image)
+Checking requirements of component Native Image (native-image), version 21.0.0.2
+        Requires Graal Version = 21.0.0.2, GraalVM provides: 21.0.0.2
         Requires Java Version = 8, GraalVM provides: 8
         Requires Architecture = amd64, GraalVM provides: amd64
         Requires Operating System = windows, GraalVM provides: Windows
-Installing new component: Native Image (org.graalvm.native-image, version 20.3.0)
+Installing new component: Native Image (org.graalvm.native-image, version 21.0.0.2)
 Extracting: LICENSE_NATIVEIMAGE.txt
 Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
 [..]
-<b>&gt; c:\opt\graalvm-ce-java8-21.0.0\bin\<a href="https://www.graalvm.org/reference-manual/native-image/" rel="external">native-image.cmd</a> --version</b>
-GraalVM Version 21.0.0
+<b>&gt; c:\opt\graalvm-ce-java8-21.0.0.2\bin\<a href="https://www.graalvm.org/reference-manual/native-image/" rel="external">native-image.cmd</a> --version</b>
+GraalVM Version 21.0.0.2
 </pre></li>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/" rel="external"><code>polyglot.cmd</code></a> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java8-21.0.0\ polyglot.cmd</b>
-c:\opt\graalvm-ce-java8-21.0.0\bin\polyglot.cmd
-c:\opt\graalvm-ce-java8-21.0.0\jre\bin\polyglot.cmd
-c:\opt\graalvm-ce-java8-21.0.0\jre\lib\polyglot\bin\polyglot.cmd
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java8-21.0.0.2\ polyglot.cmd</b>
+c:\opt\graalvm-ce-java8-21.0.0.2\bin\polyglot.cmd
+c:\opt\graalvm-ce-java8-21.0.0.2\jre\bin\polyglot.cmd
+c:\opt\graalvm-ce-java8-21.0.0.2\jre\lib\polyglot\bin\polyglot.cmd
 &nbsp;
-<b>&gt; c:\opt\graalvm-ce-java8-21.0.0\bin\<a href="https://www.graalvm.org/reference-manual/polyglot-programming/#polyglot-launcher" rel="external">polyglot.cmd</a> --version</b>
-GraalVM CE polyglot launcher 21.0.0
+<b>&gt; c:\opt\graalvm-ce-java8-21.0.0.2\bin\<a href="https://www.graalvm.org/reference-manual/polyglot-programming/#polyglot-launcher" rel="external">polyglot.cmd</a> --version</b>
+GraalVM CE polyglot launcher 21.0.0.2
 </pre></li>
 </ul>
 
-<b name="footnote_04">[4]</b> ***JVMCI** (JVM compiler interface)* [↩](#anchor_04)
+<span id="footnote_05">[5]</span> ***JVMCI** (JVM compiler interface)* [↩](#anchor_05)
 
 <p style="margin:0 0 1em 20px;">
 The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
@@ -253,7 +265,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/March 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/April 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -262,7 +274,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [dotty_examples]: https://github.com/michelou/dotty-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.31.0.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.31.1.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/
@@ -284,11 +296,14 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [man1_rmdir]: https://www.linux.org/docs/man1/rmdir.html
 [man1_sed]: https://www.linux.org/docs/man1/sed.html
 [man1_wc]: https://www.linux.org/docs/man1/wc.html
+[native_image_cli]: https://www.graalvm.org/reference-manual/native-image/
 [nodes_examples]: https://github.com/michelou/nodejs-examples
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/
 [python_relnotes]: https://www.python.org/downloads/release/python-2717/
 [trufflesqueak_examples]: https://github.com/michelou/trufflesqueak-examples
+[upx_changelog]: https://upx.github.io/upx-news.txt
+[upx_downloads]: https://github.com/upx/upx/releases
 [vs2010_downloads]: https://visualstudio.microsoft.com/vs/older-downloads/
 [vs2010_relnotes]: https://docs.microsoft.com/en-us/visualstudio/releasenotes/vs2010-version-history
 [windows_limitation]: https://support.microsoft.com/en-gb/help/830473/command-prompt-cmd-exe-command-line-string-limitation

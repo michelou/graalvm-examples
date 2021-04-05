@@ -17,7 +17,7 @@ if not exist "%__TEMP_DIR%" mkdir "%__TEMP_DIR%"
 
 set _LIBS_CPATH=
 
-set _JMH_VERSION=1.27
+set _JMH_VERSION=1.29
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -31,7 +31,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
-set _MICRONAUT_VERSION=2.4.0
+set _MICRONAUT_VERSION=2.4.2
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -48,7 +48,7 @@ call :add_jar "javax.inject" "javax.inject" "1"
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
 call :add_jar "info.picocli" "picocli" "4.6.1"
 
-set _LOG4J_VERSION=2.14.0
+set _LOG4J_VERSION=2.14.1
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"
@@ -91,7 +91,7 @@ if not exist "%__JAR_FILE%" (
             set _EXITCODE=1
             goto :eof
         )
-        if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MVN_CMD%" install:install-file -Dfile="!__JAR_FILE!" -DgroupId="%__GROUP_ID%" -DartifactId=%__ARTIFACT_ID% -Dversion=%__VERSION% 1>&2
+        if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_MVN_CMD%" install:install-file -Dfile="!__JAR_FILE!" -DgroupId="%__GROUP_ID%" -DartifactId=%__ARTIFACT_ID% -Dversion=%__VERSION% -Dpackaging=jar 1>&2
         ) else if %_VERBOSE%==1 ( echo Install Maven archive into directory "!__LOCAL_REPO:%USERPROFILE%=%%USERPROFILE%%!\%__SCALA_XML_PATH%" 1>&2
         )
         call "%_MVN_CMD%" %_MVN_OPTS% install:install-file -Dfile="!__JAR_FILE!" -DgroupId="%__GROUP_ID%" -DartifactId=%__ARTIFACT_ID% -Dversion=%__VERSION% -Dpackaging=jar

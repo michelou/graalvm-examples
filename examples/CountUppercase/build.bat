@@ -21,40 +21,8 @@ if not %_EXITCODE%==0 goto end
 @rem #########################################################################
 @rem ## Main
 
-if %_HELP%==1 (
-    call :help
-    exit /b !_EXITCODE!
-)
-if %_CLEAN%==1 (
-    call :clean
-    if not !_EXITCODE!==0 goto end
-)
-if %_LINT%==1 (
-    call :checkstyle
-    if not !_EXITCODE!==0 goto end
-)
-if %_COMPILE%==1 (
-    call :compile
-    if not !_EXITCODE!==0 goto end
-    if %_TARGET%==native (
-        call :native_image
-        if not !_EXITCODE!==0 goto end
-    )
-)
-if %_DOC%==1 (
-    call :doc
-    if not !_EXITCODE!==0 goto end
-)
-if %_PACK%==1 (
-    call :pack
-    if not !_EXITCODE!==0 goto end
-)
-if %_RUN%==1 (
-    call :run_%_TARGET%
-    if not !_EXITCODE!==0 goto end
-)
-if %_TEST%==1 (
-    call :test_%_TARGET%
+for %%i in (%_COMMANDS%) do (
+    call :%%i
     if not !_EXITCODE!==0 goto end
 )
 goto end
@@ -80,7 +48,6 @@ set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 
 set _PKG_NAME=
 set _MAIN_NAME=CountUppercase
-set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if not exist "%JAVA_HOME%\bin\javac.exe" (
     echo %_ERROR_LABEL% Java SDK installation not found 1>&2
@@ -187,30 +154,23 @@ goto :eof
 
 @rem input parameter %*
 :args
-set _CLEAN=0
-set _COMPILE=0
-set _DOC=0
-set _HELP=0
+set _COMMANDS=
 set _JVMCI=0
-set _LINT=0
-set _PACK=0
-set _RUN=0
-set _TARGET=jvm
-set _TEST=0
+set __TARGET=jvm
 set _TIMER=0
 set _VERBOSE=0
 set __N=0
 :args_loop
 set "__ARG=%~1"
 if not defined __ARG (
-    if !__N!==0 set _HELP=1
+    if !__N!==0 set _COMMANDS=help
     goto args_done
 )
 if "%__ARG:~0,1%"=="-" (
     @rem option
     if "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if "%__ARG%"=="-jvmci" ( set _JVMCI=1
-    ) else if "%__ARG%"=="-native" ( set _TARGET=native
+    ) else if "%__ARG%"=="-native" ( set __TARGET=native
     ) else if "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
@@ -220,14 +180,14 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if "%__ARG%"=="clean" ( set _CLEAN=1
-    ) else if "%__ARG%"=="compile" ( set _COMPILE=1
-    ) else if "%__ARG%"=="doc" ( set _DOC=1
-    ) else if "%__ARG%"=="help" ( set _HELP=1
-    ) else if "%__ARG%"=="lint" ( set _LINT=1
-    ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
-    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
-    ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
+    if "%__ARG%"=="clean" ( set _COMMANDS=!_COMMANDS! clean
+    ) else if "%__ARG%"=="compile" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET%
+    ) else if "%__ARG%"=="doc" ( set _COMMANDS=!_COMMANDS! doc
+    ) else if "%__ARG%"=="help" ( set _COMMANDS=help
+    ) else if "%__ARG%"=="lint" ( set _COMMANDS=!_COMMANDS! lint
+    ) else if "%__ARG%"=="pack" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack
+    ) else if "%__ARG%"=="run" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% run_%__TARGET%
+    ) else if "%__ARG%"=="test" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack test_%__TARGET%
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -249,8 +209,8 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
-    echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
+    echo %_DEBUG_LABEL% Options    : _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: %_COMMANDS% 1>&2
     echo %_DEBUG_LABEL% Variables  : JAVA_HOME="%JAVA_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
 )
@@ -357,7 +317,7 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:compile
+:compile_jvm
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
@@ -390,6 +350,43 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
+goto :eof
+
+:compile_native
+call :compile_jvm
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+call :native_image
+goto :eof
+
+:native_image
+setlocal
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
+call "%_VCVARALL_BAT%" x64
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+)
+if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
+if not %ERRORLEVEL%==0 (
+    endlocal
+    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+endlocal
 goto :eof
 
 @rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
@@ -472,34 +469,6 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:native_image
-setlocal
-if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
-call "%_VCVARALL_BAT%" x64
-if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
-)
-if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
-)
-if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
-)
-call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
-if not %ERRORLEVEL%==0 (
-    endlocal
-    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-endlocal
-goto :eof
-
 :doc
 if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
 
@@ -578,7 +547,7 @@ if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
 goto :eof
 
 :run_native
-set "__EXE_FILE=%_MAIN_NATIVE_FILE%.exe"
+set "__EXE_FILE=%_TARGET_DIR%\%_MAIN_NAME%.exe"
 if not exist "%__EXE_FILE%" (
     echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
     set _EXITCODE=1

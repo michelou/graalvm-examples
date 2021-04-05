@@ -39,10 +39,10 @@ Command **`build clean dist:2`** generates the [GraalVM] build specified by buil
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_292-jvmci-21.1-b02
+G:\\openjdk1.8.0_292-jvmci-21.1-b03
 openjdk version "1.8.0_292"
-OpenJDK Runtime Environment (build 1.8.0_292-b05)
-OpenJDK 64-Bit Server VM (build 25.292-b05-jvmci-21.1-b02, mixed mode)
+OpenJDK Runtime Environment (build 1.8.0_292-b07)
+OpenJDK 64-Bit Server VM (build 25.292-b07-jvmci-21.1-b03, mixed mode)
  Create GraalVM build with tags build,test
 [...]
 gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Gate
@@ -51,7 +51,7 @@ gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Versions
 Python version: sys.version_info(major=2, minor=7, micro=17, releaselevel='final', serial=0)
 gate: 15 Mar 2021 00:38:27(+00:00) END:   Versions [0:00:00.979000]
 gate: 15 Mar 2021 00:38:27(+00:00) BEGIN: JDKReleaseInfo
-==== G:\\openjdk1.8.0_292-jvmci-21.1-b02 ====
+==== G:\\openjdk1.8.0_292-jvmci-21.1-b03 ====
 JAVA_VERSION="1.8.0_292"
 OS_NAME="Windows"
 OS_VERSION="5.2"
@@ -70,9 +70,9 @@ gate: 15 Mar 2021 00:38:41(+00:14) END:   Clean [0:00:13.536000]
 gate: 15 Mar 2021 00:38:41(+00:14) BEGIN: BuildWithJavac
 Running: mx [...] build -p --warning-as-error --force-javac
 WARNING: parallel builds are not supported on windows: can not use -p
-JAVA_HOME: G:\\openjdk1.8.0_292-jvmci-21.1-b02
+JAVA_HOME: G:\\openjdk1.8.0_292-jvmci-21.1-b03
 [...]
-[Stopped javac-daemon on port 50330 for Java 1.8.0_292 (1.8) from G:\openjdk1.8.0_292-jvmci-21.1-b02]
+[Stopped javac-daemon on port 50330 for Java 1.8.0_292 (1.8) from G:\openjdk1.8.0_292-jvmci-21.1-b03]
 Shutting down
 gate: 15 Mar 2021 00:51:08(+12:42) END:   BuildWithJavac [0:12:27.865000]
 gate: 15 Mar 2021 00:51:08(+12:42) BEGIN: UnitTests: hosted-product compiler
@@ -149,28 +149,39 @@ Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the tw
 <b>&gt; <a href="bin/graal/build.bat">build</a> -verbose update</b>
  Current directory is graal\
  Update local directory G:\graal\
-remote: Enumerating objects: 9784, done.
+remote: Enumerating objects: 4573, done.
 [...]
 From https://github.com/oracle/graal
  * branch                    master     -> FETCH_HEAD
-   27c67640e10..b6022e8699b  master     -> upstream/master
+   bfd6bc519cd..eabd668cc88  master     -> upstream/master
 [...]
  Current directory is \mx
  Update MX suite repository into directory G:\\mx
- remote: Enumerating objects: 8, done.
-remote: Counting objects: 100% (8/8), done.
-remote: Compressing objects: 100% (4/4), done.
-remote: Total 8 (delta 4), reused 5 (delta 4), pack-reused 0
-Unpacking objects: 100% (8/8), done.
+remote: Enumerating objects: 77, done.
+remote: Counting objects: 100% (77/77), done.
+remote: Compressing objects: 100% (65/65), done.
+remote: Total 77 (delta 32), reused 57 (delta 12), pack-reused 0
+Unpacking objects: 100% (77/77), 237.67 KiB | 36.00 KiB/s, done.
 From https://github.com/graalvm/mx
-   1a8e2a9..6369620  master     -> origin/master
- * [new tag]         5.247.5    -> 5.247.5
- Update MX suite repository into directory G:\\mx
-Updating 1a8e2a9..6369620
+   1852b8b..294db34  master     -> origin/master
+[...]
+ * [new tag]         5.292.4    -> 5.292.4
+Updating 1852b8b..294db34
 Fast-forward
- mx.py           | 12 +++++++++++-
- mx_benchmark.py |  7 +++++--
- 2 files changed, 16 insertions(+), 3 deletions(-)
+ ci.jsonnet                                         |   4 +-
+ common.json                                        |  20 +-
+ .../com.oracle.mxtool.junit/.checkstyle_checks.xml |   8 +-
+ jdk_distribution_parser.py                         |  15 +-
+ mx.mx/suite.py                                     |  15 +-
+ mx.py                                              |  90 +++++++--
+ mx_gc.py                                           | 218 +++++++++++++++++++++
+ mx_ide_eclipse.py                                  |   2 -
+ mx_javamodules.py                                  |   2 +-
+ mx_native.py                                       |  15 +-
+ mx_urlrewrites.py                                  |   2 +-
+ tag_version.py                                     |  39 ++--
+ 12 files changed, 359 insertions(+), 71 deletions(-)
+ create mode 100644 mx_gc.py
 </pre>
 
 ## Troubleshooting
@@ -243,7 +254,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/March 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/April 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
