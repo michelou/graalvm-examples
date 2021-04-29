@@ -15,8 +15,8 @@ PSEP       = :
 FIND_CMD   = find
 endif
 
-JMH_CORE_LIB_JAR = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-core-1.27.jar)
-JMH_ANN_LIB_JAR  = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-generator-annprocess-1.27.jar)
+JMH_CORE_LIB_JAR = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-core-1.29.jar)
+JMH_ANN_LIB_JAR  = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-generator-annprocess-1.29.jar)
 JOPT_SIMPLE_JAR  = $(shell $(FIND_CMD) "$(LOCAL_REPO)/net/sf/jopt-simple" -name jopt-simple-5.0.4.jar)
 COMMONS_MATH_JAR = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/apache/commons" -name commons-math3-3.2.jar)
 HAMCREST_JAR     = $(shell $(FIND_CMD) "$(LOCAL_REPO)/org/hamcrest" -name hamcrest-2.2.jar)

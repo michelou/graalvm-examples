@@ -57,7 +57,7 @@ call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"
 call :add_jar "org.apache.logging.log4j" "log4j-core" "%_LOG4J_VERSION%"
 
 @rem https://mvnrepository.com/artifact/com.guicedee.services/slf4j
-call :add_jar "com.guicedee.services" "slf4j" "1.1.1.0"
+call :add_jar "com.guicedee.services" "slf4j" "1.1.1.7"
 
 goto end
 

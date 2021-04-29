@@ -162,7 +162,7 @@ goto :args_loop
 call :subst %_DRIVE_NAME% "%_ROOT_DIR%"
 if not %_EXITCODE%==0 goto :eof
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% Options  : _HELP=%_HELP% _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Options  : _BASH=%_BASH% _HELP=%_HELP% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Variables: _DRIVE_NAME=%_DRIVE_NAME% 1>&2
 )
 goto :eof
@@ -267,13 +267,13 @@ goto :eof
 :java8
 call :graal java8
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set _JAVA_HOME=%_GRAAL_HOME%
+if defined _GRAAL_HOME set "_JAVA_HOME=%_GRAAL_HOME%"
 goto :eof
 
 :java11
 call :graal java11
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set _JAVA11_HOME=%_GRAAL_HOME%
+if defined _GRAAL_HOME set "_JAVA11_HOME=%_GRAAL_HOME%"
 goto :eof
 
 @rem output parameter: _MAVEN_PATH
@@ -616,10 +616,10 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\python.exe" --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% python %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%PYTHON_HOME%:python.exe"
 )
-where /q pylint.exe
+where /q "%PYTHON_HOME%\Scripts:pylint.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,*" %%i in ('pylint.exe --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j"
-    set __WHERE_ARGS=%__WHERE_ARGS% pylint.exe
+    for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\Scripts\pylint.exe" --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%PYTHON_HOME%\Scripts:pylint.exe"
 )
 where /q make.exe
 if %ERRORLEVEL%==0 (
@@ -675,14 +675,14 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
-    if defined GIT_HOME echo    GIT_HOME=%GIT_HOME% 1>&2
-    if defined JAVA_HOME echo    JAVA_HOME=%JAVA_HOME% 1>&2
-    if defined JAVA11_HOME echo    JAVA11_HOME=%JAVA11_HOME% 1>&2
-    if defined LLVM_HOME echo    LLVM_HOME=%LLVM_HOME% 1>&2
-    if defined MSVC_BIN_DIR echo    MSVC_BIN_DIR="%MSVC_BIN_DIR%" 1>&2
-    if defined MSVC_HOME echo    MSVC_HOME="%MSVC_HOME%" 1>&2
-    if defined MSVS_HOME echo    MSVS_HOME="%MSVS_HOME%" 1>&2
-    if defined PYTHON_HOME echo    PYTHON_HOME=%PYTHON_HOME% 1>&2
+    if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
+    if defined JAVA_HOME echo    "JAVA_HOME=%JAVA_HOME%" 1>&2
+    if defined JAVA11_HOME echo    "JAVA11_HOME=%JAVA11_HOME%" 1>&2
+    if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
+    if defined MSVC_BIN_DIR echo    "MSVC_BIN_DIR=%MSVC_BIN_DIR%" 1>&2
+    if defined MSVC_HOME echo    "MSVC_HOME=%MSVC_HOME%" 1>&2
+    if defined MSVS_HOME echo    "MSVS_HOME=%MSVS_HOME%" 1>&2
+    if defined PYTHON_HOME echo    "PYTHON_HOME=%PYTHON_HOME%" 1>&2
 )
 goto :eof
 
