@@ -4,13 +4,16 @@ SOURCE_DIR  = src
 TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
+OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
+SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
+
 JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR)\"
 # JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR);$(CLASSES_DIR)"
 
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND_CMD) $(SOURCE_DIR)/main -name *.java)
+SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java)
 TARGET   = $(TARGET_DIR)/benchmarks.jar
 MANIFEST = $(TARGET_DIR)/manifest.txt
 
@@ -20,9 +23,9 @@ build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	[ -d "$(CLASSES_DIR)" ] || mkdir -p "$(CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(TARGET_DIR)/javac_opts.txt"
-	@echo "$(SOURCES)" > "$(TARGET_DIR)/javac_sources.txt"
-	$(JAVAC) "@$(TARGET_DIR)/javac_opts.txt" "@$(TARGET_DIR)/javac_sources.txt"
+	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(OPTS_FILE)"
+	@echo "$(SOURCES)" > "$(SOURCES_FILE)"
+	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
 	@echo "Manifest-Version: 1.0" > $(MANIFEST)
 	@echo "Main-Class: org.openjdk.jmh.Main" >> $(MANIFEST)
 	cd "$(CLASSES_DIR)"; $(JAR) xf "$(JMH_CORE_LIB_JAR)"
@@ -34,8 +37,22 @@ $(TARGET): $(SOURCES)
 clean:
 	rm -rf "$(TARGET_DIR)"
 
+compile: build
+
 run: build
 	$(JAVA) -Xmx1G -jar "$(TARGET)" rank
+
+help:
+	@echo "Usage: make all|build|clean|help|run|test"
+	@echo ""
+	@echo "  Subcommands:"
+	@echo "    all      alias for build"
+	@echo "    build    compile Java/Scala source files"
+	@echo "    clean    delete generated files"
+	@echo "    compile  alias for build"
+	@echo "    help     display this help message"
+	@echo "    run      execute main program $(MAIN_CLASS)"
+	@echo "    test     execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -62,11 +79,11 @@ doc: $(DOC_TARGET)
 ##############################################################################
 ## test rules
 
-TEST_SOURCES = $(shell $(FIND_CMD) $(SOURCE_DIR)/test -name *.java)
-TEST_TARGET  = $(TARGET_DIR)/.latest-test-build
+TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -name *.java)
+TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
+TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
 TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
-TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(JUNIT_INTF_JAR)$(PSEP)$(SCALATEST_JAR)$(PSEP)$(SCALACTIC_JAR)$(PSEP)$(SPECS2_CORE_JAR)$(PSEP)$(SPECS2_JUNIT_JAR)$(PSEP)$(SPECS2_MATCHER_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
@@ -82,4 +99,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean doc run test
+.PHONY: all build clean compile doc run test

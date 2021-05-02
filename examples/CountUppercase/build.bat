@@ -126,11 +126,11 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.41
+set _CHECKSTYLE_VERSION=8.41.1
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
-set _PROJECT_VERSION=0.1-SNAPSHOT
+set _PROJECT_VERSION=1.0-SNAPSHOT
 
 set "__PROPS_FILE=%_ROOT_DIR%build.properties"
 if exist "%__PROPS_FILE%" (
@@ -211,8 +211,8 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAG
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: %_COMMANDS% 1>&2
-    echo %_DEBUG_LABEL% Variables  : JAVA_HOME="%JAVA_HOME%" 1>&2
-    echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof

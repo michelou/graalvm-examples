@@ -11,7 +11,7 @@ JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR);$(CLASSES_DIR)"
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND_CMD) $(SOURCE_DIR)/main -name *.java)
+SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java)
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -34,6 +34,8 @@ $(TARGET): $(SOURCES)
 clean:
 	rm -rf "$(TARGET_DIR)"
 
+compile: build
+
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
 	@[ -f "$(LOG_FILE)" ] && echo Compilation log written to file "$(LOG_FILE)" 1>&2
@@ -46,6 +48,7 @@ help:
 	@echo "    build  compile Java/Scala source files"
 	@echo "    clean  delete generated files"
 	@echo "    help   display this help message"
+	@echo "    run    execute main program $(MAIN_CLASS)"
 	@echo "    test   execute unit tests with JUnit"
 
 ##############################################################################
@@ -73,14 +76,14 @@ doc: $(DOC_TARGET)
 ##############################################################################
 ## test rules
 
-TEST_SOURCES = $(shell $(FIND_CMD) $(SOURCE_DIR)/test -name *.java)
-TEST_TARGET  = $(TARGET_DIR)/.latest-test-build
+TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -name *.java)
+TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
+TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
 TEST_OPTS_FILE    = $(TARGET_DIR)/javac_test_opts.txt
 TEST_SOURCES_FILE = $(TARGET_DIR)/javac_test_sources.txt
 
 TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
-TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
@@ -96,4 +99,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean doc help run test
+.PHONY: all build clean compile doc help run test

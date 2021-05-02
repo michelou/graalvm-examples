@@ -158,7 +158,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.41
+set _CHECKSTYLE_VERSION=8.41.1
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -257,8 +257,8 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
     echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
-    echo %_DEBUG_LABEL% Variables  : JAVA_HOME="%JAVA_HOME%" 1>&2
-    echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -321,7 +321,7 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :checkstyle
-set "__CHECKSTYLE_DIR=%LOCALAPPADATA%\Checkstyle"
+set "__CHECKSTYLE_DIR=%LOCALAPPDATA%\Checkstyle"
 if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
 set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
@@ -355,7 +355,7 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     set /a __N+=1
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=%%USERPROFILE%%!" 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%LOCALAPPDATA%=%%LOCALAPPDATA%%%!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (

@@ -33,6 +33,8 @@ $(TARGET): $(SOURCES)
 clean:
 	rm -rf "$(TARGET_DIR)"
 
+compile: build
+
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
 
@@ -40,11 +42,13 @@ help:
 	@echo "Usage: make all|build|clean|run|test"
 	@echo ""
 	@echo "  Subcommands:"
-	@echo "    all    alias for build"
-	@echo "    build  compile Java/Scala source files"
-	@echo "    clean  delete generated files"
-	@echo "    help   display this help message"
-	@echo "    test   execute unit tests with JUnit"
+	@echo "    all      alias for build"
+	@echo "    build    compile Java/Scala source files"
+	@echo "    clean    delete generated files"
+	@echo "    compile  alias for build"
+	@echo "    help     display this help message"
+	@echo "    run      execute main program $(MAIN_CLASS)"
+	@echo "    test     execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -71,14 +75,14 @@ doc: $(DOC_TARGET)
 ##############################################################################
 ## test rules
 
-TEST_SOURCES = $(shell $(FIND_CMD) $(SOURCE_DIR)/test -name *.java)
-TEST_TARGET  = $(TARGET_DIR)/.latest-test-build
+TEST_SOURCES     = $(shell $(FIND_CMD) $(SOURCE_DIR)/test -name *.java)
+TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
+TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
 TEST_OPTS_FILE    = $(TARGET_DIR)/javac_test_opts.txt
 TEST_SOURCES_FILE = $(TARGET_DIR)/javac_test_sources.txt
 
 TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
-TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
@@ -94,4 +98,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean doc help run test
+.PHONY: all build clean compile doc help run test
