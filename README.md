@@ -28,13 +28,13 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*April 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
+For instance our development environment looks as follows (*May 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.31.1\                                    <i>(279 MB)</i>
-C:\opt\graalvm-ce-java11-21.1.0\                    <i>(731 MB)</i>
-C:\opt\graalvm-ce-java8-21.1.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                  <i>(644 MB)</i>
+C:\opt\graalvm-ce-java11-21.1.0\                      <i>(731 MB)</i>
+C:\opt\graalvm-ce-java8-21.1.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-3.9.4\                                  <i>( 83 MB)</i>
 C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
@@ -57,9 +57,9 @@ This repository is organized as follows:
 docs\
 examples\
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.11-jvmci-21.1-b04\</a>  <i>(287 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.11-jvmci-21.1-b05\</a>  <i>(312 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_292-jvmci-21.1-b04\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(218 MB)</i>
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_292-jvmci-21.1-b05\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(241 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
 <a href="setenv.bat">setenv.bat</a>
@@ -203,10 +203,10 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java8-windows-amd64-21.1.0.zip</a>                     <i>(251 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-21.1.0.zip</a>                    <i>(329 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-21.1-b02">labsjdk-ce-11.0.11+7-jvmci-21.1-b03-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-21.0.0.jar</a>   <i>(  9 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.0.0.jar</a>  <i>(  6 MB)</i>
-<a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/tag/jvmci-21.1-b02">openjdk-8u292+07-jvmci-21.1-b03-windows-amd64.tar.gz</a>          <i>(111 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases/tag/jvmci-21.1-b02">labsjdk-ce-11.0.11+8-jvmci-21.1-b05-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java8-windows-amd64-21.1.0.jar</a>   <i>(  9 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.1.0.jar</a>  <i>(  6 MB)</i>
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u292+09-jvmci-21.1-b05-windows-amd64.tar.gz</a>          <i>(111 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.31.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.9.4.amd64.msi</a>                                        <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
@@ -262,12 +262,12 @@ GraalVM CE polyglot launcher 21.1.0
 <span id="footnote_05">[5]</span> ***JVMCI** (JVM compiler interface)* [↩](#anchor_05)
 
 <p style="margin:0 0 1em 20px;">
-The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/openjdk8-jvmci-builder/releases/"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
+The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/graal-jvmci-8/releases"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
 </p>
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/April 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
