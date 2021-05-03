@@ -14,8 +14,9 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="articles">Articles</span>
 
-- [GraalVM 21.0 Introduces a JVM Written in Java][article_jvm_java], January 2021.
-- [Leverage NPM JavaScript Module from Java application using GraalVM](https://technology.amis.nl/2019/10/25/leverage-npm-javascript-module-from-java-application-using-graalvm/), by Lucas Jellema, October 25, 2019.
+- [GraalVM 21.1 is here!][article_graalvm_21_1] by Oleg Selajev, April 2021.
+- [GraalVM 21.0 Introduces a JVM Written in Java][article_graalvm_21_0], January 2021.
+- [Leverage NPM JavaScript Module from Java application using GraalVM](https://technology.amis.nl/2019/10/25/leverage-npm-javascript-module-from-java-application-using-graalvm/) by Lucas Jellema, October 25, 2019.
 - [Calling out from Java to JavaScript (with call back) – leveraging interoperability support of GraalVM][article_jellema], by Lucas Jellema, October 24, 2019.
 - [An Introduction to GraalVM][article_berger] by Frits Berger, June 28, 2019.
 - [Getting to Know Graal, the New Java JIT Compiler][article_evans] by [Ben Evans](https://www.infoq.com/profile/Ben-Evans/), July 16, 2018.
@@ -86,15 +87,16 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/April 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
 
 [article_berger]: https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples
 [article_evans]: https://www.infoq.com/articles/Graal-Java-JIT-Compiler/
+[article_graalvm_21_0]: https://www.infoq.com/news/2021/01/graalvm-21-jvm-java/
+[article_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [article_jellema]: https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/
-[article_jvm_java]: https://www.infoq.com/news/2021/01/graalvm-21-jvm-java/
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
