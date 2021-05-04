@@ -7,8 +7,8 @@ CLASSES_DIR = $(TARGET_DIR)/classes
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
 SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
 
-JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR)\"
-# JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR);$(CLASSES_DIR)"
+JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)\"
+# JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)"
 
 ##############################################################################
 ## main rules
@@ -37,8 +37,6 @@ $(TARGET): $(SOURCES)
 clean:
 	rm -rf "$(TARGET_DIR)"
 
-compile: build
-
 run: build
 	$(JAVA) -Xmx1G -jar "$(TARGET)" rank
 
@@ -49,7 +47,6 @@ help:
 	@echo "    all      alias for build"
 	@echo "    build    compile Java/Scala source files"
 	@echo "    clean    delete generated files"
-	@echo "    compile  alias for build"
 	@echo "    help     display this help message"
 	@echo "    run      execute main program $(MAIN_CLASS)"
 	@echo "    test     execute unit tests with JUnit"
@@ -83,14 +80,17 @@ TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -name *.java)
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
+TEST_OPTS_FILE    = $(TARGET_DIR)/javac_test_opts.txt
+TEST_SOURCES_FILE = $(TARGET_DIR)/javac_test_sources.txt
+
 TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
 TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(JUNIT_INTF_JAR)$(PSEP)$(SCALATEST_JAR)$(PSEP)$(SCALACTIC_JAR)$(PSEP)$(SPECS2_CORE_JAR)$(PSEP)$(SPECS2_JUNIT_JAR)$(PSEP)$(SPECS2_MATCHER_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || mkdir -p "$(TEST_CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TARGET_DIR)/scalac_test_opts.txt"
-	@echo "$(TEST_SOURCES)" > "$(TARGET_DIR)/scalac_test_sources.txt"
-	$(SCALAC) "@$(TARGET_DIR)/scalac_test_opts.txt" "@$(TARGET_DIR)/scalac_test_sources.txt"
+	@echo "$(JAVAC_FLAGS) -classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TEST_OPTS_FILE)"
+	@echo "$(TEST_SOURCES)" > "$(TEST_SOURCES_FILE)"
+	$(SCALAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@echo "" > "$(TEST_TARGET)"
 
 test: build $(TEST_TARGET)
@@ -99,4 +99,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean compile doc run test
+.PHONY: all build clean doc help run test

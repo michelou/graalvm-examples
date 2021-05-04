@@ -5,13 +5,13 @@ TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
 LOG_FILE    = $(TARGET_DIR)/graal_log.txt
-JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR)\"
-JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR);$(JMH_ANN_LIB_JAR);$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
+JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)\"
+JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
 
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java)
+SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java 2>/dev/null)
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -34,14 +34,12 @@ $(TARGET): $(SOURCES)
 clean:
 	rm -rf "$(TARGET_DIR)"
 
-compile: build
-
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
 	@[ -f "$(LOG_FILE)" ] && echo Compilation log written to file "$(LOG_FILE)" 1>&2
 
 help:
-	@echo "Usage: make all|build|clean|run|test"
+	@echo "Usage: make all|build|clean|help|run|test"
 	@echo ""
 	@echo "  Subcommands:"
 	@echo "    all    alias for build"
@@ -99,4 +97,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean compile doc help run test
+.PHONY: all build clean doc help run test
