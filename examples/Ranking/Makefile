@@ -7,7 +7,7 @@ CLASSES_DIR = $(TARGET_DIR)/classes
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
 SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
 
-JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)\"
+JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
 # JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)"
 
 ##############################################################################
@@ -22,16 +22,16 @@ all: build
 build: $(TARGET)
 
 $(TARGET): $(SOURCES)
-	[ -d "$(CLASSES_DIR)" ] || mkdir -p "$(CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(SOURCES_FILE)"
+	[ -d "$(CLASSES_DIR)" ] || $(MKDIR) -p "$(CLASSES_DIR)"
+	@echo $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
+	@echo $(SOURCES) > "$(SOURCES_FILE)"
 	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
-	@echo "Manifest-Version: 1.0" > $(MANIFEST)
-	@echo "Main-Class: org.openjdk.jmh.Main" >> $(MANIFEST)
-	cd "$(CLASSES_DIR)"; $(JAR) xf "$(JMH_CORE_LIB_JAR)"
-	cd "$(CLASSES_DIR)"; $(JAR) xf "$(JMH_ANN_LIB_JAR)"
-	cd "$(CLASSES_DIR)"; $(JAR) xf "$(JOPT_SIMPLE_JAR)"
-	cd "$(CLASSES_DIR)"; $(JAR) xf "$(COMMONS_MATH_JAR)"
+	@echo Manifest-Version: 1.0 > $(MANIFEST)
+	@echo Main-Class: org.openjdk.jmh.Main >> $(MANIFEST)
+	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JMH_CORE_LIB_JAR)"
+	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JMH_ANN_LIB_JAR)"
+	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JOPT_SIMPLE_JAR)"
+	cd "$(CLASSES_DIR)" && $(JAR) xf "$(COMMONS_MATH_JAR)"
 	$(JAR) cfm $(TARGET) "$(MANIFEST)" -C "$(CLASSES_DIR)" .
 
 clean:
@@ -65,11 +65,11 @@ DOC_OPTS_FILE    = $(TARGET_DIR)/javadoc_opts.txt
 DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
-	[ -d "$(DOC_TARGET_DIR)" ] || mkdir -p "$(DOC_TARGET_DIR)"
+	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
 	@echo -siteroot \"$(DOC_TARGET_DIR)\" -project \"$(PROJECT_NAME)\" -project-url \"$(PROJECT_URL)\" -project-version \"$(PROJECT_VERSION)\" > "$(DOC_OPTS_FILE)"
 	@echo "$(SOURCES)" > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
-	@echo "" > "$(DOC_TARGET)"
+	@$(TOUCH) "$(DOC_TARGET)"
 
 doc: $(DOC_TARGET)
 
@@ -87,11 +87,11 @@ TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
 TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(JUNIT_INTF_JAR)$(PSEP)$(SCALATEST_JAR)$(PSEP)$(SCALACTIC_JAR)$(PSEP)$(SPECS2_CORE_JAR)$(PSEP)$(SPECS2_JUNIT_JAR)$(PSEP)$(SPECS2_MATCHER_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
-	[ -d "$(TEST_CLASSES_DIR)" ] || mkdir -p "$(TEST_CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TEST_OPTS_FILE)"
+	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
+	@echo $(JAVAC_FLAGS) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
 	@echo "$(TEST_SOURCES)" > "$(TEST_SOURCES_FILE)"
 	$(SCALAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
-	@echo "" > "$(TEST_TARGET)"
+	@$(TOUCH) "$(TEST_TARGET)"
 
 test: build $(TEST_TARGET)
 	$(JAVA) -classpath "$(TEST_CPATH)" org.junit.runner.JUnitCore $(TEST_MAIN_CLASS)

@@ -267,17 +267,20 @@ goto :eof
 :java8
 call :graal java8
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set "_JAVA_HOME=%_GRAAL_HOME%"
+if defined _GRAAL_HOME set "_GRAALVM=%_GRAAL_HOME%"
 goto :eof
 
 :java11
 call :graal java11
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set "_JAVA11_HOME=%_GRAAL_HOME%"
+if defined _GRAAL_HOME set "_GRAALVM11=%_GRAAL_HOME%"
 goto :eof
 
-@rem output parameter: _MAVEN_PATH
+@rem output parameter: _MAVEN_HOME, _MAVEN_PATH
 :maven
+set _MAVEN_HOME=
+set _MAVEN_PATH=
+
 where /q mvn.cmd
 if %ERRORLEVEL%==0 goto :eof
 
@@ -490,7 +493,8 @@ goto :eof
 :sdk
 set _SDK_HOME=
 
-for /f "delims=" %%f in ("%ProgramFiles%\Microsoft SDKs\Windows\v7.1") do set "_SDK_HOME=%%~f"
+set "__SDK_PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows"
+for /f %%i in ('dir /ad /b "%__SDK_PATH%\v*"') do set "_SDK_HOME=%__SDK_PATH%\%%i"
 if not exist "%_SDK_HOME%" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Windows SDK 7.1 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -676,9 +680,10 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
-    if defined JAVA_HOME echo    "JAVA_HOME=%JAVA_HOME%" 1>&2
-    if defined JAVA11_HOME echo    "JAVA11_HOME=%JAVA11_HOME%" 1>&2
+    if defined GRAALVM echo    "GRAALVM=%GRAALVM%" 1>&2
+    if defined GRAALVM11 echo    "GRAALVM11=%GRAALVM11%" 1>&2
     if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
+    if defined MAVEN_HOME echo    "MAVEN_HOME=%MAVEN_HOME%" 1>&2
     if defined MSVC_BIN_DIR echo    "MSVC_BIN_DIR=%MSVC_BIN_DIR%" 1>&2
     if defined MSVC_HOME echo    "MSVC_HOME=%MSVC_HOME%" 1>&2
     if defined MSVS_HOME echo    "MSVS_HOME=%MSVS_HOME%" 1>&2
@@ -693,9 +698,10 @@ goto :eof
 endlocal & (
     if %_EXITCODE%==0 (
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
-        if not defined JAVA_HOME set "JAVA_HOME=%_JAVA_HOME%"
-        if not defined JAVA11_HOME set "JAVA11_HOME=%_JAVA11_HOME%"
+        if not defined GRAALVM set "GRAALVM=%_GRAALVM%"
+        if not defined GRAALVM11 set "GRAALVM11=%_GRAALVM11%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
+        if not defined MAVEN_HOME set "MAVEN_HOME=%_MAVEN_HOME%"
         if not defined MSVC_BIN_DIR set "MSVC_BIN_DIR=%_MSVC_BIN_DIR%"
         if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
         if not defined MSVS_CMAKE_CMD set "MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%"

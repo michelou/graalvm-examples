@@ -35,7 +35,7 @@ For instance our development environment looks as follows (*May 2021*) <sup id="
 C:\opt\Git-2.31.1\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.1.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java8-21.1.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                    <i>(644 MB)</i>
-C:\opt\Python-3.9.4\                                  <i>( 83 MB)</i>
+C:\opt\Python-3.9.5\                                  <i>( 83 MB)</i>
 C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -130,7 +130,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_282, python 3.9.4, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_282, python 3.9.5, pylint 1.9.2, mx 5.292.7
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 
@@ -145,13 +145,13 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_282, python 3.9.4, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_282, python 3.9.5, pylint 1.9.2, mx 5.292.7
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-21.0.0\bin\javac.exe
-   C:\opt\Python-3.9.4\python.exe
-   C:\opt\Python-3.9.4\Scripts\pylint.exe
+   C:\opt\Python-3.9.5\python.exe
+   C:\opt\Python-3.9.5\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
@@ -191,7 +191,7 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 <span id="footnote_02">[2]</span> ***UPX*** [↩](#anchor_02)
 
 <p style="margin:0 0 1em 20px;">
-<a href="https://upx.github.io/">UPX</a> (<b>U</b>ltimate <b>P</b>acker for e<b>X</b>ecutables) is a free, portable, extendable, high-performance executable packer for several executable formats. It is particularly useful to reduce the size of executables produced by [`native-image`][native_image_cli].
+<a href="https://upx.github.io/">UPX</a> (<b>U</b>ltimate <b>P</b>acker for e<b>X</b>ecutables) is a free, portable, extendable, high-performance executable packer for several executable formats. It is particularly useful to reduce the size of executables produced by <a href="https://www.graalvm.org/reference-manual/native-image/"><code>native-image</code></a>.
 </p>
 
 <span id="footnote_03">[3]</span> ***Downloads*** [↩](#anchor_03)
@@ -208,7 +208,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.1.0.jar</a>  <i>(  6 MB)</i>
 <a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u292+09-jvmci-21.1-b05-windows-amd64.tar.gz</a>          <i>(111 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.31.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/windows/">python-3.9.4.amd64.msi</a>                                        <i>( 19 MB)</i>
+<a href="https://www.python.org/downloads/windows/">python-3.9.5.amd64.msi</a>                                        <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
@@ -278,11 +278,10 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [git_cli]: https://git-scm.com/docs/git
 [git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.31.1.txt
 [github_markdown]: https://github.github.com/gfm/
-[graalsqueak_examples]: https://github.com/michelou/graalsqueak-examples
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
 [graalvm_releases]: https://github.com/graalvm/graalvm-ce-builds/releases
-[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/21_0/
+[graalvm_relnotes]: https://www.graalvm.org/docs/release-notes/21_1/
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kotlin_examples]: https://github.com/michelou/kotlin-examples
@@ -298,7 +297,6 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [man1_rmdir]: https://www.linux.org/docs/man1/rmdir.html
 [man1_sed]: https://www.linux.org/docs/man1/sed.html
 [man1_wc]: https://www.linux.org/docs/man1/wc.html
-[native_image_cli]: https://www.graalvm.org/reference-manual/native-image/
 [nodes_examples]: https://github.com/michelou/nodejs-examples
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/

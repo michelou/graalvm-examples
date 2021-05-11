@@ -47,10 +47,10 @@ set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 
 set _PKG_NAME=
-set _MAIN_NAME=CountUppercase
+set _MAIN_NAME=HelloPolyglot
 
 if not exist "%GRAALVM%\bin\javac.exe" (
-    echo %_ERROR_LABEL% Java SDK installation not found 1>&2
+    echo %_ERROR_LABEL% GraalVM installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -75,6 +75,14 @@ if not exist "%GRAALVM%\bin\native-image.cmd" (
 )
 set "_NATIVE_IMAGE_CMD=%GRAALVM%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
+
+if not exist "%WABT_HOME%\bin\wat2wasm.exe" (
+    echo %_ERROR_LABEL% WABT installation not found 1>&2
+	set _EXITCODE=1
+	goto :eof
+)
+@rem see https://github.com/WebAssembly/wabt/releases
+set "_WAT2WASM_CMD=%WABT_HOME%\bin\wat2wasm.exe"
 goto :eof
 
 :env_colors
@@ -443,6 +451,9 @@ if %__DATE1% gtr %__DATE2% ( set _NEWER=1
 goto :eof
 
 :doc
+call :libs_cpath
+if not %_EXITCODE%==0 goto :eof
+
 if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
 
 call :action_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
@@ -453,7 +464,7 @@ for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
     echo %%i>> "%__SOURCES_FILE%"
 )
 set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
-echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
+echo -cp "%_CPATH:\=\\%" -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
@@ -488,11 +499,37 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:run_jvm
-set __MAIN_ARGS=In 2019 I would like to run ALL languages in one VM.
-set __ITERATIONS=5
+:wasm
+set "__WAT_FILE=%_SOURCE_DIR%\resources\%_PROJECT_NAME%.wat"
+if not exist "%__WAT_FILE%" (
+    echo %_ERROR_LABEL% WASM-text file not found 1>&2
+    set _EXITCODE=1
+	goto :eof
+)
+set "__WASM_FILE=%_CLASSES_DIR%\%_PROJECT_NAME%.wasm"
 
-set __JAVA_OPTS=-cp "%_CLASSES_DIR%" -Diterations=%__ITERATIONS%
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_WAT2WASM_CMD%" "%__WAT_FILE%" -o "%__WASM_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Generated WASM file 1>&2
+)
+call "%_WAT2WASM_CMD%" "%__WAT_FILE%" -o "%__WASM_FILE%"
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
+:run_jvm
+call :wasm
+if not %_EXITCODE%==0 goto :eof
+
+set __MAIN_ARGS=
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% copy /y "%_ROOT_DIR%\%_PROJECT_NAME%.wasm" "%_CLASSES_DIR%" 1>&2
+) else if %_VERBOSE%==1 ( echo Copy file %_PROJECT_NAME%.wasm to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+)
+copy /y "%_ROOT_DIR%\%_PROJECT_NAME%.wasm" "%_CLASSES_DIR%" %_STDOUT_REDIRECT%
+
+set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
 if %_DEBUG%==1 (
     set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
     set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"

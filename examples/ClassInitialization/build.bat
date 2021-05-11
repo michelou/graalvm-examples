@@ -81,15 +81,15 @@ set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 set _PKG_NAME=org.graalvm.example
 @rem both _MAIN_NAME and _MAIN_NATIVE_FILE are defined in args (option -native)
 
-if not exist "%JAVA_HOME%\bin\javac.exe" (
-    echo %_ERROR_LABEL% Java SDK installation not found 1>&2
+if not exist "%GRAALVM%\bin\javac.exe" (
+    echo %_ERROR_LABEL% GraalVM installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
-set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
-set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
-set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
+set "_JAR_CMD=%GRAALVM%\bin\jar.exe"
+set "_JAVA_CMD=%GRAALVM%\bin\java.exe"
+set "_JAVAC_CMD=%GRAALVM%\bin\javac.exe"
+set "_JAVADOC_CMD=%GRAALVM%\bin\javadoc.exe"
 
 if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
     echo %_ERROR_LABEL% MSVS installation not found 1>&2
@@ -99,13 +99,13 @@ if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
 )
 set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
-if not exist "%JAVA_HOME%\bin\native-image.cmd" (
+if not exist "%GRAALVM%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(JAVA_HOME="%JAVA_HOME%"^) 1>&2
+    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
+set "_NATIVE_IMAGE_CMD=%GRAALVM%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback "--initialize-at-build-time=%_PKG_NAME%" "--initialize-at-run-time=%_PKG_NAME%.Startup"
 goto :eof
 
@@ -257,7 +257,7 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
     echo %_DEBUG_LABEL% Options    : _CACHED=%_CACHED% _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
@@ -369,8 +369,8 @@ if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
 
-call :compile_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java"
-if %_COMPILE_REQUIRED%==0 goto :eof
+call :action_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+if %_ACTION_REQUIRED%==0 goto :eof
 
 call :compile_java
 if not %_EXITCODE%==0 goto :eof
@@ -400,8 +400,8 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 @rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
-@rem output parameter: _COMPILE_REQUIRED
-:compile_required
+@rem output parameter: _ACTION_REQUIRED
+:action_required
 set "__TARGET_FILE=%~1"
 
 set __PATH_ARRAY=
@@ -424,13 +424,13 @@ for /f "usebackq" %%i in (`powershell -c "gci -recurse -path %__PATH_ARRAY:~1% -
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
-set _COMPILE_REQUIRED=%_NEWER%
+set _ACTION_REQUIRED=%_NEWER%
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '%__TARGET_FILE%' 1>&2
     echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
-    echo %_DEBUG_LABEL% _COMPILE_REQUIRED=%_COMPILE_REQUIRED% 1>&2
-) else if %_VERBOSE%==1 if %_COMPILE_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No compilation needed ^(%__PATH_ARRAY1:~1%^) 1>&2
+    echo %_DEBUG_LABEL% _ACTION_REQUIRED=%_ACTION_REQUIRED% 1>&2
+) else if %_VERBOSE%==1 if %_ACTION_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
+    echo No action required ^(%__PATH_ARRAY1:~1%^) 1>&2
 )
 goto :eof
 
@@ -453,20 +453,17 @@ if %__DATE1% gtr %__DATE2% ( set _NEWER=1
 goto :eof
 
 :doc
-call :libs_cpath
-if not %_EXITCODE%==0 goto :eof
-
 if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
 
-call :compile_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
-if %_COMPILE_REQUIRED%==0 goto :eof
+call :action_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
+if %_ACTION_REQUIRED%==0 goto :eof
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javadoc_sources.txt"
 for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
     echo %%i>> "%__SOURCES_FILE%"
 )
 set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
-echo -cp "%_CPATH:\=\\%" -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
+echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
@@ -507,33 +504,9 @@ if not %ERRORLEVEL%==0 (
 endlocal
 goto :eof
 
-:doc
-if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
-
-call :compile_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
-if %_COMPILE_REQUIRED%==0 goto :eof
-
-set "__SOURCES_FILE=%_TARGET_DIR%\javadoc_sources.txt"
-for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
-    echo %%i>> "%__SOURCES_FILE%"
-)
-set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
-echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
-)
-call "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
-if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Generation of HTML documentation failed 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-goto :eof
-
 :pack
-call :compile_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
-if %_COMPILE_REQUIRED%==0 goto :eof
+call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
+if %_ACTION_REQUIRED%==0 goto :eof
 
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
 (
