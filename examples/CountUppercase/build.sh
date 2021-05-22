@@ -73,7 +73,7 @@ args() {
     done
     debug "Options    : TIMER=$TIMER VERBOSE=$VERBOSE"
     debug "Subcommands: CLEAN=$CLEAN COMPILE=$COMPILE HELP=$HELP RUN=$RUN"
-    debug "Variables  : GRAALVM=$GRAALVM"
+    debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
     $TIMER && TIMER_START=$(date +"%s")
 }
@@ -91,7 +91,7 @@ Usage: $BASENAME { <option> | <subcommand> }
     clean        delete generated files
     compile      compile C/Java source files
     help         display this help message
-    run          execute main class
+    run          execute main class $MAIN_CLASS
 EOS
 }
 
@@ -218,21 +218,21 @@ unset CYGPATH_CMD
 PSEP=":"
 if $cygwin || $mingw || $msys; then
     CYGPATH_CMD="$(which cygpath 2>/dev/null)"
-    [[ -n "$GRAALVM" ]] && GRAALVM="$(mixed_path $GRAALVM)"
+    [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
 	PSEP=";"
 fi
-if [ ! -x "$GRAALVM/bin/javac" ]; then
+if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
-JAVA_CMD="$GRAALVM/bin/java"
-JAVAC_CMD="$GRAALVM/bin/javac"
+JAVA_CMD="$GRAALVM_HOME/bin/java"
+JAVAC_CMD="$GRAALVM_HOME/bin/javac"
 
-if [ ! -x "$GRAALVM/bin/lli" ]; then
+if [ ! -x "$GRAALVM_HOME/bin/lli" ]; then
     error "lli command not found"
     cleanup 1
 fi
-LLI_CMD="$GRAALVM/bin/lli"
+LLI_CMD="$GRAALVM_HOME/bin/lli"
 LLVM_TOOLCHAIN="$($LLI_CMD --print-toolchain-path)"
 
 CLANG_CMD="$LLVM_TOOLCHAIN/clang"

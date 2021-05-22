@@ -5,13 +5,13 @@ TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
 LOG_FILE    = $(TARGET_DIR)/graal_log.txt
-JAVAC_FLAGS = -deprecation -classpath \"$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)\"
+JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
 JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
 
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java 2>/dev/null)
+SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main/java -name *.java)
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -26,8 +26,8 @@ build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	[ -d "$(CLASSES_DIR)" ] || $(MKDIR) -p "$(CLASSES_DIR)"
-	@echo "$(JAVAC_FLAGS) -d \"$(CLASSES_DIR)\"" > "$(OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(SOURCES_FILE)"
+	@echo $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
+	@echo $(SOURCES) > "$(SOURCES_FILE)"
 	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
 	@$(TOUCH) "$(TARGET)"
 
@@ -39,15 +39,16 @@ run: build
 	@[ -f "$(LOG_FILE)" ] & echo Compilation log written to file "$(LOG_FILE)" 1>&2
 
 help:
-	@echo "Usage: make all|build|clean|help|run|test"
-	@echo ""
-	@echo "  Subcommands:"
-	@echo "    all    alias for build"
-	@echo "    build  compile Java/Scala source files"
-	@echo "    clean  delete generated files"
-	@echo "    help   display this help message"
-	@echo "    run    execute main program $(MAIN_CLASS)"
-	@echo "    test   execute unit tests with JUnit"
+	@$(info Usage: make all|build|clean|help|lint|run|test)
+	@$(info )
+	@echo   Subcommands:
+	@echo     all    alias for build
+	@echo     build  compile Java source files
+	@echo     clean  delete generated files
+	@echo     help   display this help message
+	@echo     lint   analyze Java source files with CheckStyle
+	@echo     run    execute main program $(MAIN_CLASS)
+	@echo     test   execute unit tests with JUnit
 
 ##############################################################################
 ## doc rules
@@ -64,10 +65,10 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
-	@echo -siteroot \"$(DOC_TARGET_DIR)\" -project \"$(PROJECT_NAME)\" -project-url \"$(PROJECT_URL)\" -project-version \"$(PROJECT_VERSION)\" > "$(DOC_OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(DOC_SOURCES_FILE)"
+	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
+	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
-	@echo "" > "$(DOC_TARGET)"
+	@$(TOUCH) "$(DOC_TARGET)"
 
 doc: $(DOC_TARGET)
 
@@ -111,10 +112,10 @@ TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP
 
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
-	@echo "-classpath \"$(TEST_CPATH)\" -d \"$(TEST_CLASSES_DIR)\"" > "$(TEST_OPTS_FILE)"
-	@echo "$(TEST_SOURCES)" > "$(TEST_SOURCES_FILE)"
+	@echo -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
+	@echo $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
 	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
-	@echo "" > "$(TEST_TARGET)"
+	@$(TOUCH) "$(TEST_TARGET)"
 
 test: build $(TEST_TARGET)
 	$(JAVA) -classpath "$(TEST_CPATH)" org.junit.runner.JUnitCore $(TEST_MAIN_CLASS)

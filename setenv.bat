@@ -57,6 +57,9 @@ if not %_EXITCODE%==0 goto end
 call :kit
 if not %_EXITCODE%==0 goto end
 
+call :wabt
+if not %_EXITCODE%==0 goto end
+
 call :cygwin
 if not %_EXITCODE%==0 goto end
 
@@ -229,36 +232,36 @@ echo     %__BEG_O%help%__END%        display this help message
 goto :eof
 
 @rem input parameter: %1=Java version
-@rem output parameter: _GRAAL_HOME
+@rem output parameter: _GRAALVM_HOME
 :graal
 set __JAVA_VERSION=%~1
-set _GRAAL_HOME=
+set _GRAALVM_HOME=
 
 set __JAVAC_CMD=
 for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
     for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
-    for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAAL_HOME=%%~dpf"
+    for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAALVM_HOME=%%~dpf"
     goto :eof
 ) else if defined GRAAL_HOME (
-    set "_GRAAL_HOME=%GRAAL_HOME%"
+    set "_GRAALVM_HOME=%GRAAL_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GRAAL_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
-    if not defined _GRAAL_HOME (
+    for /f %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAALVM_HOME=!__PATH!\%%f"
+    if not defined _GRAALVM_HOME (
         set "__PATH=%ProgramFiles%"
-        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAAL_HOME=!__PATH!\%%f"
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAALVM_HOME=!__PATH!\%%f"
     )
 )
-if not exist "%_GRAAL_HOME%\bin\javac.exe" (
-    echo %_ERROR_LABEL% Executable javac.exe not found ^(%_GRAAL_HOME%^) 1>&2
+if not exist "%_GRAALVM_HOME%\bin\javac.exe" (
+    echo %_ERROR_LABEL% Executable javac.exe not found ^(%_GRAALVM_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-if not exist "%_GRAAL_HOME%\bin\polyglot.cmd" (
-    echo %_ERROR_LABEL% Executable polyglot.cmd not found ^(%_GRAAL_HOME%^) 1>&2
+if not exist "%_GRAALVM_HOME%\bin\polyglot.cmd" (
+    echo %_ERROR_LABEL% Executable polyglot.cmd not found ^(%_GRAALVM_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -267,13 +270,13 @@ goto :eof
 :java8
 call :graal java8
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set "_GRAALVM=%_GRAAL_HOME%"
+if defined _GRAALVM_HOME set "_GRAALVM_HOME=%_GRAALVM_HOME%"
 goto :eof
 
 :java11
 call :graal java11
 if not %_EXITCODE%==0 goto :eof
-if defined _GRAAL_HOME set "_GRAALVM11=%_GRAAL_HOME%"
+if defined _GRAALVM_HOME set "_GRAALVM11_HOME=%_GRAALVM_HOME%"
 goto :eof
 
 @rem output parameter: _MAVEN_HOME, _MAVEN_PATH
@@ -524,6 +527,25 @@ set "_KIT_INC_DIR=%__KIT_HOME%\Include\%__KIT_VERSION%"
 set "_KIT_LIB_DIR=%__KIT_HOME%\Lib\%__KIT_VERSION%"
 goto :eof
 
+@rem output parameter: _WABT_HOME
+:wabt
+set _WABT_HOME=
+
+if defined WABT_HOME (
+    set "_WABT_HOME=%WABT_HOME%"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable WABT_HOME 1>&2
+) else (
+    set __PATH=C:\opt
+    for /f %%f in ('dir /ad /b "!__PATH!\wabt-1*" 2^>NUL') do set "_WABT_HOME=!__PATH!\%%f"
+)
+if not exist "%_WABT_HOME%\bin\wat2wasm.exe" (
+    echo %_ERROR_LABEL% Wat2WASM executable not found ^("%_WABT_HOME%"^) 1>&2
+    set _WABT_HOME=
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
 @rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
 :cygwin
 set _CYGWIN_HOME=
@@ -680,14 +702,15 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
-    if defined GRAALVM echo    "GRAALVM=%GRAALVM%" 1>&2
-    if defined GRAALVM11 echo    "GRAALVM11=%GRAALVM11%" 1>&2
+    if defined GRAALVM_HOME echo    "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
+    if defined GRAALVM11_HOME echo    "GRAALVM11_HOME=%GRAALVM11_HOME%" 1>&2
     if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
     if defined MAVEN_HOME echo    "MAVEN_HOME=%MAVEN_HOME%" 1>&2
     if defined MSVC_BIN_DIR echo    "MSVC_BIN_DIR=%MSVC_BIN_DIR%" 1>&2
     if defined MSVC_HOME echo    "MSVC_HOME=%MSVC_HOME%" 1>&2
     if defined MSVS_HOME echo    "MSVS_HOME=%MSVS_HOME%" 1>&2
     if defined PYTHON_HOME echo    "PYTHON_HOME=%PYTHON_HOME%" 1>&2
+    if defined WABT_HOME echo    "WABT_HOME=%WABT_HOME%" 1>&2
 )
 goto :eof
 
@@ -698,8 +721,11 @@ goto :eof
 endlocal & (
     if %_EXITCODE%==0 (
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
-        if not defined GRAALVM set "GRAALVM=%_GRAALVM%"
-        if not defined GRAALVM11 set "GRAALVM11=%_GRAALVM11%"
+        if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM_HOME%"
+        if not defined GRAALVM11_HOME set "GRAALVM11_HOME=%_GRAALVM11_HOME%"
+        @rem JAVA_HOME needed for Maven
+        if not defined JAVA_HOME set "JAVA_HOME=%_GRAALVM_HOME%"
+        if not defined JAVA11_HOME set "JAVA11_HOME=%_GRAALVM11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
         if not defined MAVEN_HOME set "MAVEN_HOME=%_MAVEN_HOME%"
         if not defined MSVC_BIN_DIR set "MSVC_BIN_DIR=%_MSVC_BIN_DIR%"
@@ -711,6 +737,7 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
+        if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
         set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (

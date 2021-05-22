@@ -80,15 +80,15 @@ set _PKG_NAME=
 set _MAIN_NAME=Ranking
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
-if not exist "%GRAALVM%\bin\javac.exe" (
+if not exist "%GRAALVM_HOME%\bin\javac.exe" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_JAR_CMD=%GRAALVM%\bin\jar.exe"
-set "_JAVA_CMD=%GRAALVM%\bin\java.exe"
-set "_JAVAC_CMD=%GRAALVM%\bin\javac.exe"
-set "_JAVADOC_CMD=%GRAALVM%\bin\javadoc.exe"
+set "_JAR_CMD=%GRAALVM_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%GRAALVM_HOME%\bin\java.exe"
+set "_JAVAC_CMD=%GRAALVM_HOME%\bin\javac.exe"
+set "_JAVADOC_CMD=%GRAALVM_HOME%\bin\javadoc.exe"
 
 if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
     echo %_ERROR_LABEL% MSVS installation not found 1>&2
@@ -98,13 +98,13 @@ if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
 )
 set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
-if not exist "%GRAALVM%\bin\native-image.cmd" (
+if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM%"^) 1>&2
+    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_NATIVE_IMAGE_CMD=%GRAALVM%\bin\native-image.cmd"
+set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
 goto :eof
 
 :env_colors
@@ -248,7 +248,7 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAG
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i

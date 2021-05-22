@@ -39,13 +39,14 @@ run: build
 	@[ -f "$(LOG_FILE)" ] & echo Compilation log written to file "$(LOG_FILE)" 1>&2
 
 help:
-	@$(info Usage: make all|build|clean|help|run|test)
+	@$(info Usage: make all|build|clean|help|lint|run|test)
 	@$(info )
 	@echo   Subcommands:
 	@echo     all    alias for build
 	@echo     build  compile Java source files
 	@echo     clean  delete generated files
 	@echo     help   display this help message
+	@echo     lint   analyze Java source files with CheckStyle
 	@echo     run    execute main program $(MAIN_CLASS)
 	@echo     test   execute unit tests with JUnit
 
@@ -64,8 +65,8 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
-	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-url "$(PROJECT_URL)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(DOC_SOURCES_FILE)"
+	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
+	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 
@@ -74,16 +75,27 @@ doc: $(DOC_TARGET)
 ##############################################################################
 ## lint rules
 
-LINT_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -name *.java)
-LINT_TARGET  = $(TARGET_DIR)/.latest-lint
+## https://github.com/checkstyle/checkstyle/releases
+CHECKSTYLE_VERSION = 8.42
+CHECKSTYLE_DIR=$(HOME)/.checkstyle
 
-CHECKSTYLE_CONFIG_FILE = $(shell $(FIND) $(HOME)/.checkstyle -name *.xml)
-CHECKSTYLE_JAR_FILE    = $(shell $(FIND) $(HOME)/.checkstyle -name checkstyle*.jar)
+CHECKSTYLE_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -name *.java)
+CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
 
-lint: $(LINT_TARGET)
+## "checkstyle-all" version not available from Maven Central
+JAR_NAME = checkstyle-$(CHECKSTYLE_VERSION)-all.jar
+JAR_URL  = https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$(CHECKSTYLE_VERSION)/$(JAR_NAME)
+JAR_FILE = $(CHECKSTYLE_DIR)/$(JAR_NAME)
+XML_FILE = $(CHECKSTYLE_DIR)/graal_checks.xml
 
-$(LINT_TARGET): $(LINT_SOURCES)
-	$(JAVA) -jar $(CHECKSTYLE_JAR_FILE) -c=$(CHECKSTYLE_CONFIG_FILE) $^
+lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
+
+$(JAR_FILE):
+	[ -d "$(CHECKSTYLE_DIR)" ] || $(MKDIR) -p "$(CHECKSTYLE_DIR)"
+	$(CURL) --silent --location --output $(JAR_FILE) $(JAR_URL)
+
+$(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
+	$(JAVA) -jar $(JAR_FILE) -c=$(XML_FILE) $^
 
 ##############################################################################
 ## test rules

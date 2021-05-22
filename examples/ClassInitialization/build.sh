@@ -52,10 +52,11 @@ args() {
     for arg in "$@"; do
         case "$arg" in
         ## options
-        -debug)       DEBUG=true ;;
-        -help)        HELP=true ;;
-        -timer)       TIMER=true ;;
-        -verbose)     VERBOSE=true ;;
+        -cached)  CACHED=true ;;
+        -debug)   DEBUG=true ;;
+        -help)    HELP=true ;;
+        -timer)   TIMER=true ;;
+        -verbose) VERBOSE=true ;;
         -*)
             error "Unknown option $arg"
             EXITCODE=1 && return 0
@@ -71,9 +72,14 @@ args() {
             ;;
         esac
     done
-    debug "Options    : TIMER=$TIMER VERBOSE=$VERBOSE"
+    PKG_NAME=org.graalvm.example
+    $CACHED && MAIN_NAME=HelloCachedTime|| MAIN_NAME=HelloStartupTime
+    MAIN_CLASS="$PKG_NAME.$MAIN_NAME"
+
+    debug "Options    : CACHED=$CACHED TIMER=$TIMER VERBOSE=$VERBOSE"
     debug "Subcommands: CLEAN=$CLEAN COMPILE=$COMPILE HELP=$HELP RUN=$RUN"
-    debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME"
+    debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME_HOME"
+	debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
     $TIMER && TIMER_START=$(date +"%s")
 }
@@ -83,13 +89,14 @@ help() {
 Usage: $BASENAME { <option> | <subcommand> }
 
   Options:
+    -cached      select main class with cached startup time
     -debug       show commands executed by this script
     -timer       display total elapsed time
     -verbose     display progress messages
 
   Subcommands:
     clean        delete generated files
-    compile      compile Java source files
+    compile      compile C/Java source files
     help         display this help message
     run          execute main class $MAIN_CLASS
 EOS
@@ -105,6 +112,11 @@ clean() {
         rm -rf "$TARGET_DIR"
         [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
     fi
+}
+
+compile() {
+    compile_java
+    [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
 }
 
 action_required() {
@@ -128,32 +140,32 @@ action_required() {
     fi
 }
 
-compile() {
+compile_java() {
     [[ -d "$CLASSES_DIR" ]] || mkdir -p "$CLASSES_DIR"
 
     local timestamp_file="$TARGET_DIR/.latest-build"
 
     local required=0
-    required=$(action_required "$timestamp_file" "$MAIN_SOURCE_DIR/" "*.java")
+    required=$(action_required "$timestamp_file" "$JAVA_SOURCE_DIR/" "*.java")
     [[ $required -eq 1 ]] || return 1
 
     local opts_file="$TARGET_DIR/javac_opts.txt"
-    local cpath="$(mixed_path $CLASSES_DIR)"
-    echo -classpath "$cpath" -d "$(mixed_path $CLASSES_DIR)" > "$opts_file"
+    local cpath="$CLASSES_DIR"
+    echo -classpath "$cpath" -d "$CLASSES_DIR" > "$opts_file"
 
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $MAIN_SOURCE_DIR/ -name *.java 2>/dev/null); do
-        echo $(mixed_path $f) >> "$sources_file"
+    for f in $(find $JAVA_SOURCE_DIR/ -name *.java 2>/dev/null); do
+        echo $f >> "$sources_file"
         n=$((n + 1))
     done
     if $DEBUG; then
-        debug "$JAVAC_CMD @$(mixed_path $opts_file) @$(mixed_path $sources_file)"
+        debug "$JAVAC_CMD @$opts_file @$sources_file"
     elif $VERBOSE; then
         echo "Compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
     fi
-    eval "$JAVAC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
+    eval "$JAVAC_CMD" "@$opts_file" "@$sources_file"
     if [[ $? -ne 0 ]]; then
         error "Compilation of $n Java source files failed"
         cleanup 1
@@ -161,23 +173,9 @@ compile() {
     touch "$timestamp_file"
 }
 
-mixed_path() {
-    if [ -x "$CYGPATH_CMD" ]; then
-        $CYGPATH_CMD -am $1
-    elif $mingw || $msys; then
-        echo $1 | sed 's|/|\\\\|g'
-    else
-        echo $1
-    fi
-}
-
 run() {
-    ##$DEBUG && debug "cp \"$TARGET_DIR/$MAIN_CLASS.wasm\" \"$CLASSES_DIR\""
-    ##cp "$TARGET_DIR/$MAIN_CLASS.wasm" "$CLASSES_DIR"
-
-    $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS"
-    eval "$JAVA_CMD" -cp $CLASSES_DIR $MAIN_CLASS
-    [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
+    $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS"
+    eval "$JAVA_CMD" -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS
 }
 
 ##############################################################################
@@ -190,49 +188,52 @@ EXITCODE=0
 ROOT_DIR="$(getHome)"
 
 SOURCE_DIR=$ROOT_DIR/src
-MAIN_SOURCE_DIR=$SOURCE_DIR/main/java
+C_SOURCE_DIR=$SOURCE_DIR/main/c
+JAVA_SOURCE_DIR=$SOURCE_DIR/main/java
+JS_SOURCE_DIR=$SOURCE_DIR/main/js
 TARGET_DIR=$ROOT_DIR/target
+BIN_DIR=$TARGET_DIR/bin
 CLASSES_DIR=$TARGET_DIR/classes
 
+CACHED=false
 CLEAN=false
 COMPILE=false
 DEBUG=false
 HELP=false
-MAIN_CLASS="HelloPolyglot"
+MAIN_CLASS="Polyglot"
 MAIN_ARGS=
 RUN=false
-TARGET=js
 TIMER=false
 VERBOSE=false
 
 COLOR_START="[32m"
 COLOR_END="[0m"
 
-cygwin=false
-mingw=false
-msys=false
-darwin=false
+## false: CYGWIN, MINGW, MSYS  
 linux=false
 case "`uname -s`" in
-  CYGWIN*) cygwin=true ;;
-  MINGW*)  mingw=true ;;
-  MSYS*)   msys=true ;;
-  Darwin*) darwin=true ;;   
-  Linux*)  linux=true 
+  Linux*)  linux=true ;;
+  Darwin*) linux=true
 esac
-unset CYGPATH_CMD
-PSEP=":"
-if $cygwin || $mingw || $msys; then
-    CYGPATH_CMD="$(which cygpath 2>/dev/null)"
-    [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
-    PSEP=";"
-fi
+$linux || error "Only Linux/MacOS platforms are supported"
+
 if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
+
+if [ ! -x "$GRAALVM_HOME/bin/lli" ]; then
+    error "lli command not found"
+    cleanup 1
+fi
+LLI_CMD="$GRAALVM_HOME/bin/lli"
+LLVM_TOOLCHAIN="$($LLI_CMD --print-toolchain-path)"
+
+CLANG_CMD="$LLVM_TOOLCHAIN/clang"
+
+JS_CMD="$GRAALVM_HOME/bin/js"
 
 PROJECT_NAME="$(basename $ROOT_DIR)"
 PROJECT_URL="github.com/$USER/graal-examples"

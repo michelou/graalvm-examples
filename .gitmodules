@@ -2,10 +2,18 @@
 	path = graal
 	url = https://github.com/oracle/graal.git
 
+[submodlue "graal-spring-native"]
+	path = graal-spring-native
+	http = https://github.com/shivamgarg7276/graal-spring-native.git
+
+[submodlue "graalvm-demos"]
+	path = demos
+	url = https://github.com/graalvm/graalvm-demos.git
+
 [submodule "mx"]
 	path = mx
 	url = https://github.com/graalvm/mx.git
 
-[submodule "shelajev"]
+[submodule "workshop"]
 	path = shelajev-workshop
 	url = https://github.com/shelajev/workshop.git

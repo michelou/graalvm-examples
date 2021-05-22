@@ -49,15 +49,15 @@ set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 set _PKG_NAME=
 set _MAIN_NAME=HelloPolyglot
 
-if not exist "%GRAALVM%\bin\javac.exe" (
+if not exist "%GRAALVM_HOME%\bin\javac.exe" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_JAR_CMD=%GRAALVM%\bin\jar.exe"
-set "_JAVA_CMD=%GRAALVM%\bin\java.exe"
-set "_JAVAC_CMD=%GRAALVM%\bin\javac.exe"
-set "_JAVADOC_CMD=%GRAALVM%\bin\javadoc.exe"
+set "_JAR_CMD=%GRAALVM_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%GRAALVM_HOME%\bin\java.exe"
+set "_JAVAC_CMD=%GRAALVM_HOME%\bin\javac.exe"
+set "_JAVADOC_CMD=%GRAALVM_HOME%\bin\javadoc.exe"
 
 if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
     echo %_ERROR_LABEL% MSVS installation not found 1>&2
@@ -67,19 +67,19 @@ if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
 )
 set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
-if not exist "%GRAALVM%\bin\native-image.cmd" (
+if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM%"^) 1>&2
+    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_NATIVE_IMAGE_CMD=%GRAALVM%\bin\native-image.cmd"
+set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
 set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
 
 if not exist "%WABT_HOME%\bin\wat2wasm.exe" (
     echo %_ERROR_LABEL% WABT installation not found 1>&2
-	set _EXITCODE=1
-	goto :eof
+    set _EXITCODE=1
+    goto :eof
 )
 @rem see https://github.com/WebAssembly/wabt/releases
 set "_WAT2WASM_CMD=%WABT_HOME%\bin\wat2wasm.exe"
@@ -133,8 +133,9 @@ goto :eof
 
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
-@rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.41.1
+@rem value may be overwritten if the property checkstyle.version
+@rem is defined in file build.properties
+set _CHECKSTYLE_VERSION=8.42
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -192,7 +193,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="compile" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET%
     ) else if "%__ARG%"=="doc" ( set _COMMANDS=!_COMMANDS! doc
     ) else if "%__ARG%"=="help" ( set _COMMANDS=help
-    ) else if "%__ARG%"=="lint" ( set _COMMANDS=!_COMMANDS! lint
+    ) else if "%__ARG%"=="lint" ( set _COMMANDS=!_COMMANDS! checkstyle
     ) else if "%__ARG%"=="pack" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack
     ) else if "%__ARG%"=="run" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% run_%__TARGET%
     ) else if "%__ARG%"=="test" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack test_%__TARGET%
@@ -219,8 +220,9 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAG
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: %_COMMANDS% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "WABT_HOME=%WABT_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -281,8 +283,9 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
+@rem see https://github.com/checkstyle/checkstyle/releases/
 :checkstyle
-set "__CHECKSTYLE_DIR=%LOCALAPPADATA%\Checkstyle"
+set "__CHECKSTYLE_DIR=%LOCALAPPDATA%\Checkstyle"
 if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
 set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
@@ -504,7 +507,7 @@ set "__WAT_FILE=%_SOURCE_DIR%\resources\%_PROJECT_NAME%.wat"
 if not exist "%__WAT_FILE%" (
     echo %_ERROR_LABEL% WASM-text file not found 1>&2
     set _EXITCODE=1
-	goto :eof
+    goto :eof
 )
 set "__WASM_FILE=%_CLASSES_DIR%\%_PROJECT_NAME%.wasm"
 

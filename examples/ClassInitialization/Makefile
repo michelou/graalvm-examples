@@ -51,6 +51,7 @@ help:
 	@echo     build  compile Java source files
 	@echo     clean  delete generated files
 	@echo     help   display this help message
+	@echo     lint   analyze Java source fiels with CheckStyle
 	@echo     run    execute main program $(MAIN_CLASS)
 	@echo     test   execute unit tests with JUnit
 
@@ -70,7 +71,7 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
 	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-url "$(PROJECT_URL)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(DOC_SOURCES_FILE)"
+	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 

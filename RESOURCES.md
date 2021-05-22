@@ -8,7 +8,7 @@
   </tr>
 </table>
 
-For convenience resources are organized in several topics : [General](#general), [Native image](#ni) and [Polyglot](#pg).
+For convenience resources are organized in several topics : [General](#general), [Native image](#ni), [Polyglot](#pg) and [Sulong](#sulong).
 
 ## <span id="general">General</a>
 
@@ -68,7 +68,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ## <span id="pg">Polyglot</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
 
-### <span id="articles">Articles</span>
+### <span id="pg-articles">Articles</span>
 
 - [Python application running on GraalVM and Polyglotting with JavaScript, R, Ruby and Java](https://technology.amis.nl/2019/10/30/python-application-running-on-graalvm-and-polyglotting-with-javascript-r-ruby-and-java/) by Lucas Jellema, October 30, 2019.
 
@@ -77,6 +77,11 @@ For convenience resources are organized in several topics : [General](#general),
 - [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, July 21, 2019.
 - [Polyglot on the JVM with Graal](https://www.slideshare.net/akihironishikawa/polyglot-on-the-jvm-with-graal-english) by Akihiro Nishikawa, JJUG CCC 2017, May 21, 2017.
 
+## <span id="sulong">Sulong</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
+
+### <span id="sulong-talks">Talks</span>
+
+- [Sulonng: An experience report of using the "other end" of LLVM in GraalVM](https://llvm.org/devmtg/2019-04/talks.html#Talk_13) by Roland Schatz and Josef Eisl, 2019 European LLVM Developers Meeting, 2019.
 <!--
 ## Footnotes
 

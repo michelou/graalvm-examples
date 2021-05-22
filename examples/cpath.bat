@@ -17,7 +17,13 @@ if not exist "%__TEMP_DIR%" mkdir "%__TEMP_DIR%"
 
 set _LIBS_CPATH=
 
-set _JMH_VERSION=1.29
+@rem https://mvnrepository.com/artifact/junit/junit
+call :add_jar "junit" "junit" "4.13.2"
+
+@rem https://mvnrepository.com/artifact/org.hamcrest/hamcrest
+call :add_jar "org.hamcrest" "hamcrest" "2.2"
+
+set _JMH_VERSION=1.31
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -31,7 +37,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
-set _MICRONAUT_VERSION=2.4.2
+set _MICRONAUT_VERSION=2.5.3
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
