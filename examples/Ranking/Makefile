@@ -41,15 +41,15 @@ run: build
 	$(JAVA) -Xmx1G -jar "$(TARGET)" rank
 
 help:
-	@echo "Usage: make all|build|clean|help|run|test"
-	@echo ""
-	@echo "  Subcommands:"
-	@echo "    all      alias for build"
-	@echo "    build    compile Java/Scala source files"
-	@echo "    clean    delete generated files"
-	@echo "    help     display this help message"
-	@echo "    run      execute main program $(MAIN_CLASS)"
-	@echo "    test     execute unit tests with JUnit"
+	@$(ECHO) "Usage: make all|build|clean|help|run|test"
+	@$(ECHO) ""
+	@$(ECHO) "  Subcommands:"
+	@$(ECHO) "    all      alias for build"
+	@$(ECHO) "    build    compile Java source files"
+	@$(ECHO) "    clean    delete generated files"
+	@$(ECHO) "    help     display this help message"
+	@$(ECHO) "    run      execute main program $(MAIN_CLASS)"
+	@$(ECHO) "    test     execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -66,17 +66,42 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
-	@echo -siteroot \"$(DOC_TARGET_DIR)\" -project \"$(PROJECT_NAME)\" -project-url \"$(PROJECT_URL)\" -project-version \"$(PROJECT_VERSION)\" > "$(DOC_OPTS_FILE)"
-	@echo "$(SOURCES)" > "$(DOC_SOURCES_FILE)"
+	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
+	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 
 doc: $(DOC_TARGET)
 
 ##############################################################################
+## lint rules
+
+## https://github.com/checkstyle/checkstyle/releases
+CHECKSTYLE_VERSION = 8.42
+CHECKSTYLE_DIR     = $(HOME)/.checkstyle
+
+CHECKSTYLE_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -type f -name *.java)
+CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
+
+## "checkstyle-all" version not available from Maven Central
+JAR_NAME = checkstyle-$(CHECKSTYLE_VERSION)-all.jar
+JAR_URL  = https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$(CHECKSTYLE_VERSION)/$(JAR_NAME)
+JAR_FILE = $(CHECKSTYLE_DIR)/$(JAR_NAME)
+XML_FILE = $(CHECKSTYLE_DIR)/graal_checks.xml
+
+lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
+
+$(JAR_FILE):
+	[ -d "$(CHECKSTYLE_DIR)" ] || $(MKDIR) -p "$(CHECKSTYLE_DIR)"
+	$(CURL) --silent --location --output $(JAR_FILE) $(JAR_URL)
+
+$(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
+	$(JAVA) -jar $(JAR_FILE) -c=$(XML_FILE) $^
+
+##############################################################################
 ## test rules
 
-TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -name *.java)
+TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -type f -name *.java)
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
@@ -89,7 +114,7 @@ TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
 	@echo $(JAVAC_FLAGS) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
-	@echo "$(TEST_SOURCES)" > "$(TEST_SOURCES_FILE)"
+	@echo $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
 	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@$(TOUCH) "$(TEST_TARGET)"
 

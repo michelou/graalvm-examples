@@ -5,6 +5,12 @@ ifndef GRAALVM_HOME
 $(error Variable GRAALVM_HOME is not set)
 endif
 
+# spaces
+SP:= 
+SP+= 
+SP2:=$(SP)$(SP)
+SP4:=$(SP)$(SP)$(SP)$(SP)
+
 ifeq ($(OS),Windows_NT)
 JAR        = $(subst \,/,$(GRAALVM_HOME))/bin/jar.exe
 JAVA       = $(subst \,/,$(GRAALVM_HOME))/bin/java.exe
@@ -17,6 +23,7 @@ PSEP       = ;
 ## We grab Cygwin version instead of C:\Windows\System32\curl.exe
 CURL       = $(subst \,/,$(GIT_HOME))/mingw64\bin\curl.exe
 ## We grab Cygwin version instead of C:\Windows\System32\find.exe
+ECHO       = $(subst \,/,$(GIT_HOME))/usr/bin/echo.exe
 FIND       = $(subst \,/,$(GIT_HOME))/usr/bin/find.exe
 MKDIR      = $(subst \,/,$(GIT_HOME))/usr/bin/mkdir.exe
 TOUCH      = $(subst \,/,$(GIT_HOME))/usr/bin/touch.exe
@@ -28,6 +35,7 @@ CLANG      = $(GRAALVM_HOME)/jre/languages/llvm/native/bin/clang
 LOCAL_REPO = $(HOME)/.m2/repository
 PSEP       = :
 CURL       = curl
+ECHO       = echo
 FIND       = find
 MKDIR      = mkdir
 TOUCH      = touch

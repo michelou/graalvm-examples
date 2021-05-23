@@ -55,7 +55,7 @@ This repository is organized as follows:
 <pre style="font-size:80%;">
 <a href="bin/graal/build.bat">bin\graal\build.bat</a>
 docs\
-examples\
+examples\<a href="ClassInitialization"/>ClassInitialization</a>, etc.
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.11-jvmci-21.1-b05\</a>  <i>(312 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
@@ -130,7 +130,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_282, python 3.9.5, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.292.7
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 
@@ -145,7 +145,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_282, python 3.9.5, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.292.7
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 Tool paths:
@@ -185,7 +185,7 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 <span id="footnote_01">[1]</span> ***Two GraalVM editions*** [↩](#anchor_01)
 
 <p style="margin:0 0 1em 20px;">
-<a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_282</a>.
+<a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_292</a>.
 </p>
 
 <span id="footnote_02">[2]</span> ***UPX*** [↩](#anchor_02)

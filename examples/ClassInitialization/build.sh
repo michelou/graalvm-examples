@@ -79,7 +79,7 @@ args() {
     debug "Options    : CACHED=$CACHED TIMER=$TIMER VERBOSE=$VERBOSE"
     debug "Subcommands: CLEAN=$CLEAN COMPILE=$COMPILE HELP=$HELP RUN=$RUN"
     debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME_HOME"
-	debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
+    debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
     $TIMER && TIMER_START=$(date +"%s")
 }

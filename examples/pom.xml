@@ -19,8 +19,8 @@
         <maven.jar.version>3.2.0</maven.jar.version>
         <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/exec-maven-plugin -->
         <exec.maven.version>3.0.0</exec.maven.version>
-		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-shade-plugin -->
-		<maven.shade.version>3.2.4</maven.shade.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-shade-plugin -->
+        <maven.shade.version>3.2.4</maven.shade.version>
     </properties>
 
     <dependencies>
@@ -39,11 +39,11 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>${exec.maven.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>${maven.shade.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven.shade.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -100,7 +100,7 @@ set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
 if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM_HOME%"^) 1>&2
+    echo %_ERROR_LABEL% ^(GRAALVM_HOME="%GRAALVM_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -156,7 +156,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.41.1
+set _CHECKSTYLE_VERSION=8.42
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -248,7 +248,7 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAG
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
