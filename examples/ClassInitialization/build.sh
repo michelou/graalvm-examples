@@ -97,6 +97,7 @@ Usage: $BASENAME { <option> | <subcommand> }
   Subcommands:
     clean        delete generated files
     compile      compile C/Java source files
+    doc          generate HTML documentation
     help         display this help message
     run          execute main class $MAIN_CLASS
 EOS
@@ -173,6 +174,10 @@ compile_java() {
     touch "$timestamp_file"
 }
 
+doc() {
+    echo "doc"
+}
+
 run() {
     $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS"
     eval "$JAVA_CMD" -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS
@@ -199,6 +204,7 @@ CACHED=false
 CLEAN=false
 COMPILE=false
 DEBUG=false
+DOC=false
 HELP=false
 MAIN_CLASS="Polyglot"
 MAIN_ARGS=
@@ -252,6 +258,9 @@ if $CLEAN; then
 fi
 if $COMPILE; then
     compile || cleanup 1
+fi
+if $DOC; then
+    doc || cleanup 1
 fi
 if $RUN; then
     run || cleanup 1

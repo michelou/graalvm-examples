@@ -8,7 +8,7 @@ JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_J
 CPATH       = $(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)
 LOG_FILE    = $(TARGET_DIR)/graal_log.txt
 ifdef DEBUG
-JAVA_FLAGS  = -classpath "$(CPATH)" -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=$(LOG_FILE)
+JAVA_FLAGS  = -classpath "$(CPATH)" -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
 else
 JAVA_FLAGS = -classpath "$(CPATH)"
 endif
@@ -16,7 +16,7 @@ endif
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main/java -name *.java)
+SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main/java -type f -name *.java)
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -31,8 +31,8 @@ build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	[ -d "$(CLASSES_DIR)" ] || $(MKDIR) -p "$(CLASSES_DIR)"
-	@echo $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
-	@echo $(SOURCES) > "$(SOURCES_FILE)"
+	@$(ECHO) $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
+	@$(ECHO) $(SOURCES) > "$(SOURCES_FILE)"
 	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
 	@$(TOUCH) "$(TARGET)"
 
@@ -41,19 +41,19 @@ clean:
 
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
-	@[ -f "$(LOG_FILE)" ] & echo Compilation log written to file "$(LOG_FILE)" 1>&2
+	@[ -f "$(LOG_FILE)" ] & $(ECHO) Compilation log written to file "$(LOG_FILE)" 1>&2
 
 help:
-	@$(info Usage: make all|build|clean|help|lint|run|test)
-	@$(info )
-	@echo   Subcommands:
-	@echo     all    alias for build
-	@echo     build  compile Java source files
-	@echo     clean  delete generated files
-	@echo     help   display this help message
-	@echo     lint   analyze Java source fiels with CheckStyle
-	@echo     run    execute main program $(MAIN_CLASS)
-	@echo     test   execute unit tests with JUnit
+	@$(ECHO) "Usage: make all|build|clean|help|lint|run|test"
+	@$(ECHO) ""
+	@$(ECHO) "   Subcommands:"
+	@$(ECHO) "     all    alias for build"
+	@$(ECHO) "     build  compile Java source files"
+	@$(ECHO) "     clean  delete generated files"
+	@$(ECHO) "     help   display this help message"
+	@$(ECHO) "     lint   analyze Java source files with CheckStyle"
+	@$(ECHO) "     run    execute main program $(MAIN_CLASS)"
+	@$(ECHO) "     test   execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -70,8 +70,8 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
-	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-url "$(PROJECT_URL)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
-	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
+	@$(ECHO) -d "$(DOC_TARGET_DIR)" -doctitle "$(PROJECT_NAME)" -footer "$(PROJECT_URL)" -top "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
+	@$(ECHO) $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 
@@ -80,16 +80,27 @@ doc: $(DOC_TARGET)
 ##############################################################################
 ## lint rules
 
-LINT_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -name *.java)
-LINT_TARGET  = $(TARGET_DIR)/.latest-lint
+## https://github.com/checkstyle/checkstyle/releases
+CHECKSTYLE_VERSION = 8.42
+CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
-CHECKSTYLE_CONFIG_FILE = $(shell $(FIND) $(HOME)/.checkstyle -name *.xml)
-CHECKSTYLE_JAR_FILE    = $(shell $(FIND) $(HOME)/.checkstyle -name checkstyle*.jar)
+CHECKSTYLE_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -name *.java)
+CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
 
-lint: $(LINT_TARGET)
+## "checkstyle-all" version not available from Maven Central
+JAR_NAME = checkstyle-$(CHECKSTYLE_VERSION)-all.jar
+JAR_URL  = https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$(CHECKSTYLE_VERSION)/$(JAR_NAME)
+JAR_FILE = $(CHECKSTYLE_DIR)/$(JAR_NAME)
+XML_FILE = $(CHECKSTYLE_DIR)/graal_checks.xml
 
-$(LINT_TARGET): $(LINT_SOURCES)
-	$(JAVA) -jar $(CHECKSTYLE_JAR_FILE) -c=$(CHECKSTYLE_CONFIG_FILE) $^
+lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
+
+$(JAR_FILE):
+	[ -d "$(CHECKSTYLE_DIR)" ] || $(MKDIR) -p "$(CHECKSTYLE_DIR)"
+	$(CURL) --silent --location --output $(JAR_FILE) $(JAR_URL)
+
+$(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
+	$(JAVA) -jar $(JAR_FILE) -c=$(XML_FILE) $^
 
 ##############################################################################
 ## test rules
@@ -106,8 +117,8 @@ TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP
 
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
-	@echo -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
-	@echo $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
+	@$(ECHO) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
+	@$(ECHO) $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
 	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@$(TOUCH) "$(TEST_TARGET)"
 

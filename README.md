@@ -19,7 +19,7 @@ This project relies on the following external software for the **Microsoft Windo
 - [GraalVM Community Edition 21.1 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
-- [Python 2.7][python_downloads] ([*release notes*][python_relnotes])
+- [Python 3.9][python_downloads] ([*release notes*][python_relnotes])
 
 Optionally one may also install the following software:
 
@@ -130,7 +130,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.300.4
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 
@@ -145,7 +145,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.292.7
+   javac 1.8.0_292, python 3.9.5, pylint 1.9.2, mx 5.300.4
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.31.1.windows.1
 Tool paths:
@@ -300,7 +300,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [nodes_examples]: https://github.com/michelou/nodejs-examples
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/
-[python_relnotes]: https://www.python.org/downloads/release/python-2717/
+[python_relnotes]: https://www.python.org/downloads/release/python-395/
 [trufflesqueak_examples]: https://github.com/michelou/trufflesqueak-examples
 [upx_changelog]: https://upx.github.io/upx-news.txt
 [upx_downloads]: https://github.com/upx/upx/releases

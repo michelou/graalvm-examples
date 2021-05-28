@@ -19,7 +19,7 @@ getHome() {
 }
 
 debug() {
-    local DEBUG_LABEL="[46m[DEBUG][0m"
+    local DEBUG_LABEL="[44m[DEBUG][0m"
     $DEBUG && echo "$DEBUG_LABEL $1" 1>&2
 }
 
@@ -63,6 +63,7 @@ args() {
         ## subcommands
         clean)   CLEAN=true ;;
         compile) COMPILE=true ;;
+		doc)     DOC=true ;;
         help)    HELP=true ;;
         run)     COMPILE=true && RUN=true ;;
         *)
@@ -171,6 +172,39 @@ mixed_path() {
     fi
 }
 
+doc() {
+    [[ -d "$TARGET_DOCS_DIR" ]] || mkdir -p "$TARGET_DOCS_DIR"
+
+    local doc_timestamp_file="$TARGET_DOCS_DIR/.latest-build"
+
+    local is_required="$(action_required "$doc_timestamp_file" "$MAIN_SOURCE_DIR/" "*.java")"
+    [[ $is_required -eq 0 ]] && return 1
+
+    local sources_file="$TARGET_DIR/javadoc_sources.txt"
+    [[ -f "$sources_file" ]] && rm -rf "$sources_file"
+    for f in $(find $SOURCE_DIR/main/java/ -name *.java 2>/dev/null); do
+        echo $(mixed_path $f) >> "$sources_file"
+    done
+    local opts_file="$TARGET_DIR/javadoc_opts.txt"
+    echo -d "$(mixed_path $TARGET_DOCS_DIR)" -doctitle "$PROJECT_NAME" -footer "$PROJECT_URL" -top "$PROJECT_VERSION" > "$opts_file"
+    if $DEBUG; then
+        debug "$JAVADOC_CMD @$(mixed_path $opts_file) @$(mixed_path $sources_file)"
+    elif $VERBOSE; then
+        echo "Generate HTML documentation into directory \"${TARGET_DOCS_DIR/$ROOT_DIR\//}\"" 1>&2
+    fi
+    eval "$JAVADOC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
+    if [[ $? -ne 0 ]]; then
+        error "Generation of HTML documentation failed"
+        cleanup 1
+    fi
+    if $DEBUG; then
+        debug "HTML documentation saved into directory \"$TARGET_DOCS_DIR\""
+    elif $VERBOSE; then
+        echo "HTML documentation saved into directory \"${TARGET_DOCS_DIR/$ROOT_DIR\//}\"" 1>&2
+    fi
+    touch "$doc_timestamp_file"
+}
+
 run() {
     ##$DEBUG && debug "cp \"$TARGET_DIR/$MAIN_CLASS.wasm\" \"$CLASSES_DIR\""
     ##cp "$TARGET_DIR/$MAIN_CLASS.wasm" "$CLASSES_DIR"
@@ -192,11 +226,13 @@ ROOT_DIR="$(getHome)"
 SOURCE_DIR=$ROOT_DIR/src
 MAIN_SOURCE_DIR=$SOURCE_DIR/main/java
 TARGET_DIR=$ROOT_DIR/target
+TARGET_DOCS_DIR=$TARGET_DIR/docs
 CLASSES_DIR=$TARGET_DIR/classes
 
 CLEAN=false
 COMPILE=false
 DEBUG=false
+DOC=false
 HELP=false
 MAIN_CLASS="HelloPolyglot"
 MAIN_ARGS=
@@ -233,6 +269,7 @@ if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
+JAVADOC_CMD="$GRAALVM_HOME/bin/javadoc"
 
 PROJECT_NAME="$(basename $ROOT_DIR)"
 PROJECT_URL="github.com/$USER/graal-examples"
@@ -251,6 +288,9 @@ if $CLEAN; then
 fi
 if $COMPILE; then
     compile || cleanup 1
+fi
+if $DOC; then
+    doc || cleanup 1
 fi
 if $RUN; then
     run || cleanup 1

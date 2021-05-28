@@ -5,16 +5,11 @@ ifndef GRAALVM_HOME
 $(error Variable GRAALVM_HOME is not set)
 endif
 
-# spaces
-SP:= 
-SP+= 
-SP2:=$(SP)$(SP)
-SP4:=$(SP)$(SP)$(SP)$(SP)
-
 ifeq ($(OS),Windows_NT)
 JAR        = $(subst \,/,$(GRAALVM_HOME))/bin/jar.exe
 JAVA       = $(subst \,/,$(GRAALVM_HOME))/bin/java.exe
 JAVAC      = $(subst \,/,$(GRAALVM_HOME))/bin/javac.exe
+JAVADOC    = $(subst \,/,$(GRAALVM_HOME))/bin/javadoc.exe
 ## GraalVM component "LLVM" is not available on Windows
 CLANG      = $(subst \,/,$(LLVM_HOME))/bin/clang.exe
 HOME       = $(subst \,/,$(USERPROFILE))
@@ -31,6 +26,7 @@ else
 JAR        = $(GRAALVM_HOME)/bin/jar
 JAVA       = $(GRAALVM_HOME)/bin/java
 JAVAC      = $(GRAALVM_HOME)/bin/javac
+JAVADOC    = $(GRAALVM_HOME)/bin/javadoc
 CLANG      = $(GRAALVM_HOME)/jre/languages/llvm/native/bin/clang
 LOCAL_REPO = $(HOME)/.m2/repository
 PSEP       = :

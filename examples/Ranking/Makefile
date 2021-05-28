@@ -8,7 +8,7 @@ OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
 SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
 
 JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
-# JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)"
+JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)"
 
 ##############################################################################
 ## main rules
@@ -23,11 +23,11 @@ build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	[ -d "$(CLASSES_DIR)" ] || $(MKDIR) -p "$(CLASSES_DIR)"
-	@echo $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
-	@echo $(SOURCES) > "$(SOURCES_FILE)"
+	@$(ECHO) $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
+	@$(ECHO) $(SOURCES) > "$(SOURCES_FILE)"
 	$(JAVAC) "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
-	@echo Manifest-Version: 1.0 > $(MANIFEST)
-	@echo Main-Class: org.openjdk.jmh.Main >> $(MANIFEST)
+	@$(ECHO) Manifest-Version: 1.0 > $(MANIFEST)
+	@$(ECHO) Main-Class: org.openjdk.jmh.Main >> $(MANIFEST)
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JMH_CORE_LIB_JAR)"
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JMH_ANN_LIB_JAR)"
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JOPT_SIMPLE_JAR)"
@@ -41,15 +41,16 @@ run: build
 	$(JAVA) -Xmx1G -jar "$(TARGET)" rank
 
 help:
-	@$(ECHO) "Usage: make all|build|clean|help|run|test"
+	@$(ECHO) "Usage: make all|build|clean|help|lint|run|test"
 	@$(ECHO) ""
 	@$(ECHO) "  Subcommands:"
-	@$(ECHO) "    all      alias for build"
-	@$(ECHO) "    build    compile Java source files"
-	@$(ECHO) "    clean    delete generated files"
-	@$(ECHO) "    help     display this help message"
-	@$(ECHO) "    run      execute main program $(MAIN_CLASS)"
-	@$(ECHO) "    test     execute unit tests with JUnit"
+	@$(ECHO) "    all    alias for build"
+	@$(ECHO) "    build  compile Java source files"
+	@$(ECHO) "    clean  delete generated files"
+	@$(ECHO) "    help   display this help message"
+	@$(ECHO) "    lint   analyze Java source files with CheckStyle"
+	@$(ECHO) "    run    execute main program $(MAIN_CLASS)"
+	@$(ECHO) "    test   execute unit tests with JUnit"
 
 ##############################################################################
 ## doc rules
@@ -66,8 +67,8 @@ DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
-	@echo -siteroot "$(DOC_TARGET_DIR)" -project "$(PROJECT_NAME)" -project-version "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
-	@echo $(SOURCES) > "$(DOC_SOURCES_FILE)"
+	@$(ECHO) $(JAVA_FLAGS) -d "$(DOC_TARGET_DIR)" -doctitle "$(PROJECT_NAME)" -footer "$(PROJECT_URL)" -top "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
+	@$(ECHO) $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 
@@ -113,8 +114,8 @@ TEST_CPATH       = $(SCALA_LIB_JAR)$(PSEP)$(DOTTY_LIB_JAR)$(PSEP)$(HAMCREST_JAR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
-	@echo $(JAVAC_FLAGS) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
-	@echo $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
+	@$(ECHO) $(JAVAC_FLAGS) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
+	@$(ECHO) $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
 	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@$(TOUCH) "$(TEST_TARGET)"
 
@@ -124,4 +125,4 @@ test: build $(TEST_TARGET)
 ##############################################################################
 ## phony
 
-.PHONY: all build clean doc help run test
+.PHONY: all build clean doc help lint run test

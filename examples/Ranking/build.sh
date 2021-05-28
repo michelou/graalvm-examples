@@ -91,7 +91,7 @@ Usage: $BASENAME { <option> | <subcommand> }
     clean        delete generated files
     compile      compile C/Java source files
     help         display this help message
-    run          execute main class
+    run          execute main class $MAIN_CLASS
 EOS
 }
 
