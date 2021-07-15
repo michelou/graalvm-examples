@@ -160,7 +160,7 @@ if "%__ARG:~0,1%"=="-" (
     set /a __N+=1
 )
 shift
-goto :args_loop
+goto args_loop
 :args_done
 call :subst %_DRIVE_NAME% "%_ROOT_DIR%"
 if not %_EXITCODE%==0 goto :eof
@@ -240,9 +240,9 @@ set _GRAALVM_HOME=
 set __JAVAC_CMD=
 for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
     for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
     for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAALVM_HOME=%%~dpf"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
     goto :eof
 ) else if defined GRAAL_HOME (
     set "_GRAALVM_HOME=%GRAAL_HOME%"
@@ -279,15 +279,19 @@ if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM11_HOME=%_GRAALVM_HOME%"
 goto :eof
 
-@rem output parameter: _MAVEN_HOME, _MAVEN_PATH
+@rem output parameters: _MAVEN_HOME, _MAVEN_PATH
 :maven
 set _MAVEN_HOME=
 set _MAVEN_PATH=
 
-where /q mvn.cmd
-if %ERRORLEVEL%==0 goto :eof
-
-if defined MAVEN_HOME (
+set __MVN_CMD=
+for /f %%f in ('where mvn.cmd 2^>NUL') do set "__MVN_CMD=%%f"
+if defined __MVN_CMD (
+    for %%i in ("%__MVN_CMD%") do set "__MAVEN_BIN_DIR=%%~dpi"
+    for %%f in ("!__MAVEN_BIN_DIR!\.") do set "_MAVEN_HOME=%%~dpf"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Maven executable found in PATH 1>&2
+    goto :eof
+) else if defined MAVEN_HOME (
     set "_MAVEN_HOME=%MAVEN_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MAVEN_HOME 1>&2
 ) else (
