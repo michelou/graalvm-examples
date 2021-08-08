@@ -39,10 +39,10 @@ Command **`build clean dist:2`** generates the [GraalVM] build specified by buil
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_292-jvmci-21.1-b04
-openjdk version "1.8.0_292"
-OpenJDK Runtime Environment (build 1.8.0_292-b07)
-OpenJDK 64-Bit Server VM (build 25.292-b07-jvmci-21.1-b04, mixed mode)
+G:\\openjdk1.8.0_302-jvmci-21.2-b07
+openjdk version "1.8.0_302"
+OpenJDK Runtime Environment (build 1.8.0_302-b07)
+OpenJDK 64-Bit Server VM (build 25.302-b07-jvmci-21.2-b07, mixed mode)
  Create GraalVM build with tags build,test
 [...]
 gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Gate
@@ -51,8 +51,8 @@ gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Versions
 Python version: sys.version_info(major=2, minor=7, micro=17, releaselevel='final', serial=0)
 gate: 15 Mar 2021 00:38:27(+00:00) END:   Versions [0:00:00.979000]
 gate: 15 Mar 2021 00:38:27(+00:00) BEGIN: JDKReleaseInfo
-==== G:\\openjdk1.8.0_292-jvmci-21.1-b04 ====
-JAVA_VERSION="1.8.0_292"
+==== G:\\openjdk1.8.0_302-jvmci-21.2-b07 ====
+JAVA_VERSION="1.8.0_302"
 OS_NAME="Windows"
 OS_VERSION="5.2"
 OS_ARCH="amd64"
@@ -138,9 +138,9 @@ Archive file **`graalvm-3bf9265b58-java8.zip`** is the [GraalVM] software distri
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | findstr \.cmd</b>
-      389  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.1.0-dev/bin/polyglot.cmd
-      398  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.1.0-dev/jre/bin/polyglot.cmd
-     7733  2021-03-15 23:12   graalvm-3bf9265b58-java8-21.1.0-dev/jre/lib/polyglot/bin/polyglot.cmd
+      389  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/bin/polyglot.cmd
+      398  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/jre/bin/polyglot.cmd
+     7733  2021-03-15 23:12   graalvm-3bf9265b58-java8-21.2.0-dev/jre/lib/polyglot/bin/polyglot.cmd
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
@@ -254,7 +254,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/July 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

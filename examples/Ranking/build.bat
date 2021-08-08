@@ -100,7 +100,7 @@ set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
 if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^(GRAALVM_HOME="%GRAALVM_HOME%"^) 1>&2
+    echo %_ERROR_LABEL% ^("GRAALVM_HOME=%GRAALVM_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -156,7 +156,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=8.42
+set _CHECKSTYLE_VERSION=8.45
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
