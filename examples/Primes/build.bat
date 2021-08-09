@@ -36,6 +36,10 @@ if %_LINT%==1 (
 if %_COMPILE%==1 (
     call :compile
     if not !_EXITCODE!==0 goto end
+    if %_TARGET%==native (
+        call :native_image
+        if not !_EXITCODE!==0 goto end
+    )
 )
 if %_DOC%==1 (
     call :doc
@@ -46,7 +50,7 @@ if %_PACK%==1 (
     if not !_EXITCODE!==0 goto end
 )
 if %_RUN%==1 (
-    call :test_%_TARGET%
+    call :run_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
 if %_TEST%==1 (
@@ -74,21 +78,19 @@ set "_TARGET_DIR=%_ROOT_DIR%target"
 set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 
-set "_BENCH_JAR_FILE=%_TARGET_DIR%\benchmarks.jar"
-
-set _PKG_NAME=
-set _MAIN_NAME=Ranking
+set _PKG_NAME=primes
+set _MAIN_NAME=PrimesCommand
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
-if not exist "%GRAALVM_HOME%\bin\javac.exe" (
-    echo %_ERROR_LABEL% GraalVM installation not found 1>&2
+if not exist "%JAVA_HOME%\bin\javac.exe" (
+    echo %_ERROR_LABEL% Java SDK installation not found 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_JAR_CMD=%GRAALVM_HOME%\bin\jar.exe"
-set "_JAVA_CMD=%GRAALVM_HOME%\bin\java.exe"
-set "_JAVAC_CMD=%GRAALVM_HOME%\bin\javac.exe"
-set "_JAVADOC_CMD=%GRAALVM_HOME%\bin\javadoc.exe"
+set "_JAR_CMD=%JAVA_HOME%\bin\jar.exe"
+set "_JAVA_CMD=%JAVA_HOME%\bin\java.exe"
+set "_JAVAC_CMD=%JAVA_HOME%\bin\javac.exe"
+set "_JAVADOC_CMD=%JAVA_HOME%\bin\javadoc.exe"
 
 if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
     echo %_ERROR_LABEL% MSVS installation not found 1>&2
@@ -98,13 +100,14 @@ if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
 )
 set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
-if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
+if not exist "%JAVA_HOME%\bin\native-image.cmd" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
-    echo %_ERROR_LABEL% ^("GRAALVM_HOME=%GRAALVM_HOME%"^) 1>&2
+    echo %_ERROR_LABEL% ^(JAVA_HOME="%JAVA_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
+set "_NATIVE_IMAGE_CMD=%JAVA_HOME%\bin\native-image.cmd"
+set _NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
 goto :eof
 
 :env_colors
@@ -160,7 +163,7 @@ set _CHECKSTYLE_VERSION=8.45
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
-set _PROJECT_VERSION=1.0-SNAPSHOT
+set _PROJECT_VERSION=0.1-SNAPSHOT
 
 set "__PROPS_FILE=%_ROOT_DIR%build.properties"
 if exist "%__PROPS_FILE%" (
@@ -223,7 +226,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="help" ( set _HELP=1
     ) else if "%__ARG%"=="lint" ( set _LINT=1
     ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
-    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _PACK=1& set _RUN=1
+    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
@@ -248,15 +251,14 @@ if %_DEBUG%==1 set _NATIVE_IMAGE_OPTS=--trace-class-initialization %_NATIVE_IMAG
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
-    echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
 if %_VERBOSE%==1 (
-    set __BEG_P=%_NORMAL_FG_GREEN%
+    set __BEG_P=%_NORMAL_FG_GREEN%%_UNDERSCORE%
     set __BEG_O=%_STRONG_FG_GREEN%
     set __BEG_N=%_NORMAL_FG_YELLOW%
     set __END=%_RESET%
@@ -281,7 +283,7 @@ echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
 echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
-echo     %__BEG_O%run%__END%         execute JMH benchmarks
+echo     %__BEG_O%run%__END%         execute main program
 echo     %__BEG_O%test%__END%        execute JMH benchmarks
 if %_VERBOSE%==0 goto :eof
 echo.
@@ -296,10 +298,9 @@ goto :eof
 call :rmdir "%_TARGET_DIR%"
 goto :eof
 
-@rem input parameter: %1=directory path
 :rmdir
 set "__DIR=%~1"
-if not exist "%__DIR%\" goto :eof
+if not exist "%__DIR%" goto :eof
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
 )
@@ -311,19 +312,19 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :checkstyle
-set "__CHECKSTYLE_DIR=%LOCALAPPDATA%\Checkstyle"
-if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
+set "__USER_GRAAL_DIR=%USERPROFILE%\.graal"
+if not exist "%__USER_GRAAL_DIR%" mkdir "%__USER_GRAAL_DIR%"
 
-set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
+set "__XML_FILE=%__USER_GRAAL_DIR%\graal_checks.xml"
 if not exist "%__XML_FILE%" call :checkstyle_xml "%__XML_FILE%"
 
 @rem "checkstyle-all" version not available from Maven Central
 set __JAR_NAME=checkstyle-%_CHECKSTYLE_VERSION%-all.jar
 set __JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-%_CHECKSTYLE_VERSION%/%__JAR_NAME%
-set "__JAR_FILE=%__CHECKSTYLE_DIR%\%__JAR_NAME%"
+set "__JAR_FILE=%__USER_GRAAL_DIR%\%__JAR_NAME%"
 if exist "%__JAR_FILE%" goto checkstyle_analyze
 
-set "__PS1_FILE=%__CHECKSTYLE_DIR%\webrequest.ps1"
+set "__PS1_FILE=%__USER_GRAAL_DIR%\webrequest.ps1"
 if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 
 set __PS1_VERBOSE[0]=
@@ -345,7 +346,7 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     set /a __N+=1
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%LOCALAPPDATA%=%%LOCALAPPDATA%%!" 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=%%USERPROFILE%%!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -374,7 +375,7 @@ if not %_EXITCODE%==0 goto :eof
 
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
 set "__CPATH=%_LIBS_CPATH%%_CLASSES_DIR%"
-echo -deprecation -classpath "%__CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+echo -cp "%__CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -424,7 +425,7 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
     echo %_DEBUG_LABEL% _ACTION_REQUIRED=%_ACTION_REQUIRED% 1>&2
 ) else if %_VERBOSE%==1 if %_ACTION_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No action required ^(%__PATH_ARRAY1:~1%^) 1>&2
+    echo No compilation needed ^(%__PATH_ARRAY1:~1%^) 1>&2
 )
 goto :eof
 
@@ -473,55 +474,77 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:pack
-call :libs_cpath
-if not %_EXITCODE%==0 goto :eof
+:native_image
+setlocal
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
+call "%_VCVARALL_BAT%" x64
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+)
+if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
-call :action_required "%_BENCH_JAR_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_NATIVE_IMAGE_CMD%" %_NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
+if not %ERRORLEVEL%==0 (
+    endlocal
+    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+endlocal
+goto :eof
+
+:doc
+if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
+
+call :action_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
+if %_ACTION_REQUIRED%==0 goto :eof
+
+set "__SOURCES_FILE=%_TARGET_DIR%\javadoc_sources.txt"
+for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
+    echo %%i>> "%__SOURCES_FILE%"
+)
+set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
+echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Generation of HTML documentation failed 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
+:pack
+call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
 if %_ACTION_REQUIRED%==0 goto :eof
 
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
 (
     echo Manifest-Version: 1.0
-    echo Main-Class: org.openjdk.jmh.Main
+    echo Main-Class: %_MAIN_CLASS%
 ) > "%__MANIFEST_FILE%"
 
-set "__CPATH_TAIL=%_LIBS_CPATH%"
-:pack_loop
-for /f "delims=; tokens=1,*" %%f in ("%__CPATH_TAIL%") do (
-    set "__JAR_FILE=%%f"
-    if not "!__JAR_FILE:jopt-simple=!"=="!__JAR_FILE!" (
-        pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
-        call "%_JAR_CMD%" xf "!__JAR_FILE!"
-        popd
-    ) else if not "!__JAR_FILE:jmh-core=!"=="!__JAR_FILE!" (
-        pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
-        call "%_JAR_CMD%" xf "!__JAR_FILE!"
-        popd
-    ) else if not "!__JAR_FILE:commons-math3=!"=="!__JAR_FILE!" (
-        pushd "%_CLASSES_DIR%"
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
-        call "%_JAR_CMD%" xf "!__JAR_FILE!"
-        popd
-    )
-    set "__CPATH_TAIL=%%g"
-    goto pack_loop
-)
-set __JAR_OPTS=cfm "%_BENCH_JAR_FILE%" "%__MANIFEST_FILE%" -C "%_CLASSES_DIR%" .
+set __JAR_OPTS=cfm "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%__MANIFEST_FILE%" -C "%_CLASSES_DIR%" .
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
-) else if %_VERBOSE%==1 ( echo Create Java archive file "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
+) else if %_VERBOSE%==1 ( echo Create Java archive into directory "!__TARGET_DIR:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAR_CMD%" %__JAR_OPTS%
 if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
-)
-if %_TARGET%==native (
-    call :native_image
-    if not !_EXITCODE!==0 goto :eof
 )
 goto :eof
 
@@ -538,77 +561,48 @@ call "%__BATCH_FILE%" %_DEBUG%
 set _LIBS_CPATH=%_CPATH%
 goto :eof
 
-:native_image
-setlocal
-if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
-call "%_VCVARALL_BAT%" x64
-if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
-)
+:run_jvm
+set __MAIN_ARGS=-n 10 --limit 100
+
+call :libs_cpath
+if not %_EXITCODE%==0 goto :eof
+
+set __JAVA_OPTS=-cp "%_LIBS_CPATH%%_CLASSES_DIR%"
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% "INCLUDE=%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% "LIB=%LIB%" 1>&2
-    echo %_DEBUG_LABEL% "LIBPATH=%LIBPATH%" 1>&2
+    set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
+    set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"
 )
-if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
-
-set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --allow-incomplete-classpath
-if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=--trace-class-initialization %__NATIVE_IMAGE_OPTS%
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+if %_JVMCI%==1 (
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
+    ) else if %_VERBOSE%==1 ( echo GraalVM compiler is disabled 1>&2
+    )
+    set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
 )
-call "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% -jar "%_BENCH_JAR_FILE%" "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
+)
+call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
-    endlocal
-    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+    echo %_ERROR_LABEL% Execution failed ^(%_MAIN_CLASS%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-endlocal
-goto :eof
-
-:test_jvm
-@rem chart example file: src\main\resources\chart2000-songyear-0-3-0058.csv
-@rem (see more examples on https://chart2000.com/about.htm#results)
-set __N=0
-for /f %%f in ('dir /s /b "%_SOURCE_DIR%\main\resources\*.csv"') do (
-    set "__CHART_FILE=%%f"
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% copy "!__CHART_FILE!" "%_TARGET_DIR%\" 1^>NUL 1>&2
-    ) else if %_VERBOSE%==1 ( echo Copy chart file to directory "!_TARGET_DIR:%_ROOT_DIR%=!" 1>&2
+if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Compilation log written to "%__GRAAL_LOG_FILE%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Compilation log written to "!__GRAAL_LOG_FILE:%_ROOT_DIR%=!" 1>&2
     )
-    copy "!__CHART_FILE!" "%_TARGET_DIR%\" 1>NUL
-    if not !ERRORLEVEL!==0 (
-        set _EXITCODE=1
-        goto :eof
-    )
-    set /a __N+=1
-)
-if %__N%==0 (
-    echo %_WARNING_LABEL% No chart file found in directory "src\main\resources\" 1>&2
-    goto :eof
-)
-set __TEST_JAVA_OPTS=-Xmx1G -jar "%_BENCH_JAR_FILE%"
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__TEST_JAVA_OPTS% rank 1>&2
-) else if %_VERBOSE%==1 ( echo Execute JMH benchmark ^(JVM^) 1>&2
-)
-call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% rank
-if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
 )
 goto :eof
 
-:test_native
+:run_native
 set "__EXE_FILE=%_MAIN_NATIVE_FILE%.exe"
 if not exist "%__EXE_FILE%" (
     echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Execute JMH benchmark "!__EXE_FILE:%_ROOT_DIR%=!" 1>&2
 )
 call "%__EXE_FILE%"
@@ -616,6 +610,14 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
+goto :eof
+
+:test_jvm
+echo %_WARNING_LABEL% JVM tests not yet implemented 1>&2
+goto :eof
+
+:test_native
+echo %_WARNING_LABEL% Native tests not yet implemented 1>&2
 goto :eof
 
 @rem input parameter: %1=XML file path

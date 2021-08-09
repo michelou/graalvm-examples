@@ -47,7 +47,7 @@ if [[ $OS == "cygwin" || $OS == "mingw" ]]; then
     export HOME=$prefix/c/Users/$USER
     export GIT_HOME="$(getPath "$prefix/c/opt/Git-2")"
     export GRAALVM_HOME="$(getPath "$prefix/c/opt/graalvm-ce-java8-21")"
-    export GRAALVM11_HOME="$(getPath "$prefix/c/opt/graalvm-ce-java1-21")"
+    export GRAALVM11_HOME="$(getPath "$prefix/c/opt/graalvm-ce-java11-21")"
     export LLVM_HOME="$(getPath "$prefix/c/opt/LLVM-12")"
     export MAVEN_HOME="$(getPath "$prefix/c/opt/apache-maven-3")"
 	export WABT_HOME="$(getPath "$prefix/c/opt/wabt-1")"

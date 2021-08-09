@@ -14,7 +14,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="articles">Articles</span>
 
-- [GraalVM 21.1 is here!][article_graalvm_21_1] by Oleg Selajev, April 2021.
+- [Mandrel: A specialized distribution of GraalVM for Quarkus][article_mandrel], April 2021.
 - [GraalVM 21.0 Introduces a JVM Written in Java][article_graalvm_21_0], January 2021.
 - [Leverage NPM JavaScript Module from Java application using GraalVM](https://technology.amis.nl/2019/10/25/leverage-npm-javascript-module-from-java-application-using-graalvm/) by Lucas Jellema, October 25, 2019.
 - [Calling out from Java to JavaScript (with call back) – leveraging interoperability support of GraalVM][article_jellema], by Lucas Jellema, October 24, 2019.
@@ -24,8 +24,11 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+- [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
   - [GraalVM 21.0: Introducing a New Way to Run Java][blog_run_java], January 2021.
   - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
+- [GraalVM - Episode 2: The Holy Grail](https://faun.pub/episode-2-the-holy-grail-graalvm-building-super-optimum-microservices-architecture-series-c068b72735a1) by V. Kumar, September 2020.
+- [GraalVM - Episode 1: The Evolution](https://faun.pub/episode-1-the-evolution-java-jit-hotspot-c2-compilers-building-super-optimum-containers-f0db19e6f19a) by V. Kumar, September 2020.
 - [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/) by Naoko, April 2019.
 - [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
 - [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
@@ -92,7 +95,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -100,9 +103,10 @@ For convenience resources are organized in several topics : [General](#general),
 [article_berger]: https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples
 [article_evans]: https://www.infoq.com/articles/Graal-Java-JIT-Compiler/
 [article_graalvm_21_0]: https://www.infoq.com/news/2021/01/graalvm-21-jvm-java/
-[article_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [article_jellema]: https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/
+[article_mandrel]: https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus#
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
+[blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [blog_run_java]: https://medium.com/graalvm/graalvm-21-0-introducing-a-new-way-to-run-java-df894256de28
