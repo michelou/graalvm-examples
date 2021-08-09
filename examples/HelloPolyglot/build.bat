@@ -45,6 +45,7 @@ set "_SOURCE_DIR=%_ROOT_DIR%src"
 set "_TARGET_DIR=%_ROOT_DIR%target"
 set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
+set "_TEST_CLASSES_DIR=%_TARGET_DIR%\test-classes"
 
 set _PKG_NAME=
 set _MAIN_NAME=HelloPolyglot
@@ -378,13 +379,13 @@ if not %ERRORLEVEL%==0 (
     goto :eof
 )
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+    echo %_DEBUG_LABEL% "INCLUDE=%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% "LIB=%LIB%" 1>&2
+    echo %_DEBUG_LABEL% "LIBPATH=%LIBPATH%" 1>&2
 )
 if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
 
-set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
+set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --language:js
 if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=--trace-class-initialization %__NATIVE_IMAGE_OPTS%
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
@@ -454,9 +455,6 @@ if %__DATE1% gtr %__DATE2% ( set _NEWER=1
 goto :eof
 
 :doc
-call :libs_cpath
-if not %_EXITCODE%==0 goto :eof
-
 if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
 
 call :action_required "%_TARGET_DOCS_DIR%\index.html" "%_SOURCE_DIR%\main\java\*.java"
@@ -577,7 +575,82 @@ if not %ERRORLEVEL%==0 (
 goto :eof
 
 :test_jvm
-echo %_WARNING_LABEL% JVM tests not yet implemented 1>&2
+call :test_compile
+if not %_EXITCODE%==0 goto end
+
+call :libs_cpath
+if not %_EXITCODE%==0 goto :eof
+
+set __TEST_JAVA_OPTS=-classpath "%_LIBS_CPATH%%_CLASSES_DIR%;%_TEST_CLASSES_DIR%"
+
+@rem see https://github.com/junit-team/junit4/wiki/Getting-started
+for /f "usebackq" %%f in (`dir /s /b "%_TEST_CLASSES_DIR%\*JUnitTest.class" 2^>NUL`) do (
+    for %%i in (%%~dpf) do set __PKG_NAME=%%i
+    set __PKG_NAME=!__PKG_NAME:%_TEST_CLASSES_DIR%\=!
+    if defined __PKG_NAME ( set "__MAIN_CLASS=!__PKG_NAME:\=.!%%~nf"
+    ) else ( set "__MAIN_CLASS=%%~nf"
+    )
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__TEST_JAVA_OPTS% org.junit.runner.JUnitCore !__MAIN_CLASS! 1>&2
+    ) else if %_VERBOSE%==1 ( echo Execute test !__MAIN_CLASS! 1>&2
+    )
+    call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% org.junit.runner.JUnitCore !__MAIN_CLASS!
+    if not !ERRORLEVEL!==0 (
+        set _EXITCODE=1
+        goto :eof
+    )
+)
+goto :eof
+
+@rem output parameter: _LIBS_CPATH
+:libs_cpath
+for %%f in ("%~dp0\.") do set "__BATCH_FILE=%%~dpfcpath.bat"
+if not exist "%__BATCH_FILE%" (
+    echo %_ERROR_LABEL% Batch file "%__BATCH_FILE%" not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__BATCH_FILE%" %_DEBUG% 1>&2
+call "%__BATCH_FILE%" %_DEBUG%
+set "_LIBS_CPATH=%_CPATH%"
+goto :eof
+
+:test_compile
+if not exist "%_TEST_CLASSES_DIR%" mkdir "%_TEST_CLASSES_DIR%" 1>NUL
+
+set "__TEST_TIMESTAMP_FILE=%_TEST_CLASSES_DIR%\.latest-build"
+
+call :action_required "%__TEST_TIMESTAMP_FILE%" "%_SOURCE_DIR%\test\java\*.java"
+if %_ACTION_REQUIRED%==0 goto :eof
+
+call :test_compile_java
+if not %_EXITCODE%==0 goto :eof
+
+echo. > "%__TEST_TIMESTAMP_FILE%"
+goto :eof
+
+:test_compile_java
+call :libs_cpath
+if not %_EXITCODE%==0 goto :eof
+
+set "__TEST_OPTS_FILE=%_TARGET_DIR%\test_javac_opts.txt"
+set "__CPATH=%_LIBS_CPATH%;%_CLASSES_DIR%;%_TEST_CLASSES_DIR%"
+echo -cp "%__CPATH:\=\\%" -d "%_TEST_CLASSES_DIR:\=\\%" > "%__TEST_OPTS_FILE%"
+
+set "__TEST_SOURCES_FILE=%_TARGET_DIR%\test_javac_sources.txt"
+if exist "%__TEST_SOURCES_FILE%" del "%__TEST_SOURCES_FILE%"
+set __N=0
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\test\java" *.java') do (
+    echo %%f>> "%__TEST_SOURCES_FILE%"
+    set /a __N+=1
+)
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__TEST_OPTS_FILE%" "@%__TEST_SOURCES_FILE%" 1>&2
+) else if %_VERBOSE%==1 ( echo Compile %__N% Java test source files to directory "!_TEST_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAVAC_CMD%" "@%__TEST_OPTS_FILE%" "@%__TEST_SOURCES_FILE%"
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
 goto :eof
 
 :test_native

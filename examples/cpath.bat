@@ -23,7 +23,8 @@ call :add_jar "junit" "junit" "4.13.2"
 @rem https://mvnrepository.com/artifact/org.hamcrest/hamcrest
 call :add_jar "org.hamcrest" "hamcrest" "2.2"
 
-set _JMH_VERSION=1.31
+@rem Two JMH depencencies: jopts-simple 4.6, commons-math3 3.2
+set _JMH_VERSION=1.32
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -32,10 +33,10 @@ call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
 call :add_jar "org.openjdk.jmh" "jmh-generator-annprocess" "%_JMH_VERSION%"
 
 @rem https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
-call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
+call :add_jar "net.sf.jopt-simple" "jopt-simple" "4.6"
 
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
-call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
+call :add_jar "org.apache.commons" "commons-math3" "3.2"
 
 set _MICRONAUT_VERSION=2.5.3
 
