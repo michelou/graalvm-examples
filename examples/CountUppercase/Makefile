@@ -32,7 +32,7 @@ $(TARGET): $(SOURCES)
 	@$(TOUCH) "$(TARGET)"
 
 clean:
-	rm -rf "$(TARGET_DIR)"
+	$(RM) -rf "$(TARGET_DIR)"
 
 run: build
 	$(JAVA) $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)

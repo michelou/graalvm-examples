@@ -14,6 +14,10 @@
 	path = mx
 	url = https://github.com/graalvm/mx.git
 
+[submodule "supercharge-examples"]
+	path = supercharge-examples
+	url = https://github.com/PacktPublishing/Supercharge-Your-Applications-with-GraalVM.git
+
 [submodule "workshop"]
 	path = shelajev-workshop
 	url = https://github.com/shelajev/workshop.git

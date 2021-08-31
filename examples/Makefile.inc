@@ -21,6 +21,7 @@ CURL       = $(subst \,/,$(MSYS_HOME))/usr/bin/curl.exe
 ECHO       = $(subst \,/,$(MSYS_HOME))/usr/bin/echo.exe
 FIND       = $(subst \,/,$(MSYS_HOME))/usr/bin/find.exe
 MKDIR      = $(subst \,/,$(MSYS_HOME))/usr/bin/mkdir.exe
+RM         = $(subst \,/,$(MSYS_HOME))/usr/bin/rm.exe
 TOUCH      = $(subst \,/,$(MSYS_HOME))/usr/bin/touch.exe
 else
 JAR        = $(GRAALVM_HOME)/bin/jar
@@ -34,11 +35,12 @@ CURL       = curl
 ECHO       = echo
 FIND       = find
 MKDIR      = mkdir
+RM         = rm
 TOUCH      = touch
 endif
 
-JMH_CORE_LIB_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-core-1.32.jar)
-JMH_ANN_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-generator-annprocess-1.32.jar)
+JMH_CORE_LIB_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-core-1.33.jar)
+JMH_ANN_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name jmh-generator-annprocess-1.33.jar)
 ## Two JMH depencencies: jopt-simple 4.6, commons-math3 3.2
 JOPT_SIMPLE_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/net/sf/jopt-simple" -name jopt-simple-4.6.jar)
 COMMONS_MATH_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/apache/commons" -name commons-math3-3.2.jar)

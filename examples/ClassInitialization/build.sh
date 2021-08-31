@@ -217,7 +217,7 @@ COLOR_END="[0m"
 
 ## false: CYGWIN, MINGW, MSYS  
 linux=false
-case "`uname -s`" in
+case "$(uname -s)" in
   Linux*)  linux=true ;;
   Darwin*) linux=true
 esac

@@ -24,7 +24,8 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
-- [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
+  - [GraalVM 21.2: Lots of native image usability improvements][blog_graalvm_21_2] by Oleg Selajev, July 2021.
+  - [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
   - [GraalVM 21.0: Introducing a New Way to Run Java][blog_run_java], January 2021.
   - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
 - [GraalVM - Episode 2: The Holy Grail](https://faun.pub/episode-2-the-holy-grail-graalvm-building-super-optimum-microservices-architecture-series-c068b72735a1) by V. Kumar, September 2020.
@@ -39,7 +40,8 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="books">Books</span>
 
-- [GraalVM for Dummies][book_dummies] by Lawrence Miller, Wiley 2021<br/>(50 pages, ISBN 978-1-119-76642-1).
+- [Supercharge Your Applications with GraalVM][book_kumar] by Vijay Kumar, Packt, August 2021.<br/><span style="font-size:90%;">(358 pages, ISBN 9781800564909)</span>
+- [GraalVM for Dummies][book_dummies] by Lawrence Miller, Wiley 2021<br/><span style="font-size:90%;">(50 pages, ISBN 978-1-119-76642-1)</span>.
 
 ### <span id="tools">Online Tools</span>
 
@@ -84,7 +86,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="sulong-talks">Talks</span>
 
-- [Sulonng: An experience report of using the "other end" of LLVM in GraalVM](https://llvm.org/devmtg/2019-04/talks.html#Talk_13) by Roland Schatz and Josef Eisl, 2019 European LLVM Developers Meeting, 2019.
+- [Sulong: An experience report of using the "other end" of LLVM in GraalVM](https://llvm.org/devmtg/2019-04/talks.html#Talk_13) by Roland Schatz and Josef Eisl, 2019 European LLVM Developers Meeting, 2019.
 <!--
 ## Footnotes
 
@@ -107,8 +109,10 @@ For convenience resources are organized in several topics : [General](#general),
 [article_mandrel]: https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus#
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
+[blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [blog_run_java]: https://medium.com/graalvm/graalvm-21-0-introducing-a-new-way-to-run-java-df894256de28
 [book_dummies]: http://www.oracle.com/a/ocom/docs/beta0/js/graalvm-for-dummies-ebook.pdf
+[book_kumar]: https://www.packtpub.com/product/supercharge-your-applications-with-graalvm/9781800564909
 [ch_epfl_paper9]: https://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf

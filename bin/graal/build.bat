@@ -81,13 +81,12 @@ set "_TAR_CMD=%GIT_HOME%\usr\bin\tar.exe"
 set "_MX_CMD=%_MX_PATH%\mx.cmd"
 set _MX_OPTS=
 
-
-@rem see https://github.com/graalvm/graal-jvmci-8/releases
-set _JVMCI_VERSION=jvmci-21.1-b02
-set _JDK8_UPDATE_VERSION=292
-set _JDK8_UPDATE_VERSION_SUFFIX=
-@rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
-set _JDK8_PLATFORM=windows-amd64
+@rem mx requirement
+if not exist "%PYTHON_HOME%\python.exe" (
+    echo %_ERROR_LABEL% Python installation directory not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
 goto :eof
 
 :env_colors
@@ -225,12 +224,13 @@ if "%__ARG:~0,1%"=="-" (
     set /a __N+=1
 )
 shift
-goto :args_loop
+goto args_loop
 :args_done
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _DIST_ENV=%_DIST_ENV% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _DIST=%_DIST% _UPDATE=%_UPDATE% 1>&2
-    echo %_DEBUG_LABEL% Variables  : MSVS_HOME="%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAAL_HOME=%GRAAL_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -385,8 +385,8 @@ if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
 
 set __GRAAL_URL=https://github.com/oracle/graal.git
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %__GRAAL_URL% %_GRAAL_PATH% 1>&2
-) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory %_GRAAL_PATH% 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %__GRAAL_URL% %"_GRAAL_PATH%" 1>&2
+) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory "%_GRAAL_PATH%" 1>&2
 )
 call "%_GIT_CMD%" %_GIT_OPTS% clone "%__GRAAL_URL%" "%_GRAAL_PATH%"
 if not %ERRORLEVEL%==0 (
@@ -466,9 +466,15 @@ goto :eof
 :jvmci
 if not %JDK%==jdk8 goto :eof
 
-set "__JDK_INSTALL_NAME=openjdk1.8.0_%_JDK8_UPDATE_VERSION%-%_JVMCI_VERSION%"
-set "__JDK_TGZ_NAME=openjdk-8u%_JDK8_UPDATE_VERSION%%_JDK8_UPDATE_VERSION_SUFFIX%-%_JVMCI_VERSION%-%_JDK8_PLATFORM%.tar.gz"
-set "__JDK_TGZ_URL=https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/%_JVMCI_VERSION%/%__JDK_TGZ_NAME%"
+@rem see https://github.com/graalvm/graal-jvmci-8/releases
+set __JVMCI_VERSION=jvmci-21.2-b08
+set __JDK8_UPDATE_VERSION=302
+@rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
+set __JDK8_PLATFORM=windows-amd64
+
+set "__JDK_INSTALL_NAME=openjdk1.8.0_%__JDK8_UPDATE_VERSION%-%__JVMCI_VERSION%"
+set "__JDK_TGZ_NAME=openjdk-8u%__JDK8_UPDATE_VERSION%-%__JVMCI_VERSION%-%__JDK8_PLATFORM%.tar.gz"
+set "__JDK_TGZ_URL=https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/%__JVMCI_VERSION%/%__JDK_TGZ_NAME%"
 set "__JDK_TGZ_FILE=%_ROOT_DIR%\%__JDK_TGZ_NAME%"
 
 if exist "%_ROOT_DIR%\%__JDK_INSTALL_NAME%\" goto jvmci_done

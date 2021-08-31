@@ -96,7 +96,7 @@ Command [**`build -native -cached clean compile`**](ClassInitialization/build.ba
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -cached clean compile</b>
-<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/tree">tree</a> /a /f target | findstr /v "^[A-Z]"</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/tree">tree</a> /a /f target | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /v "^[A-Z]"</b>
 |   HelloCachedTime.exe
 |   HelloCachedTime.exp
 |   HelloCachedTime.lib
