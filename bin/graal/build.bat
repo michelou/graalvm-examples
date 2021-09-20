@@ -229,8 +229,11 @@ goto args_loop
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _DIST_ENV=%_DIST_ENV% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _DIST=%_DIST% _UPDATE=%_UPDATE% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAAL_HOME=%GRAAL_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "LLVM_HOME=%LLVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "PYTHON_HOME=%PYTHON_HOME%" 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -394,7 +397,7 @@ if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-if not exist "%_GRAAL_HOME%\.travis.yml" (
+if not exist "%_GRAALVM_HOME%\.travis.yml" (
     echo %_ERROR_LABEL% Travis configuration file not found ^(%_GRAAL_PATH%^) 1>&2
     set _EXITCODE=1
     goto :eof
@@ -584,10 +587,10 @@ if defined LLVM_VERSION (
 )
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% ===== B U I L D   V A R I A B L E S ===== 1>&2
-    echo %_DEBUG_LABEL% JAVA_HOME="%JAVA_HOME%" 1>&2
-    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
-    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+    echo %_DEBUG_LABEL% "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% "INCLUDE=%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% "LIB=%LIB%" 1>&2
+    echo %_DEBUG_LABEL% "LIBPATH=%LIBPATH%" 1>&2
     echo %_DEBUG_LABEL% ========================================= 1>&2
 )
 goto :eof

@@ -30,6 +30,7 @@ For convenience resources are organized in several topics : [General](#general),
   - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
 - [GraalVM - Episode 2: The Holy Grail](https://faun.pub/episode-2-the-holy-grail-graalvm-building-super-optimum-microservices-architecture-series-c068b72735a1) by V. Kumar, September 2020.
 - [GraalVM - Episode 1: The Evolution](https://faun.pub/episode-1-the-evolution-java-jit-hotspot-c2-compilers-building-super-optimum-containers-f0db19e6f19a) by V. Kumar, September 2020.
+- [Playing with GraalVM on Windows 10 and WSL2][blog_ushio] by Tsuyoshi Ushio, May 2020.
 - [Install GraalVM and run Python with debugger](http://naoko.github.io/graalvm-started/) by Naoko, April 2019.
 - [Red Hat Developer](https://developers.redhat.com/): [clang/LLVM](https://developers.redhat.com/blog/category/clang-llvm/), 2018-2019.
 - [Awesome GraalVM: Create a Java API on top of a JavaScript library](https://blog.yuzutech.fr/blog/java-api-on-javascript-lib-graalvm/index.html) by Guillaume Grossetie, November 22, 2018.
@@ -65,6 +66,7 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="ni-blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [Using GraalVM and Native Image on Windows 10](https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311) by Olga Gupalo and Scott Seighman, September 2021.
   - [Making sense of Native Image contents](https://medium.com/graalvm/making-sense-of-native-image-contents-741a688dab4d) by Olga Gupalo, February 2021.
   - [CLI applications with GraalVM Native Image](https://medium.com/graalvm/cli-applications-with-graalvm-native-image-d629a40aa0be) by Oleg Selajev, November 2020.
 - [Compressed GaalVM Native Images](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214) by Loïc Lefèvre, December 2020.
@@ -97,7 +99,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -111,6 +113,7 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
+[blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [blog_run_java]: https://medium.com/graalvm/graalvm-21-0-introducing-a-new-way-to-run-java-df894256de28
 [book_dummies]: http://www.oracle.com/a/ocom/docs/beta0/js/graalvm-for-dummies-ebook.pdf

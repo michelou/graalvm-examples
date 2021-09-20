@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-[Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Scala 3][scala3_examples] and [TruffleSqueak][trufflesqueak_examples] are other trending topics we are currently monitoring.
+[Deno][deno_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples] and [TruffleSqueak][trufflesqueak_examples] are other trending topics we are currently monitoring.
 
 ## <span id="proj_deps">Project dependencies</span>
 
@@ -28,14 +28,14 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*August 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
+For instance our development environment looks as follows (*September 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.33.0\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.2.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java8-21.2.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                    <i>(644 MB)</i>
-C:\opt\Python-3.9.6\                                  <i>( 83 MB)</i>
+C:\opt\Python-3.9.7\                                  <i>( 83 MB)</i>
 C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -80,7 +80,7 @@ We also define a virtual drive **`G:`** in our working environment in order to r
 > **:mag_right:** We use the Windows external command [**`subst`**][windows_subst] to create virtual drives; for instance:
 >
 > <pre style="font-size:80%;">
-> <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst">subst</a> G: %USERPROFILE%\workspace\graalvm-examples</b>
+> <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst">subst</a> G: <a href="https://en.wikipedia.org/wiki/Environment_variable#Default_values">%USERPROFILE%</a>\workspace\graalvm-examples</b>
 > </pre>
 
 In the next section we give a brief description of the batch files present in this project.
@@ -208,7 +208,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.2.0.jar</a>  <i>(  6 MB)</i>
 <a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u302+07-jvmci-21.2-b08-windows-amd64.tar.gz</a>          <i>(123 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.33.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/windows/">python-3.9.6.amd64.msi</a>                                        <i>( 19 MB)</i>
+<a href="https://www.python.org/downloads/windows/">python-3.9.7.amd64.msi</a>                                        <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
@@ -267,7 +267,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

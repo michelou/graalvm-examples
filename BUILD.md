@@ -126,7 +126,7 @@ Total elapsed time: 01:07:40
 Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archives:
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> sdk\mxbuild\windows-amd64\dists | findstr /e zip</b>
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> sdk\mxbuild\windows-amd64\dists | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /e zip</b>
 15.03.2021  23:16       278 926 854 graaljdk-ce-6416f73897-java8.zip
 17.08.2020  12:42       286 282 835 graalvm-3398ab5293-java8.zip
 15.03.2021  23:15       900 448 298 graalvm-3bf9265b58-java8.zip
@@ -137,7 +137,7 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 Archive file **`graalvm-3bf9265b58-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | findstr \.cmd</b>
+<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> \.cmd</b>
       389  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/bin/polyglot.cmd
       398  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/jre/bin/polyglot.cmd
      7733  2021-03-15 23:12   graalvm-3bf9265b58-java8-21.2.0-dev/jre/lib/polyglot/bin/polyglot.cmd
@@ -254,7 +254,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

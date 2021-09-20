@@ -237,7 +237,7 @@ Audit done.
 > **:mag_right:** Directory **`%USERPROFILE%\.graal`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> /b %USERPROFILE%\.graal</b>
-> checkstyle-8.45-all.jar
+> checkstyle-9.0-all.jar
 > graal_checks.xml
 > &nbsp;
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/more">more</a> %USERPROFILE%\.graal\graal_checks.xml</b>
@@ -294,9 +294,9 @@ Compile Java source files to directory "target\classes"
 Create Java benchmarks archive "target\benchmarks.jar"
 Copy chart file to directory "target"
 Execute JMH benchmark (JVM)
-# JMH version: 1.31
+# JMH version: 1.33
 # VM version: JDK 1.8.0_302, OpenJDK 64-Bit Server VM GraalVM CE 21.2.0, 25.302-b07-jvmci-21.2-b08
-# VM invoker: C:\opt\graalvm-ce-java8-20.3.0\jre\bin\java.exe
+# VM invoker: C:\opt\graalvm-ce-java8-21.2.0\jre\bin\java.exe
 # VM options: -Xmx1G
 # Warmup: 3 iterations, 10 s each
 # Measurement: 3 iterations, 10 s each
@@ -382,7 +382,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/August 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/September 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

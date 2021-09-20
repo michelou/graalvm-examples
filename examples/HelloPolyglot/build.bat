@@ -135,7 +135,7 @@ goto :eof
 :props
 @rem value may be overwritten if the property checkstyle.version
 @rem is defined in file build.properties
-set _CHECKSTYLE_VERSION=8.45
+set _CHECKSTYLE_VERSION=9.0
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -216,18 +216,22 @@ if defined _PKG_NAME ( set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
 set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
     echo %_DEBUG_LABEL% Options    : _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
     echo %_DEBUG_LABEL% Subcommands: %_COMMANDS% 1>&2
-    echo %_DEBUG_LABEL% Variables  : "GRAALVM=%GRAALVM_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
+    echo %_DEBUG_LABEL% Variables  : "LLVM_HOME=%LLVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "WABT_HOME=%WABT_HOME%" 1>&2
+	echo %_DEBUG_LABEL% Variables  : _MAIN_CLASS=%_MAIN_CLASS% 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
 if %_VERBOSE%==1 (
-    set __BEG_P=%_NORMAL_FG_GREEN%
+    set __BEG_P=%_STRONG_FG_CYAN%%_UNDERSCORE%
     set __BEG_O=%_STRONG_FG_GREEN%
     set __BEG_N=%_NORMAL_FG_YELLOW%
     set __END=%_RESET%
@@ -342,7 +346,8 @@ goto :eof
 
 :compile_java
 set "__OPTS_FILE=%_TARGET_DIR%\javac_opts.txt"
-echo -deprecation -cp "%_CLASSES_DIR:\=\\%" -d "%_CLASSES_DIR:\=\\%" > "%__OPTS_FILE%"
+set "__CPATH=%_CLASSES_DIR%"
+echo -deprecation -cp "%__CPATH:\=\\%" -d "%_CLASSES_DIR:\=\\%"> "%__OPTS_FILE%"
 
 set "__SOURCES_FILE=%_TARGET_DIR%\javac_sources.txt"
 if exist "%__SOURCES_FILE%" del "%__SOURCES_FILE%"
@@ -351,11 +356,15 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     echo %%f>> "%__SOURCES_FILE%"
     set /a __N+=1
 )
+if %__N% gtr 1 ( set __N_FILES=%__N% Java source files
+) else ( set __N_FILES=%__N% Java source file
+)
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Compile %__N% Java source files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+) else if %_VERBOSE%==1 ( echo Compile %__N_FILES% to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to compile %__N_FILES% to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -746,7 +755,7 @@ goto :eof
 if %_TIMER%==1 (
     for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
     call :duration "%_TIMER_START%" "!__TIMER_END!"
-    echo Total elapsed time: !_DURATION! 1>&2
+    echo Total execution time: !_DURATION! 1>&2
 )
 if %_DEBUG%==1 echo %_DEBUG_LABEL% _EXITCODE=%_EXITCODE% 1>&2
 exit /b %_EXITCODE%

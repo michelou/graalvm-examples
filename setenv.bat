@@ -41,7 +41,7 @@ if not %_EXITCODE%==0 goto end
 call :maven
 if not %_EXITCODE%==0 goto end
 
-call :python
+call :python3
 if not %_EXITCODE%==0 goto end
 
 call :llvm
@@ -170,7 +170,7 @@ if %_DEBUG%==1 (
 )
 goto :eof
 
-@rem input parameter(s): %1: drive letter, %2: path to be substituted
+@rem input parameters: %1: drive letter, %2: path to be substituted
 :subst
 set __DRIVE_NAME=%~1
 set "__GIVEN_PATH=%~2"
@@ -233,7 +233,7 @@ goto :eof
 
 @rem input parameter: %1=Java version
 @rem output parameter: _GRAALVM_HOME
-:graal
+:graalvm
 set __JAVA_VERSION=%~1
 set _GRAALVM_HOME=
 
@@ -268,13 +268,13 @@ if not exist "%_GRAALVM_HOME%\bin\polyglot.cmd" (
 goto :eof
 
 :java8
-call :graal java8
+call :graalvm java8
 if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM_HOME=%_GRAALVM_HOME%"
 goto :eof
 
 :java11
-call :graal java11
+call :graalvm java11
 if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM11_HOME=%_GRAALVM_HOME%"
 goto :eof
@@ -310,7 +310,7 @@ set "_MAVEN_PATH=;%_MAVEN_HOME%\bin"
 goto :eof
 
 @rem output parameter: _PYTHON_HOME
-:python
+:python3
 set _PYTHON_HOME=
 
 set __PYTHON_CMD=
@@ -329,10 +329,10 @@ if defined __PYTHON_CMD (
     set __PATH=C:\opt
     if exist "!__PATH!\Python\" ( set "_PYTHON_HOME=!__PATH!\Python"
     ) else (
-        for /f %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
+        for /f %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
         if not defined _PYTHON_HOME (
             set "__PATH=%ProgramFiles%"
-            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-2*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
+            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
         )
     )
 )

@@ -38,7 +38,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "4.6"
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
 call :add_jar "org.apache.commons" "commons-math3" "3.2"
 
-set _MICRONAUT_VERSION=3.0.0
+set _MICRONAUT_VERSION=3.0.1
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
