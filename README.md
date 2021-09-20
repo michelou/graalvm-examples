@@ -130,7 +130,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_302, python 3.9.6, pylint 1.9.2, mx 5.309.3
+   javac 1.8.0_302, python 3.9.7, pylint 1.9.2, mx 5.310.2
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.0.windows.1
 
@@ -145,13 +145,13 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_302, python 3.9.6, pylint 1.9.2, mx 5.309.3
+   javac 1.8.0_302, python 3.9.7, pylint 1.9.2, mx 5.310.2
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java8-21.2.0\bin\javac.exe
-   C:\opt\Python-3.9.6\python.exe
-   C:\opt\Python-3.9.6\Scripts\pylint.exe
+   C:\opt\Python-3.9.7\python.exe
+   C:\opt\Python-3.9.7\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
@@ -273,7 +273,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 <!-- link refs -->
 
 [cl_cli]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
-[scala3_examples]: https://github.com/michelou/dotty-examples
+[deno_examples]: https://github.com/michelou/deno-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
 [git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.33.0.txt
@@ -301,6 +301,8 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/
 [python_relnotes]: https://www.python.org/downloads/release/python-395/
+[rust_examples]: https://github.com/michelou/rust-examples
+[scala3_examples]: https://github.com/michelou/dotty-examples
 [trufflesqueak_examples]: https://github.com/michelou/trufflesqueak-examples
 [upx_changelog]: https://upx.github.io/upx-news.txt
 [upx_downloads]: https://github.com/upx/upx/releases
