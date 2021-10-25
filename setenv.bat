@@ -23,11 +23,9 @@ if %_HELP%==1 (
     exit /b !_EXITCODE!
 )
 
-set _JAVA_HOME=
-set _JAVA11_HOME=
-
 set _MAVEN_PATH=
 set _LLVM_PATH=
+set _PYTHON_PATH=
 set _SDK_PATH=
 set _CYGWIN_PATH=
 set _GIT_PATH=
@@ -44,7 +42,7 @@ if not %_EXITCODE%==0 goto end
 call :python3
 if not %_EXITCODE%==0 goto end
 
-call :llvm
+call :llvm12
 if not %_EXITCODE%==0 goto end
 
 @rem call :msvs
@@ -240,6 +238,13 @@ set _GRAALVM_HOME=
 set __JAVAC_CMD=
 for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
 if defined __JAVAC_CMD (
+    call :jdk_version
+    if not !_JDK_VERSION!==%__JAVA_VERSION% (
+        @rem We ignore the command accessible from PATH
+        set __JAVAC_CMD=
+    )
+)
+if defined __JAVAC_CMD (
     for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
     for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAALVM_HOME=%%~dpf"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
@@ -264,6 +269,24 @@ if not exist "%_GRAALVM_HOME%\bin\polyglot.cmd" (
     echo %_ERROR_LABEL% Executable polyglot.cmd not found ^(%_GRAALVM_HOME%^) 1>&2
     set _EXITCODE=1
     goto :eof
+)
+goto :eof
+
+@rem input parameter: %1=javac file path
+@rem output parameter: _JDK_VERSION
+:jdk_version
+set "__JAVAC_CMD=%~1"
+if not exist "%__JAVAC_CMD%" (
+    echo %_ERROR_LABEL% Command javac.exe not found ^("%__JAVAC_CMD%"^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set __JAVAC_VERSION=
+for /f "usebackq tokens=1,*" %%i in (`"%__JAVAC_CMD%" -version 2^>^&1`) do set __JAVAC_VERSION=%%j
+set "__PREFIX=%__JAVAC_VERSION:~0,2%"
+@rem either 1.7, 1.8 or 11..18
+if "%__PREFIX%"=="1." ( set _JDK_VERSION=%__JAVAC_VERSION:~2,1%
+) else ( set _JDK_VERSION=%__PREFIX%
 )
 goto :eof
 
@@ -309,9 +332,10 @@ if not exist "%_MAVEN_HOME%\bin\mvn.cmd" (
 set "_MAVEN_PATH=;%_MAVEN_HOME%\bin"
 goto :eof
 
-@rem output parameter: _PYTHON_HOME
+@rem output parameters: _PYTHON_HOME, _PYTHON_PATH
 :python3
 set _PYTHON_HOME=
+set _PYTHON_PATH=
 
 set __PYTHON_CMD=
 for /f %%f in ('where python.exe 2^>NUL') do (
@@ -342,22 +366,27 @@ if not exist "%_PYTHON_HOME%\python.exe" (
     goto :eof
 )
 if not exist "%_PYTHON_HOME%\Scripts\pylint.exe" (
-    echo %_ERROR_LABEL% Pylint executable not found ^(%_PYTHON_HOME%^) 1>&2
+    echo %_WARNING_LABEL% Pylint executable not found ^(%_PYTHON_HOME%^) 1>&2
     echo ^(execute command: python -m pip install pylint^) 1>&2
-    set _EXITCODE=1
-    goto :eof
+    @rem set _EXITCODE=1
+    @rem goto :eof
 )
 set "_PYTHON_PATH=;%_PYTHON_HOME%;%_PYTHON_HOME%\Scripts"
 goto :eof
 
-@rem output parameter(s): _LLVM_HOME, _LLVM_PATH
-:llvm
+@rem output parameters: _LLVM_HOME, _LLVM_PATH
+@rem NB. GraalVM 21.3 = LLVM 12, GraalVM 21.2 = LLVM 10
+:llvm12
 set _LLVM_HOME=
 set _LLVM_PATH=
 
-set __LLVM_VERSION=10
 set __CLANG_CMD=
 for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_CMD=%%f"
+if defined __CLANG_CMD (
+    @rem check if version is correct
+    for /f "tokens=1,2,*" %%i in ('"%__CLANG_CMD%" --version ^| findstr version') do set __CLANG_VERSION=%%k
+    if not "!__CLANG_VERSION:~0,2!"=="12" set __CLANG_CMD=
+)
 if defined __CLANG_CMD (
     for /f "delims=" %%i in ("%__CLANG_CMD%") do set "__LLVM_BIN_DIR=%%~dpi"
     for %%f in ("!__LLVM_BIN_DIR!\.") do set "_LLVM_HOME=%%~dpf"
@@ -369,10 +398,10 @@ if defined __CLANG_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable LLVM_HOME 1>&2
 ) else (
     set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-12*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     if not defined _LLVM_HOME (
         set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-12*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     )
 )
 if not exist "%_LLVM_HOME%\bin\clang.exe" (
@@ -510,7 +539,7 @@ if not exist "%_SDK_HOME%" (
 )
 goto :eof
 
-@rem output parameter(s): _KIT_INC_DIR, _KIT_LIB_DIR
+@rem output parameters: _KIT_INC_DIR, _KIT_LIB_DIR
 @rem native-image dependency
 :kit
 set _KIT_INC_DIR=
@@ -742,7 +771,7 @@ endlocal & (
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
-        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_GIT_PATH%;%~dp0bin"
+        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_PYTHON_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2

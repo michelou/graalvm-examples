@@ -380,12 +380,21 @@ if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
 
-call :action_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+call :action_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java" "%_SOURCE_DIR%\main\resources\*"
 if %_ACTION_REQUIRED%==0 goto :eof
 
 call :compile_java
 if not %_EXITCODE%==0 goto :eof
 
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% xcopy /y "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>&2
+) else if %_VERBOSE%==1 ( echo Copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+)
+xcopy /y /s "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\"
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
 echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
@@ -539,7 +548,7 @@ endlocal
 goto :eof
 
 :pack
-call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
+call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java" "%_SOURCE_DIR%\main\resources\*"
 if %_ACTION_REQUIRED%==0 goto :eof
 
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
@@ -563,7 +572,7 @@ goto :eof
 :run_jvm
 set __MAIN_ARGS=
 
-set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
+set __JAVA_OPTS=--illegal-access=warn -cp "%_CLASSES_DIR%"
 if %_DEBUG%==1 (
     set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
     set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"
