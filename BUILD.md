@@ -39,10 +39,10 @@ Command **`build clean dist:2`** generates the [GraalVM] build specified by buil
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
-G:\\openjdk1.8.0_302-jvmci-21.2-b07
+G:\\openjdk1.8.0_302-jvmci-21.3-b05
 openjdk version "1.8.0_302"
-OpenJDK Runtime Environment (build 1.8.0_302-b07)
-OpenJDK 64-Bit Server VM (build 25.302-b07-jvmci-21.2-b07, mixed mode)
+OpenJDK Runtime Environment (build 1.8.0_302-b05)
+OpenJDK 64-Bit Server VM (build 25.302-b05-jvmci-21.3-b05, mixed mode)
  Create GraalVM build with tags build,test
 [...]
 gate: 15 Mar 2021 00:38:26(+00:00) BEGIN: Gate
@@ -254,7 +254,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

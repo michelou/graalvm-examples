@@ -23,6 +23,9 @@ if %_HELP%==1 (
     exit /b !_EXITCODE!
 )
 
+set _JAVA_HOME=
+set _JAVA11_HOME=
+
 set _MAVEN_PATH=
 set _LLVM_PATH=
 set _PYTHON_PATH=
@@ -605,6 +608,7 @@ if defined __MAKE_CMD (
 )
 if not exist "%_CYGWIN_HOME%\bin\make.exe" (
     echo %_ERROR_LABEL% GNU Make executable not found ^("%_CYGWIN_HOME%"^) 1>&2
+    echo ^(execute command: setup-x86_64.exe -q --packages=make^) 1>&2
     set _CYGWIN_HOME=
     set _EXITCODE=1
     goto :eof
@@ -680,10 +684,10 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\Scripts\pylint.exe" --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j"
     set __WHERE_ARGS=%__WHERE_ARGS% "%PYTHON_HOME%\Scripts:pylint.exe"
 )
-where /q make.exe
+where /q "%CYGWIN_HOME%\bin:make.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('make.exe --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% make.exe
+    for /f "tokens=1,2,3,*" %%i in ('"%CYGWIN_HOME%\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%CYGWIN_HOME%\bin:make.exe"
 )
 where /q "%LLVM_HOME%\bin:clang.exe"
 if %ERRORLEVEL%==0 (
@@ -700,10 +704,10 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1-6,7,*" %%i in ('"%MSVC_BIN_DIR%\cl.exe" -version 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cl %%o,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:cl.exe"
 )
-where /q cmake.exe
+where /q "%CYGWIN_HOME%\bin:cmake.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('cmake.exe --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cmake %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% cmake.exe
+    for /f "tokens=1,2,3,*" %%i in ('"%CYGWIN_HOME%\bin\cmake.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cmake %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%CYGWIN_HOME%\bin:cmake.exe"
 )
 where /q msbuild.exe
 if %ERRORLEVEL%==0 (
@@ -734,6 +738,7 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
+    if defined CYGWIN_HOME echo    "CYGWIN_HOME=%CYGWIN_HOME%" 1>&2
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
     if defined GRAALVM_HOME echo    "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     if defined GRAALVM11_HOME echo    "GRAALVM11_HOME=%GRAALVM11_HOME%" 1>&2
@@ -753,6 +758,7 @@ goto :eof
 :end
 endlocal & (
     if %_EXITCODE%==0 (
+        if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
         if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM_HOME%"
         if not defined GRAALVM11_HOME set "GRAALVM11_HOME=%_GRAALVM11_HOME%"
@@ -769,7 +775,6 @@ endlocal & (
         if not defined SDK_HOME set "SDK_HOME=%_SDK_HOME%"
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
-        if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
         set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_PYTHON_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%

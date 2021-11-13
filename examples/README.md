@@ -295,7 +295,7 @@ Create Java benchmarks archive "target\benchmarks.jar"
 Copy chart file to directory "target"
 Execute JMH benchmark (JVM)
 # JMH version: 1.33
-# VM version: JDK 1.8.0_302, OpenJDK 64-Bit Server VM GraalVM CE 21.3.0, 25.302-b07-jvmci-21.3-b04
+# VM version: JDK 1.8.0_302, OpenJDK 64-Bit Server VM GraalVM CE 21.3.0, 25.302-b07-jvmci-21.3-b05
 # VM invoker: C:\opt\graalvm-ce-java11-21.3.0\jre\bin\java.exe
 # VM options: -Xmx1G
 # Warmup: 3 iterations, 10 s each
@@ -382,7 +382,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

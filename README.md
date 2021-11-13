@@ -9,14 +9,14 @@
   </tr>
 </table>
 
-[Deno][deno_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples] and [TruffleSqueak][trufflesqueak_examples] are other trending topics we are currently monitoring.
+[Deno][deno_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX][wix_examples] are other trending topics we are continuously monitoring.
 
 ## <span id="proj_deps">Project dependencies</span>
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
 - [Git 2.33][git_downloads] ([*release notes*][git_relnotes])
-- [GraalVM Community Edition 21.2 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
+- [GraalVM Community Edition 21.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
 - [Python 3.9][python_downloads] ([*release notes*][python_relnotes])
@@ -28,7 +28,7 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*October 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
+For instance our development environment looks as follows (*November 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -58,9 +58,9 @@ This repository is organized as follows:
 docs\
 examples\<a href="ClassInitialization"/>ClassInitialization</a>, etc.
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.13-jvmci-21.3-b04\</a>  <i>(314 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.13-jvmci-21.3-b05\</a>  <i>(314 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_302-jvmci-21.3-b04\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(310 MB)</i>
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_302-jvmci-21.3-b05\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(310 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
 <a href="setenv.bat">setenv.bat</a>
@@ -268,7 +268,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -281,7 +281,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [github_markdown]: https://github.github.com/gfm/
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
-[graalvm_releases]: https://github.com/graalvm/graalvm-ce-builds/releases
+[graalvm_releases]: https://github.com/graalvm/graalvm-ce-builds/releases/latest
 [graalvm_relnotes]: https://www.graalvm.org/release-notes/21_3/
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
@@ -312,4 +312,5 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [windows_limitation]: https://support.microsoft.com/en-gb/help/830473/command-prompt-cmd-exe-command-line-string-limitation
 [windows_sdk]: https://www.microsoft.com/en-us/download/details.aspx?id=8279
 [windows_subst]: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst
+[wix_examples]: https://github.com/michelou/wix-examples
 [zip_archive]: https://www.howtogeek.com/178146/htg-explains-everything-you-need-to-know-about-zipped-files/
