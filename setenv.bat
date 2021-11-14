@@ -26,6 +26,7 @@ if %_HELP%==1 (
 set _JAVA_HOME=
 set _JAVA11_HOME=
 
+set _MAKE_PATH=
 set _MAVEN_PATH=
 set _LLVM_PATH=
 set _PYTHON_PATH=
@@ -37,6 +38,9 @@ call :java8
 if not %_EXITCODE%==0 goto end
 
 call :java11
+if not %_EXITCODE%==0 goto end
+
+call :make
 if not %_EXITCODE%==0 goto end
 
 call :maven
@@ -61,8 +65,8 @@ if not %_EXITCODE%==0 goto end
 call :wabt
 if not %_EXITCODE%==0 goto end
 
-call :cygwin
-if not %_EXITCODE%==0 goto end
+@rem call :cygwin
+@rem if not %_EXITCODE%==0 goto end
 
 call :git
 if not %_EXITCODE%==0 goto end
@@ -303,6 +307,35 @@ goto :eof
 call :graalvm java11
 if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM11_HOME=%_GRAALVM_HOME%"
+goto :eof
+
+@rem output parameters: _MAKE_HOME, _MAKE_PATH
+:make
+set _MAKE_HOME=
+set _MAKE_PATH=
+
+set __MAKE_CMD=
+for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
+if defined __MAKE_CMD (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Make executable found in PATH 1>&2
+    rem keep _MAKE_PATH undefined since executable already in path
+    goto :eof
+) else if defined MAKE_HOME (
+    set "_MAKE_HOME=%MAKE_HOME%"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MAKE_HOME 1>&2
+) else (
+    set _PATH=C:\opt
+    for /f %%f in ('dir /ad /b "!_PATH!\make-3*" 2^>NUL') do set "_MAKE_HOME=!_PATH!\%%f"
+    if defined _MAKE_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Make installation directory !_MAKE_HOME! 1>&2
+    )
+)
+if not exist "%_MAKE_HOME%\bin\make.exe" (
+    echo %_ERROR_LABEL% Make executable not found ^(%_MAKE_HOME%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+set "_MAKE_PATH=;%_MAKE_HOME%\bin"
 goto :eof
 
 @rem output parameters: _MAVEN_HOME, _MAVEN_PATH
@@ -738,11 +771,12 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
-    if defined CYGWIN_HOME echo    "CYGWIN_HOME=%CYGWIN_HOME%" 1>&2
+    @rem if defined CYGWIN_HOME echo    "CYGWIN_HOME=%CYGWIN_HOME%" 1>&2
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
     if defined GRAALVM_HOME echo    "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     if defined GRAALVM11_HOME echo    "GRAALVM11_HOME=%GRAALVM11_HOME%" 1>&2
     if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
+    if defined MAKE_HOME echo    "MAKE_HOME=%MAKE_HOME%" 1>&2
     if defined MAVEN_HOME echo    "MAVEN_HOME=%MAVEN_HOME%" 1>&2
     if defined MSVC_BIN_DIR echo    "MSVC_BIN_DIR=%MSVC_BIN_DIR%" 1>&2
     if defined MSVC_HOME echo    "MSVC_HOME=%MSVC_HOME%" 1>&2
@@ -758,7 +792,7 @@ goto :eof
 :end
 endlocal & (
     if %_EXITCODE%==0 (
-        if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
+        @rem if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
         if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM_HOME%"
         if not defined GRAALVM11_HOME set "GRAALVM11_HOME=%_GRAALVM11_HOME%"
@@ -766,6 +800,7 @@ endlocal & (
         if not defined JAVA_HOME set "JAVA_HOME=%_GRAALVM_HOME%"
         if not defined JAVA11_HOME set "JAVA11_HOME=%_GRAALVM11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
+        if not defined MAKE_HOME set "MAKE_HOME=%_MAKE_HOME%"
         if not defined MAVEN_HOME set "MAVEN_HOME=%_MAVEN_HOME%"
         if not defined MSVC_BIN_DIR set "MSVC_BIN_DIR=%_MSVC_BIN_DIR%"
         if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
@@ -776,7 +811,7 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
-        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_CYGWIN_PATH%%_PYTHON_PATH%%_GIT_PATH%;%~dp0bin"
+        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_PYTHON_PATH%%_MAKE_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2

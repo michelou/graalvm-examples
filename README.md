@@ -19,7 +19,7 @@ This project relies on the following external software for the **Microsoft Windo
 - [GraalVM Community Edition 21.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
-- [Python 3.9][python_downloads] ([*release notes*][python_relnotes])
+- [Python 3.10][python_downloads] ([*release notes*][python_relnotes])
 
 Optionally one may also install the following software:
 
@@ -131,7 +131,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.310.2
+   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.1.windows.1
 
@@ -146,7 +146,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.310.2
+   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.1.windows.1
 Tool paths:

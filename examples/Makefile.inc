@@ -1,5 +1,5 @@
-ifndef MSYS_HOME
-$(error Variable MSYS_HOME is not set)
+ifndef GIT_HOME
+$(error Variable GIT_HOME is not set)
 endif
 ifndef GRAALVM_HOME
 $(error Variable GRAALVM_HOME is not set)
@@ -15,14 +15,14 @@ CLANG      = $(subst \,/,$(LLVM_HOME))/bin/clang.exe
 HOME       = $(subst \,/,$(USERPROFILE))
 LOCAL_REPO = $(subst \,/,$(USERPROFILE))/.m2/repository
 PSEP       = ;
-## We grab MSYS version instead of C:\Windows\System32\curl.exe
-CURL       = $(subst \,/,$(MSYS_HOME))/usr/bin/curl.exe
-## We grab MSYS version instead of C:\Windows\System32\find.exe
-ECHO       = $(subst \,/,$(MSYS_HOME))/usr/bin/echo.exe
-FIND       = $(subst \,/,$(MSYS_HOME))/usr/bin/find.exe
-MKDIR      = $(subst \,/,$(MSYS_HOME))/usr/bin/mkdir.exe
-RM         = $(subst \,/,$(MSYS_HOME))/usr/bin/rm.exe
-TOUCH      = $(subst \,/,$(MSYS_HOME))/usr/bin/touch.exe
+## We grab Mingw version instead of C:\Windows\System32\curl.exe
+CURL       = $(subst \,/,$(GIT_HOME))/mingw64/bin/curl.exe
+ECHO       = $(subst \,/,$(GIT_HOME))/usr/bin/echo.exe
+## We grab Mingw version instead of C:\Windows\System32\find.exe
+FIND       = $(subst \,/,$(GIT_HOME))/usr/bin/find.exe
+MKDIR      = $(subst \,/,$(GIT_HOME))/usr/bin/mkdir.exe
+RM         = $(subst \,/,$(GIT_HOME))/usr/bin/rm.exe
+TOUCH      = $(subst \,/,$(GIT_HOME))/usr/bin/touch.exe
 else
 JAR        = $(GRAALVM_HOME)/bin/jar
 JAVA       = $(GRAALVM_HOME)/bin/java

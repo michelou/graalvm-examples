@@ -127,20 +127,17 @@ Directory **`vm\mxbuild\windows-amd64\dists\`** contains the generated Zip archi
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> sdk\mxbuild\windows-amd64\dists | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /e zip</b>
-15.03.2021  23:16       278 926 854 graaljdk-ce-6416f73897-java8.zip
-17.08.2020  12:42       286 282 835 graalvm-3398ab5293-java8.zip
-15.03.2021  23:15       900 448 298 graalvm-3bf9265b58-java8.zip
-15.03.2020  15:35       276 745 135 graalvm-unknown-java8-stage1.zip
-15.03.2020  15:35       276 749 506 graalvm-unknown-java8.zip
+14.11.2021  09:24 PM       368,496,421 graaljdk-ce-71c25d3e58-java8.zip
+14.11.2021  09:23 PM     1,127,421,083 graalvm-8b1d3688a5-java8.zip
 </pre>
 
-Archive file **`graalvm-3bf9265b58-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
+Archive file **`graalvm-8b1d3688a5-java8.zip`** is the [GraalVM] software distribution; it contains the following command files:
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-3bf9265b58-java8.zip | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> \.cmd</b>
-      389  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/bin/polyglot.cmd
-      398  2021-03-15 23:14   graalvm-3bf9265b58-java8-21.2.0-dev/jre/bin/polyglot.cmd
-     7733  2021-03-15 23:12   graalvm-3bf9265b58-java8-21.2.0-dev/jre/lib/polyglot/bin/polyglot.cmd
+<b>&gt; <a href="https://linux.die.net/man/1/unzip">unzip</a> -l sdk\mxbuild\windows-amd64\dists\graalvm-8b1d3688a5-java8.zip | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> \.cmd</b>
+      389  2021-11-14 21:23   graalvm-8b1d3688a5-java8-22.0.0-dev/bin/polyglot.cmd
+      398  2021-11-14 21:23   graalvm-8b1d3688a5-java8-22.0.0-dev/jre/bin/polyglot.cmd
+     8330  2021-11-14 21:16   graalvm-8b1d3688a5-java8-22.0.0-dev/jre/lib/polyglot/bin/polyglot.cmd
 </pre>
 
 Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
