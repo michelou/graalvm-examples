@@ -16,25 +16,25 @@
 This project relies on the following external software for the **Microsoft Windows** platform:
 
 - [Git 2.34][git_downloads] ([*release notes*][git_relnotes])
-- [GraalVM Community Edition 21.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
+- [GraalVM Community Edition 21.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
 - [Python 3.10][python_downloads] ([*release notes*][python_relnotes])
 
 Optionally one may also install the following software:
 
-- [UPX 3.96][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">[2]</a></sup> ([*changelog*][upx_changelog])
+- [UPX 3.96][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*December 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
+For instance our development environment looks as follows (*December 2021*) <sup id="anchor_03"><a href="#footnote_03">3</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.34.1\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.3.0\                      <i>(731 MB)</i>
-C:\opt\graalvm-ce-java17-21.3.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                   <i>(644 MB)</i>
+C:\opt\graalvm-ce-java17-21.3.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-3.10.0\                                 <i>( 82 MB)</i>
 C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
