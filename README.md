@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.33][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.34][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 21.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -28,11 +28,11 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*November 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
+For instance our development environment looks as follows (*December 2021*) <sup id="anchor_03"><a href="#footnote_03">[3]</a></sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.33.1\                                    <i>(279 MB)</i>
+C:\opt\Git-2.34.1\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.3.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-21.3.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">[4]</a></sup>                   <i>(644 MB)</i>
 C:\opt\Python-3.10.0\                                 <i>( 82 MB)</i>
@@ -133,7 +133,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 Tool versions:
    javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.1.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.34.1.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -148,7 +148,7 @@ Command **`setenv -verbose`** also displays the tool paths:
 Tool versions:
    javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.28.29912.0, nmake 14.28.29912.0, git 2.33.1.windows.1
+   link 14.28.29912.0, nmake 14.28.29912.0, git 2.34.1.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-21.3.0\bin\javac.exe
    C:\opt\Python-3.10.0\python.exe
@@ -157,10 +157,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.33.1\usr\bin\link.exe
+   C:\opt\Git-2.34.1\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.33.1\bin\git.exe
-   C:\opt\Git-2.33.1\mingw64\bin\git.exe
+   C:\opt\Git-2.34.1\bin\git.exe
+   C:\opt\Git-2.34.1\mingw64\bin\git.exe
 </pre>
 
 ### **`graal\build.bat`**
@@ -208,7 +208,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-21.3.0.jar</a>  <i>( 14 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-21.3.0.jar</a>  <i>( 16 MB)</i>
 <a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u302+06-jvmci-21.3-b04-windows-amd64.tar.gz</a>          <i>(123 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.33.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.34.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.10.0.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
@@ -268,7 +268,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/November 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/December 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -277,7 +277,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [deno_examples]: https://github.com/michelou/deno-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.33.1.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.34.1.txt
 [github_markdown]: https://github.github.com/gfm/
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
