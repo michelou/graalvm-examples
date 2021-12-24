@@ -35,7 +35,7 @@ For instance our development environment looks as follows (*December 2021*) <sup
 C:\opt\Git-2.34.1\                                    <i>(279 MB)</i>
 C:\opt\graalvm-ce-java11-21.3.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-21.3.0\<sup id="anchor_04">&ensp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
-C:\opt\Python-3.10.0\                                 <i>( 82 MB)</i>
+C:\opt\Python-3.10.1\                                 <i>( 82 MB)</i>
 C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -56,7 +56,7 @@ This repository is organized as follows:
 <pre style="font-size:80%;">
 <a href="bin/graal/build.bat">bin\graal\build.bat</a>
 docs\
-examples\<a href="ClassInitialization"/>ClassInitialization</a>, etc.
+examples\{<a href="./examples/README.md">README.md</a>, <a href="./examples/ClassInitialization"/>ClassInitialization</a>, ..}
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.13-jvmci-21.3-b05\</a>  <i>(314 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
@@ -131,7 +131,7 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
+   javac 1.8.0_302, python 3.10.1, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.34.1.windows.1
 
@@ -146,13 +146,13 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 1.8.0_302, python 3.10.0, pylint 1.9.2, mx 5.316.6
+   javac 1.8.0_302, python 3.10.1, pylint 1.9.2, mx 5.316.6
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
    link 14.28.29912.0, nmake 14.28.29912.0, git 2.34.1.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-21.3.0\bin\javac.exe
-   C:\opt\Python-3.10.0\python.exe
-   C:\opt\Python-3.10.0\Scripts\pylint.exe
+   C:\opt\Python-3.10.1\python.exe
+   C:\opt\Python-3.10.1\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
@@ -185,22 +185,23 @@ See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 
 <span id="footnote_01">[1]</span> ***Two GraalVM editions*** [↩](#anchor_01)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 <a href="https://www.graalvm.org/docs/getting-started/">GraalVM</a> is available as Community Edition (CE) and Enterprise Edition (EE): GraalVM CE is based on the <a href="https://adoptopenjdk.net/">OpenJDK 8</a> and <a href="https://www.oracle.com/technetwork/graalvm/downloads/index.html">GraalVM EE</a> is developed on top of the <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java SE 1.8.0_302</a>.
-</p>
+</dd></dl>
 
 <span id="footnote_02">[2]</span> ***UPX*** [↩](#anchor_02)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 <a href="https://upx.github.io/">UPX</a> (<b>U</b>ltimate <b>P</b>acker for e<b>X</b>ecutables) is a free, portable, extendable, high-performance executable packer for several executable formats. It is particularly useful to reduce the size of executables produced by <a href="https://www.graalvm.org/reference-manual/native-image/"><code>native-image</code></a>.
-</p>
+</dd></dl>
 
 <span id="footnote_03">[3]</span> ***Downloads*** [↩](#anchor_03)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 In our case we downloaded the following installation files (see <a href="#proj_deps">section 1</a>):
-</p>
-<pre style="margin:0 0 1em 20px; font-size:80%;">
+</dd>
+<dd>
+<pre style="font-size:80%;">
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-21.3.0.zip</a>                    <i>(306 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java17-windows-amd64-21.3.0.zip</a>                    <i>(320 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
@@ -209,16 +210,18 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-21.3.0.jar</a>  <i>( 16 MB)</i>
 <a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u302+06-jvmci-21.3-b04-windows-amd64.tar.gz</a>          <i>(123 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.34.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/windows/">python-3.10.0.amd64.msi</a>                                       <i>( 19 MB)</i>
+<a href="https://www.python.org/downloads/windows/">python-3.10.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
+</dd></dl>
 
 <span id="footnote_04">[4]</span> ***Improvements in GraalVM 20*** [↩](#anchor_04)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 Versions 20.x of GraalVM bring major improvements to Windows users:
-</p>
+</dd>
+<dd>
 <ul>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external"><code>gu.cmd</code></a> is finally part of the Windows distribution !
 <pre style="font-size:80%;">
@@ -259,12 +262,13 @@ c:\opt\graalvm-ce-java11-21.3.0\jre\lib\polyglot\bin\polyglot.cmd
 GraalVM CE polyglot launcher 21.3.0
 </pre></li>
 </ul>
+</dd></dl>
 
 <span id="footnote_05">[5]</span> ***JVMCI** (JVM compiler interface)* [↩](#anchor_05)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/graal-jvmci-8/releases"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
-</p>
+</dd></dl>
 
 ***
 

@@ -229,11 +229,12 @@ Python 2.7.18 (v2.7.18:8d21aa21f2, Apr 20 2020, 13:25:05) [MSC v.1500 64 bit (AM
 
 ## <span id="footnotes">Footnotes</span>
 
-<b name="footnote_01">[1]</b> ***MX suite directories*** [↩](#anchor_01)
+<span id="footnote_01">[1]</span> ***MX suite directories*** [↩](#anchor_01)
 
-<p style="margin:0 0 1em 20px;">
-</p>
-<pre style="margin:0 0 1em 20px;font-size:80%;">
+<dl><dd>
+</dd>
+<dd>
+<pre style="font-size:80%;">
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> /r . suite.py</b>
 G:\graal\compiler\mx.compiler\suite.py
 G:\graal\examples\mx.examples\suite.py
@@ -248,6 +249,7 @@ G:\graal\vm\mx.vm\suite.py
 G:\graal\vscode\mx.vscode\suite.py
 G:\graal\wasm\mx.wasm\suite.py
 </pre>
+</dd></dl>
 
 ***
 
