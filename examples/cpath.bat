@@ -23,8 +23,8 @@ call :add_jar "junit" "junit" "4.13.2"
 @rem https://mvnrepository.com/artifact/org.hamcrest/hamcrest
 call :add_jar "org.hamcrest" "hamcrest" "2.2"
 
-@rem Two JMH depencencies: jopts-simple 4.6, commons-math3 3.2
-set _JMH_VERSION=1.33
+@rem 2 JMH depencencies: jopts-simple 5.0.4, commons-math3 3.2
+set _JMH_VERSION=1.34
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -33,13 +33,13 @@ call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
 call :add_jar "org.openjdk.jmh" "jmh-generator-annprocess" "%_JMH_VERSION%"
 
 @rem https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
-call :add_jar "net.sf.jopt-simple" "jopt-simple" "4.6"
+call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3 
-call :add_jar "org.apache.commons" "commons-math3" "3.2"
+call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.1.1
+set _MICRONAUT_VERSION=3.2.3
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -54,9 +54,9 @@ call :add_jar "io.micronaut.configuration" "micronaut-picocli" "1.2.1"
 call :add_jar "javax.inject" "javax.inject" "1"
 
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
-call :add_jar "info.picocli" "picocli" "4.6.1"
+call :add_jar "info.picocli" "picocli" "4.6.2"
 
-set _LOG4J_VERSION=2.14.1
+set _LOG4J_VERSION=2.17.0
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"

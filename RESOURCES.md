@@ -41,8 +41,8 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="books">Books</span>
 
-- [Supercharge Your Applications with GraalVM][book_kumar] by Vijay Kumar, Packt, August 2021.<br/><span style="font-size:90%;">(358 pages, ISBN 9781800564909)</span>
-- [GraalVM for Dummies][book_dummies] by Lawrence Miller, Wiley 2021<br/><span style="font-size:90%;">(50 pages, ISBN 978-1-119-76642-1)</span>.
+- [Supercharge Your Applications with GraalVM][book_kumar] by Vijay Kumar, August 2021.<br/><span style="font-size:90%;">(Packt, ISBN 978-1-8005-6490-9, 358 pages)</span>
+- [GraalVM for Dummies][book_dummies] by Lawrence Miller, 2021.<br/><span style="font-size:90%;">(Wiley, ISBN 978-1-1197-6642-1, 50 pages)</span>
 
 ### <span id="tools">Online Tools</span>
 

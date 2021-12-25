@@ -135,7 +135,7 @@ goto :eof
 :props
 @rem value may be overwritten if the property checkstyle.version
 @rem is defined in file build.properties
-set _CHECKSTYLE_VERSION=9.0
+set _CHECKSTYLE_VERSION=9.2
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples

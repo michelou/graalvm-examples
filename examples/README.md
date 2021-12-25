@@ -367,22 +367,24 @@ Caused by: java.lang.IllegalArgumentException: int is not a value type
 
 ## <span id="footnotes">Footnotes</a>
 
-<span name="footnote_01">[1]</span> ***CheckStyle configuration*** [↩](#anchor_01)
+<span id="footnote_01">[1]</span> ***CheckStyle configuration*** [↩](#anchor_01)
 
-<p style="margin:0 0 1em 20px;">
+<dl><dd>
 The <a href="https://checkstyle.sourceforge.io/">CheckStyle tool</a> is available as a Java archive file <a href="https://github.com/checkstyle/checkstyle/releases/"><b><code>checkstyle-*-all.jar</code></b></a> which contains two example configuration files:
-</p>
-<ul style="margin:0 0 1em 20px;">
+</dd>
+<dd>
+<ul>
 <li><code>sun_checks.xml</code> (<a href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConvTOC.doc.html">Sun Code Conventions</a>) and</li>
 <li><code>google_checks.xml</code> (<a href="https://checkstyle.sourceforge.io/styleguides/google-java-style-20180523/javaguide.html">Google Java Style</a>).</li> 
 </ul>
-<p style="margin:0 0 1em 20px;">
+</dd>
+<dd>
 Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") is not available from <a href="https://mvnrepository.com/artifact/com.puppycrawl.tools/checkstyle">Maven Central</a> and must be retrieved separately.
-</p>
+</dd></dl>
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/November 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/December 2021* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
