@@ -158,7 +158,7 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 [build] _EXITCODE=0
 </pre>
 
-## <span id="CountUppercase">`CountUppercase`</span>
+## <span id="CountUppercase">`CountUppercase`</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
 
 Project [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
@@ -257,7 +257,7 @@ Audit done.
 > <b>&lt;/module&gt;</b>
 > </pre>
 
-## <span id="Ranking">`Ranking`</span>
+## <span id="Ranking">`Ranking`</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
 
 Project [**`Ranking\`**](Ranking/) is a micro-benchmark.
 

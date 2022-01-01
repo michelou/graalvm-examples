@@ -67,6 +67,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
   - [Using GraalVM and Native Image on Windows 10](https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311) by Olga Gupalo and Scott Seighman, September 2021.
+  - [Working with Native Image Efficiently](https://medium.com/graalvm/working-with-native-image-efficiently-c512ccdcd61b) by Olga Gupalo, March 2021.
   - [Making sense of Native Image contents](https://medium.com/graalvm/making-sense-of-native-image-contents-741a688dab4d) by Olga Gupalo, February 2021.
   - [CLI applications with GraalVM Native Image](https://medium.com/graalvm/cli-applications-with-graalvm-native-image-d629a40aa0be) by Oleg Selajev, November 2020.
 - [Compressed GaalVM Native Images](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214) by Loïc Lefèvre, December 2020.
@@ -99,7 +100,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/December 2021* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/January 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
