@@ -243,7 +243,11 @@ set __JAVA_VERSION=%~1
 set _GRAALVM_HOME=
 
 set __JAVAC_CMD=
-for /f %%f in ('where javac.exe 2^>NUL') do set "__JAVAC_CMD=%%f"
+for /f %%f in ('where javac.exe 2^>NUL') do (
+    set "__JAVAC_CMD=%%f"
+    @rem we ignore Scoop managed Java installation
+    if not "!__JAVAC_CMD:scoop=!"=="!__JAVAC_CMD!" set __JAVAC_CMD=
+)
 if defined __JAVAC_CMD (
     call :jdk_version
     if not !_JDK_VERSION!==%__JAVA_VERSION% (
@@ -344,7 +348,11 @@ set _MAVEN_HOME=
 set _MAVEN_PATH=
 
 set __MVN_CMD=
-for /f %%f in ('where mvn.cmd 2^>NUL') do set "__MVN_CMD=%%f"
+for /f %%f in ('where mvn.cmd 2^>NUL') do (
+    set "__MVN_CMD=%%f"
+    @rem we ignore Scoop managed Maven installation
+    if not "!__MVN_CMD:scoop=!"=="!__MVN_CMD!" set __MVN_CMD=
+)
 if defined __MVN_CMD (
     for %%i in ("%__MVN_CMD%") do set "__MAVEN_BIN_DIR=%%~dpi"
     for %%f in ("!__MAVEN_BIN_DIR!\.") do set "_MAVEN_HOME=%%~dpf"
@@ -376,7 +384,10 @@ set _PYTHON_PATH=
 set __PYTHON_CMD=
 for /f %%f in ('where python.exe 2^>NUL') do (
     set "__PYTHON_CMD=%%f"
-    if not "!__PYTHON_CMD:WindowsApps=!"=="!__PYTHON_CMD!" set __PYTHON_CMD=
+    @rem we ignore Scoop/Windows managed Python installation
+    if not "!__PYTHON_CMD:WindowsApps=!"=="!__PYTHON_CMD!" ( set __PYTHON_CMD=
+    ) else if not "!__PYTHON_CMD:scoop=!"=="!__PYTHON_CMD!" ( set __PYTHON_CMD=
+    )
 )
 if defined __PYTHON_CMD (
     for /f "delims=" %%i in ("%__PYTHON_CMD%") do set "_PYTHON_HOME=%%~dpi"
