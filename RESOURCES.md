@@ -80,6 +80,15 @@ For convenience resources are organized in several topics : [General](#general),
 
 - [Python application running on GraalVM and Polyglotting with JavaScript, R, Ruby and Java](https://technology.amis.nl/2019/10/30/python-application-running-on-graalvm-and-polyglotting-with-javascript-r-ruby-and-java/) by Lucas Jellema, October 30, 2019.
 
+### <span id="pg-blogs">Blogs</span>
+
+- [Polyglot Programming with GraalVM][blog_beyondjava], May 2020.
+- [Polyglot inception with GraalVM. Why? Because it's fun][blog_sasidharan] by Deepu K Sasidharan, February 2020.
+
+### <span id="pg-papers">Papers</span>
+
+- [Exploring Aspects of Polyglot High-Performance Virtual Machine GraalVM][paper_sipek] by M. Šipek, B. Mihaljević, A. Radovan, 2019.
+
 ### <span id="pg-talks">Talks</span>
 
 - [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, July 21, 2019.
@@ -100,7 +109,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/January 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -110,13 +119,16 @@ For convenience resources are organized in several topics : [General](#general),
 [article_graalvm_21_0]: https://www.infoq.com/news/2021/01/graalvm-21-jvm-java/
 [article_jellema]: https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/
 [article_mandrel]: https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus#
+[blog_beyondjava]: https://www.beyondjava.net/graalvm-polyglot-programming
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
+[blog_sasidharan]: https://deepu.tech/polyglot-showdown-with-graalvm/
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [blog_run_java]: https://medium.com/graalvm/graalvm-21-0-introducing-a-new-way-to-run-java-df894256de28
 [book_dummies]: http://www.oracle.com/a/ocom/docs/beta0/js/graalvm-for-dummies-ebook.pdf
 [book_kumar]: https://www.packtpub.com/product/supercharge-your-applications-with-graalvm/9781800564909
 [ch_epfl_paper9]: https://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf
+[paper_sipek]: https://arxiv.org/abs/2112.14716

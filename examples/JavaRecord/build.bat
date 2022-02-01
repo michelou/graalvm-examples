@@ -514,7 +514,7 @@ if %_JVMCI%==1 (
     set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
-) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class "%_MAIN_CLASS%" %__MAIN_ARGS% 1>&2
 )
 call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
@@ -532,7 +532,7 @@ goto :eof
 :run_native
 set "__EXE_FILE=%_TARGET_DIR%\%_MAIN_NAME%.exe"
 if not exist "%__EXE_FILE%" (
-    echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
+    echo %_ERROR_LABEL% Executable not found ^("%__EXE_FILE%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
