@@ -3,7 +3,7 @@
 <table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/" rel="external">GraalVM</a> related resources we have collected so far.
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/" rel="external">GraalVM</a> related resources that caught our attention.
   </td>
   </tr>
 </table>
@@ -24,6 +24,7 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [GraalVM 22.0 is here!][blog_graalvm_22_0] by Alina Yurenko, January 2022.
   - [GraalVM 21.2: Lots of native image usability improvements][blog_graalvm_21_2] by Oleg Selajev, July 2021.
   - [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
   - [GraalVM 21.0: Introducing a New Way to Run Java][blog_run_java], January 2021.
@@ -123,6 +124,7 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
+[blog_graalvm_22_0]: https://medium.com/graalvm/graalvm-22-0-is-here-c7acc82a8c2e
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_sasidharan]: https://deepu.tech/polyglot-showdown-with-graalvm/
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33
