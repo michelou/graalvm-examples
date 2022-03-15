@@ -794,6 +794,8 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     if defined MSVS_HOME echo    "MSVS_HOME=%MSVS_HOME%" 1>&2
     if defined PYTHON_HOME echo    "PYTHON_HOME=%PYTHON_HOME%" 1>&2
     if defined WABT_HOME echo    "WABT_HOME=%WABT_HOME%" 1>&2
+    echo Path associations: 1>&2
+    for /f "delims=" %%i in ('subst') do echo    %%i 1>&2
 )
 goto :eof
 
