@@ -390,7 +390,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% xcopy /y "%_SOURCE_DIR%\main\resources\*" "
 ) else if %_VERBOSE%==1 ( echo Copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
 if exist "%_SOURCE_DIR%\main\resources\*" (
-    xcopy /y /s "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\"
+    xcopy /y /s "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>NUL
     if not !ERRORLEVEL!==0 (
         echo %_ERROR_LABEL% Failed to copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
         set _EXITCODE=1

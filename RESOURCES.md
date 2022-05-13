@@ -24,6 +24,7 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [GraalVM 22.1][blog_graalvm_22_1] by Alina Yurenko, April 2022.
   - [GraalVM 22.0 is here!][blog_graalvm_22_0] by Alina Yurenko, January 2022.
   - [GraalVM 21.2: Lots of native image usability improvements][blog_graalvm_21_2] by Oleg Selajev, July 2021.
   - [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
@@ -110,7 +111,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -125,6 +126,7 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
 [blog_graalvm_22_0]: https://medium.com/graalvm/graalvm-22-0-is-here-c7acc82a8c2e
+[blog_graalvm_22_1]: https://medium.com/graalvm/graalvm-22-1-developer-experience-improvements-apple-silicon-builds-and-more-b7ac9a0f6066
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_sasidharan]: https://deepu.tech/polyglot-showdown-with-graalvm/
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33

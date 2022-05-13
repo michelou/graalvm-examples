@@ -24,7 +24,7 @@ call :add_jar "junit" "junit" "4.13.2"
 call :add_jar "org.hamcrest" "hamcrest" "2.2"
 
 @rem 2 JMH depencencies: jopts-simple 5.0.4, commons-math3 3.2
-set _JMH_VERSION=1.34
+set _JMH_VERSION=1.35
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -39,7 +39,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.2.3
+set _MICRONAUT_VERSION=3.4.3
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -54,9 +54,9 @@ call :add_jar "io.micronaut.configuration" "micronaut-picocli" "1.2.1"
 call :add_jar "javax.inject" "javax.inject" "1"
 
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
-call :add_jar "info.picocli" "picocli" "4.6.2"
+call :add_jar "info.picocli" "picocli" "4.6.3"
 
-set _LOG4J_VERSION=2.17.0
+set _LOG4J_VERSION=2.17.2
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"
@@ -65,7 +65,7 @@ call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"
 call :add_jar "org.apache.logging.log4j" "log4j-core" "%_LOG4J_VERSION%"
 
 @rem https://mvnrepository.com/artifact/com.guicedee.services/slf4j
-call :add_jar "com.guicedee.services" "slf4j" "1.1.1.7"
+call :add_jar "com.guicedee.services" "slf4j" "1.2.2.1"
 
 goto end
 
@@ -103,6 +103,12 @@ if not exist "%__JAR_FILE%" (
         ) else if %_VERBOSE%==1 ( echo Install Maven archive into directory "!__LOCAL_REPO:%USERPROFILE%=%%USERPROFILE%%!\%__SCALA_XML_PATH%" 1>&2
         )
         call "%_MVN_CMD%" %_MVN_OPTS% install:install-file -Dfile="!__JAR_FILE!" -DgroupId="%__GROUP_ID%" -DartifactId=%__ARTIFACT_ID% -Dversion=%__VERSION% -Dpackaging=jar
+        if not !ERRORLEVEL!==0 (
+            echo %_ERROR_LABEL% Failed to install Maven artifact into directory "!__LOCAL_REPO:%USERPROFILE%=%%USERPROFILE%%!" ^(error:!ERRORLEVEL!^) 1>&2
+        )
+        for /f "usebackq delims=" %%f in (`where /r "%__LOCAL_REPO%\%__JAR_PATH%" %__JAR_NAME% 2^>NUL`) do (
+            set "__JAR_FILE=%%f"
+        )
     )
 )
 set "_LIBS_CPATH=%_LIBS_CPATH%%__JAR_FILE%;"
