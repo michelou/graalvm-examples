@@ -28,7 +28,7 @@ Command [**`build`**](ClassInitialization/build.bat) with no argument displays t
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a></b>
-Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
+Usage: <a href="ClassInitialization/build.bat">build</a> { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
     -cached     select main class with cached startup time
@@ -412,7 +412,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/July 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

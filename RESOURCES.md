@@ -63,10 +63,12 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="ni-articles">Articles</span>
 
+- [Using Unsafe safely in GraalVM Native Image](https://developers.redhat.com/articles/2022/05/09/using-unsafe-safely-graalvm-native-image) by Ashutosh Mehra, May 2022.
 - [Create a Native Image Binary Executable for a Polyglot Java Application using GraalVM](https://technology.amis.nl/2019/10/28/create-a-native-image-binary-executable-for-a-polyglot-java-application-using-graalvm/), by Lucas Jellema, October 28, 2019.
 
 ### <span id="ni-blogs">Blogs</span>
 
+- [Running low-code scenarios with GraalVM Native Image](https://nussknacker.io/blog/running-low-code-scenarios-with-graalvm-native-image/) by Maciek Pochniak, March 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
   - [Using GraalVM and Native Image on Windows 10](https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311) by Olga Gupalo and Scott Seighman, September 2021.
   - [Working with Native Image Efficiently](https://medium.com/graalvm/working-with-native-image-efficiently-c512ccdcd61b) by Olga Gupalo, March 2021.
@@ -75,6 +77,8 @@ For convenience resources are organized in several topics : [General](#general),
 - [Compressed GaalVM Native Images](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214) by Loïc Lefèvre, December 2020.
 - [Building native images and compiling with GraalVM and sbt][blog_grunert] Katrin Grunert, October 2020.
 - [Running Camunda on GraalVM Native Image](https://javahippie.net/java/graal-vm/native-image/camunda/2020/05/31/camundanative.html) by Tim Zöller, May 2020.
+
+<!--=======================================================================-->
 
 ## <span id="pg">Polyglot</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
 
@@ -96,6 +100,8 @@ For convenience resources are organized in several topics : [General](#general),
 - [Polyglot Applications with GraalVM](https://www.slideshare.net/jexp/polyglot-applications-with-graalvm) by Michael Hunger, OSCON 2019, July 21, 2019.
 - [Polyglot on the JVM with Graal](https://www.slideshare.net/akihironishikawa/polyglot-on-the-jvm-with-graal-english) by Akihiro Nishikawa, JJUG CCC 2017, May 21, 2017.
 
+<!--=======================================================================-->
+
 ## <span id="sulong">Sulong</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
 
 ### <span id="sulong-talks">Talks</span>
@@ -111,7 +117,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/July 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
