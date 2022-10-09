@@ -713,11 +713,6 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,2,*" %%i in ('"%JAVA_HOME%\bin\javac.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA_HOME%\bin:javac.exe"
 )
-where /q "%JAVA11_HOME%\bin:javac.exe"
-if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,*" %%i in ('"%JAVA11_HOME%\bin\javac.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
-    set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA11_HOME%\bin:javac.exe"
-)
 where /q "%PYTHON_HOME%:python.exe"
 if %ERRORLEVEL%==0 (
     for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\python.exe" --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% python %%j,"

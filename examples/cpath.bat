@@ -17,11 +17,13 @@ if not exist "%__TEMP_DIR%" mkdir "%__TEMP_DIR%"
 
 set _LIBS_CPATH=
 
+@rem https://mvnrepository.com/artifact/org.hamcrest/hamcrest
+@rem JUnit 4 depends on Hamcrest 1.3
+call :add_jar "org.hamcrest" "hamcrest" "1.3"
+
 @rem https://mvnrepository.com/artifact/junit/junit
 call :add_jar "junit" "junit" "4.13.2"
 
-@rem https://mvnrepository.com/artifact/org.hamcrest/hamcrest
-call :add_jar "org.hamcrest" "hamcrest" "2.2"
 
 @rem 2 JMH depencencies: jopts-simple 5.0.4, commons-math3 3.2
 set _JMH_VERSION=1.35
@@ -39,7 +41,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.4.3
+set _MICRONAUT_VERSION=3.7.1
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -56,7 +58,7 @@ call :add_jar "javax.inject" "javax.inject" "1"
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
 call :add_jar "info.picocli" "picocli" "4.6.3"
 
-set _LOG4J_VERSION=2.17.2
+set _LOG4J_VERSION=2.19.0
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"

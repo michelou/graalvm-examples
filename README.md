@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.37][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.38][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 22.1 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -28,11 +28,11 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [`/opt/`][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*September 2022*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*October 2022*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.37.3\                                    <i>(289 MB)</i>
+C:\opt\Git-2.38.0\                                    <i>(317 MB)</i>
 C:\opt\graalvm-ce-java11-22.2.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-22.2.0\<sup id="anchor_04">&emsp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-3.10.7\                                 <i>( 82 MB)</i>
@@ -131,9 +131,9 @@ Command [**`setenv`**](setenv.bat) is executed once to setup our development env
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 11.0.15, python 3.10.7, pylint 2.13.1, mx 6.0.2
+   javac 11.0.16, python 3.10.7, pylint 2.13.1, mx 6.0.2
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.29.30141.0, nmake 14.29.30141.0, git 2.37.3.windows.1
+   link 14.29.30141.0, nmake 14.29.30141.0, git 2.38.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -146,9 +146,9 @@ Command **`setenv -verbose`** also displays the tool paths:
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 11.0.15, python 3.10.7, pylint 2.13.1, mx 6.0.2
+   javac 11.0.16, python 3.10.7, pylint 2.13.1, mx 6.0.2
    cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.29.30141.0, nmake 14.29.30141.0, git 2.37.3.windows.1
+   link 14.29.30141.0, nmake 14.29.30141.0, git 2.38.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.2.0\bin\javac.exe
    C:\opt\Python-3.10.7\python.exe
@@ -157,10 +157,10 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.37.3\usr\bin\link.exe
+   C:\opt\Git-2.38.0\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.37.3\bin\git.exe
-   C:\opt\Git-2.37.3\mingw64\bin\git.exe
+   C:\opt\Git-2.38.0\bin\git.exe
+   C:\opt\Git-2.38.0\mingw64\bin\git.exe
 </pre>
 
 ### **`graal\build.bat`**
@@ -209,15 +209,13 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/labs-openjdk-17/releases/tag/jvmci-22.2-b06">labsjdk-ce-17.0.4+8-jvmci-22.2-b06-windows-amd64.tar.gz</a>       <i>(181 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-22.2.0.jar</a>  <i>( 14 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-22.2.0.jar</a>  <i>( 16 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.37.3-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.38.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.10.7.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
 </dd></dl>
-<!--
-<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk-8u302+06-jvmci-22.0-b01-windows-amd64.tar.gz</a>          <i>(123 MB)</i>
--->
+
 <span id="footnote_04">[4]</span> ***Improvements in GraalVM 20*** [↩](#anchor_04)
 
 <dl><dd>
@@ -251,7 +249,7 @@ Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
 [..]
 <b>&gt; c:\opt\graalvm-ce-java11-22.2.0\bin\<a href="https://www.graalvm.org/reference-manual/native-image/" rel="external">native-image.cmd</a> --version</b>
-GraalVM 22.2.0 Java 11 CE (Java Version 11.0.15+10-jvmci-22.1-b06)
+GraalVM 22.2.0 Java 11 CE (Java Version 11.0.16+10-jvmci-22.1-b06)
 </pre></li>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/" rel="external"><code>polyglot.cmd</code></a> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
@@ -273,7 +271,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/September 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/October 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -286,7 +284,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [flix_examples]: https://github.com/michelou/flix-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.37.3.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.38.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/

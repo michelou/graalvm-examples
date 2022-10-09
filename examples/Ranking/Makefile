@@ -13,7 +13,7 @@ JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(C
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main -name *.java)
+SOURCES  = $(shell $(FIND) "$(SOURCE_DIR)/main" -type f -name *.java)
 TARGET   = $(TARGET_DIR)/benchmarks.jar
 MANIFEST = $(TARGET_DIR)/manifest.txt
 
@@ -32,13 +32,13 @@ $(TARGET): $(SOURCES)
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JMH_ANN_LIB_JAR)"
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(JOPT_SIMPLE_JAR)"
 	cd "$(CLASSES_DIR)" && $(JAR) xf "$(COMMONS_MATH_JAR)"
-	$(JAR) cfm $(TARGET) "$(MANIFEST)" -C "$(CLASSES_DIR)" .
+	"$(JAR)" cfm $(TARGET) "$(MANIFEST)" -C "$(CLASSES_DIR)" .
 
 clean:
-	rm -rf "$(TARGET_DIR)"
+	"$(RM)" -rf "$(TARGET_DIR)"
 
 run: build
-	$(JAVA) -Xmx1G -jar "$(TARGET)" rank
+	"$(JAVA)" -Xmx1G -jar "$(TARGET)" rank
 
 help:
 	@$(ECHO) "Usage: make all|build|clean|help|lint|run|test"
@@ -69,7 +69,7 @@ $(DOC_TARGET): $(SOURCES)
 	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
 	@$(ECHO) $(JAVA_FLAGS) -d "$(DOC_TARGET_DIR)" -doctitle "$(PROJECT_NAME)" -footer "$(PROJECT_URL)" -top "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
 	@$(ECHO) $(SOURCES) > "$(DOC_SOURCES_FILE)"
-	$(JAVADOC) "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
+	"$(JAVADOC)" "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
 	@$(TOUCH) "$(DOC_TARGET)"
 
 doc: $(DOC_TARGET)
@@ -78,10 +78,10 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 8.42
+CHECKSTYLE_VERSION = 10.3.4
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
-CHECKSTYLE_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -type f -name *.java)
+CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name *.java)
 CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
 
 ## "checkstyle-all" version not available from Maven Central
@@ -94,15 +94,15 @@ lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
 
 $(JAR_FILE):
 	[ -d "$(CHECKSTYLE_DIR)" ] || $(MKDIR) -p "$(CHECKSTYLE_DIR)"
-	$(CURL) --silent --location --output $(JAR_FILE) $(JAR_URL)
+	"$(CURL)" --silent --location --output $(JAR_FILE) $(JAR_URL)
 
 $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
-	$(JAVA) -jar $(JAR_FILE) -c=$(XML_FILE) $^
+	"$(JAVA)" -jar $(JAR_FILE) -c=$(XML_FILE) $^
 
 ##############################################################################
 ## test rules
 
-TEST_SOURCES     = $(shell $(FIND) $(SOURCE_DIR)/test -type f -name *.java)
+TEST_SOURCES     = $(shell $(FIND) "$(SOURCE_DIR)/test" -type f -name *.java)
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
@@ -116,11 +116,11 @@ $(TEST_TARGET): $(TEST_SOURCES)
 	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
 	@$(ECHO) $(JAVAC_FLAGS) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
 	@$(ECHO) $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
-	$(JAVAC) "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
+	"$(JAVAC)" "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
 	@$(TOUCH) "$(TEST_TARGET)"
 
 test: build $(TEST_TARGET)
-	$(JAVA) -classpath "$(TEST_CPATH)" org.junit.runner.JUnitCore $(TEST_MAIN_CLASS)
+	"$(JAVA)" -classpath "$(TEST_CPATH)" org.junit.runner.JUnitCore $(TEST_MAIN_CLASS)
 
 ##############################################################################
 ## phony
