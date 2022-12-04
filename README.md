@@ -23,7 +23,7 @@ This project relies on the following external software for the **Microsoft Windo
 
 Optionally one may also install the following software:
 
-- [UPX 3.96][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
+- [UPX 4.0][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
@@ -36,7 +36,7 @@ C:\opt\Git-2.38.1\                                    <i>(317 MB)</i>
 C:\opt\graalvm-ce-java11-22.3.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-22.3.0\<sup id="anchor_04">&emsp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
 C:\opt\Python-3.11.0\                                 <i>( 82 MB)</i>
-C:\opt\upx-3.96-win64\                                <i>( &lt;1 MB)</i>
+C:\opt\upx-4.0.1-win64\                               <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 </pre>
@@ -212,7 +212,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-22.3.0.jar</a>  <i>( 16 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.38.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.0.amd64.msi</a>                                       <i>( 19 MB)</i>
-<a href="https://github.com/upx/upx/releases">upx-3.96-win64.zip</a>                                            <i>( &lt;1 MB)</i>
+<a href="https://github.com/upx/upx/releases">upx-4.0.1-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
 </dd></dl>

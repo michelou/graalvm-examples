@@ -422,17 +422,19 @@ set "_PYTHON_PATH=;%_PYTHON_HOME%;%_PYTHON_HOME%\Scripts"
 goto :eof
 
 @rem output parameters: _LLVM_HOME, _LLVM_PATH
-@rem NB. GraalVM 21.3 = LLVM 12, GraalVM 21.2 = LLVM 10
-:llvm12
+@rem NB. GraalVM 23.2 = LLVM 14, GraalVM 21.3 = LLVM 12
+:llvm14
 set _LLVM_HOME=
 set _LLVM_PATH=
+
+set __LLVM_VERSION=14
 
 set __CLANG_CMD=
 for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_CMD=%%f"
 if defined __CLANG_CMD (
     @rem check if version is correct
     for /f "tokens=1,2,*" %%i in ('"%__CLANG_CMD%" --version ^| findstr version') do set __CLANG_VERSION=%%k
-    if not "!__CLANG_VERSION:~0,2!"=="12" set __CLANG_CMD=
+    if not "!__CLANG_VERSION:~0,2!"=="%__LLVM_VERSION%" set __CLANG_CMD=
 )
 if defined __CLANG_CMD (
     for /f "delims=" %%i in ("%__CLANG_CMD%") do set "__LLVM_BIN_DIR=%%~dpi"
@@ -445,10 +447,10 @@ if defined __CLANG_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable LLVM_HOME 1>&2
 ) else (
     set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-12*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     if not defined _LLVM_HOME (
         set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-12*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
+        for /f %%f in ('dir /ad /b "!__PATH!\LLVM-%__LLVM_VERSION%*" 2^>NUL') do set "_LLVM_HOME=!__PATH!\%%f"
     )
 )
 if not exist "%_LLVM_HOME%\bin\clang.exe" (

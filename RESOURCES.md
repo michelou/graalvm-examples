@@ -24,6 +24,8 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
+  - [GraalVM 22.2][blog_graalvm_22_2] by Alina Yurenko, July 2022.
   - [GraalVM 22.1][blog_graalvm_22_1] by Alina Yurenko, April 2022.
   - [GraalVM 22.0 is here!][blog_graalvm_22_0] by Alina Yurenko, January 2022.
   - [GraalVM 21.2: Lots of native image usability improvements][blog_graalvm_21_2] by Oleg Selajev, July 2021.
@@ -133,6 +135,8 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
 [blog_graalvm_22_0]: https://medium.com/graalvm/graalvm-22-0-is-here-c7acc82a8c2e
 [blog_graalvm_22_1]: https://medium.com/graalvm/graalvm-22-1-developer-experience-improvements-apple-silicon-builds-and-more-b7ac9a0f6066
+[blog_graalvm_22_2]: https://medium.com/graalvm/graalvm-22-2-smaller-jdk-size-improved-memory-usage-better-library-support-and-more-cb34b5b68ec0
+[blog_graalvm_22_3]: https://medium.com/graalvm/graalvm-22-3-is-here-jdk-19-builds-jlink-support-new-monitoring-features-and-more-f6e2b2eeff95
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_sasidharan]: https://deepu.tech/polyglot-showdown-with-graalvm/
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33
