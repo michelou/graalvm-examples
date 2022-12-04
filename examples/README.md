@@ -24,7 +24,7 @@ Project [**`ClassInitialization\`**](ClassInitialization/) consists of the two c
 
 > **:mag_right:** The example comes from [Christian Wimmer](https://medium.com/@christian.wimmer)'s article "[Updates on Class Initialization in GraalVM Native Image Generation](https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7)", published on September 12, 2019.
 
-Command [**`build`**](ClassInitialization/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
+Command [**`build.bat`**](ClassInitialization/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a></b>
@@ -48,7 +48,7 @@ Usage: <a href="ClassInitialization/build.bat">build</a> { &lt;option&gt; | &lt;
     test        execute JMH benchmarks
 </pre>
 
-Command [**`build clean run`**](ClassInitialization/build.bat) produces the following output:
+Command [**`build.bat clean run`**](ClassInitialization/build.bat) produces the following output:
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> clean run</b>
@@ -56,7 +56,7 @@ Startup: Fri Nov 15 22:43:31 CET 2019
 Now:     Fri Nov 15 22:43:31 CET 2019
 </pre>
 
-Command [**`build -verbose clean run`**](ClassInitialization/build.bat) also displays progress messages:
+Command [**`build.bat -verbose clean run`**](ClassInitialization/build.bat) also displays progress messages:
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -verbose clean run</b>
@@ -94,7 +94,7 @@ Startup: Fri Nov 15 22:50:01 CET 2019
 Now:     Fri Nov 15 22:50:01 CET 2019
 </pre>
 
-Command [**`build -native -cached clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloCachedTime.exe`** for source file [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java):
+Command [**`build.bat -native -cached clean compile`**](ClassInitialization/build.bat) generates the native image **`target\HelloCachedTime.exe`** for source file [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -cached clean compile</b>
@@ -125,12 +125,12 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
 [build] Options    : _CACHED=0 _TARGET=native _TIMER=0 _VERBOSE=0
 [build] Subcommands: _CLEAN=0 _COMPILE=1 _DOC=0 _LINT=0 _PACK=0 _RUN=0 _TEST=0
-[build] Variables  : "GRAALVM=C:\opt\graalvm-ce-java11-22.2.0"
+[build] Variables  : "GRAALVM=C:\opt\graalvm-ce-java11-22.3.0"
 [build] Variables  : "MSVS_HOME=X:"
 [build] 00000000000000 Target : 'G:\examples\ClassInitialization\target\classes\.latest-build'
 [build] 20191115223804 Sources: 'G:\examples\ClassInitialization\src\main\java\*.java'
 [build] _COMPILE_REQUIRED=1
-[build] "C:\opt\graalvm-ce-java11-22.2.0\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
+[build] "C:\opt\graalvm-ce-java11-22.3.0\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
 [build] "X:\VC\Auxiliary\Build\vcvarsall.bat" x64
 **********************************************************************
 ** Visual Studio 2019 Developer Command Prompt v16.0
@@ -140,7 +140,7 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 [build] INCLUDE="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\include;..."
 [build] LIB="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
 [build] LIBPATH="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
-[build] "C:\opt\graalvm-ce-java11-22.2.0\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
+[build] "C:\opt\graalvm-ce-java11-22.3.0\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]    classlist:   1,423.32 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        (cap):   7,889.67 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        setup:   9,858.53 ms,  1.16 GB
@@ -166,7 +166,7 @@ Project [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
 - program arguments are concatenated into a sentence which is used as test input. 
 
-Command [**`build`**](CountUppercase/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
+Command [**`build.bat`**](CountUppercase/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="CountUppercase/build.bat">build</a></b>
@@ -188,7 +188,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
     run         run executable
 </pre>
 
-Command [**`build clean run`**](CountUppercase/build.bat) produces the following output (system property **`iterations=5`** by default):
+Command [**`build.bat clean run`**](CountUppercase/build.bat) produces the following output (system property **`iterations=5`** by default):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="CountUppercase/build.bat">build</a> clean run</b>
@@ -221,13 +221,13 @@ total: 69999993 (1375 ms)
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java11-22.2.0\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java11-22.2.0\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] C:\opt\graalvm-ce-java11-22.3.0\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java11-22.3.0\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
 > [build] Compilation log written to G:\examples\CountUppercase\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
 
-Command [**`build -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
+Command [**`build.bat -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="CountUppercase/build.bat">build</a> -verbose check</b>
@@ -265,7 +265,7 @@ Project [**`Ranking\`**](Ranking/) is a micro-benchmark.
 
 > **:mag_right:** The example comes from Berger's article "[An introduction to GraalVM](https://www.avisi.nl/blog/an-introduction-to-graalvm-with-examples)", published on June 28, 2019.
 
-Command [**`build`**](Ranking/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
+Command [**`build.bat`**](Ranking/build.bat) with no argument displays the help message with the available options and subcommands (same result as **`build help`**):
 
 <pre style="font-size:80%;">
 <b>&gt; <a hre="Ranking/build.bat">build</a></b>
@@ -287,7 +287,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
     test        execute micro benchmark
 </pre>
 
-Command [**`build clean run`**](Ranking/build.bat) builds and executes the JVM variant of the [JMH] benchmark (`target\benchmarks.jar`):
+Command [**`build.bat clean run`**](Ranking/build.bat) builds and executes the JVM variant of the [JMH] benchmark (`target\benchmarks.jar`):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="(Ranking/build.bat">build</a> -verbose clean run</b>
@@ -298,7 +298,7 @@ Copy chart file to directory "target"
 Execute JMH benchmark (JVM)
 # JMH version: 1.35
 # VM version: JDK 11.0.16, OpenJDK 64-Bit Server VM, 11.0.16+8-jvmci-22.2-b06
-# VM invoker: C:\opt\graalvm-ce-java11-22.2.0\jre\bin\java.exe
+# VM invoker: C:\opt\graalvm-ce-java11-22.3.0\jre\bin\java.exe
 # VM options: -XX:ThreadPriorityPolicy=1 [...] -Xmx1G
 # Warmup: 3 iterations, 10 s each
 # Measurement: 3 iterations, 10 s each
@@ -330,7 +330,7 @@ Benchmark     Mode  Cnt   Score   Error  Units
 Ranking.rank  avgt    3  11.707 ± 1.934  ms/op
 </pre>
 
-Command [**`build -verbose -native clean run`**](Ranking/build.bat) builds and executes the *native* variant of the [JMH] benchmark (`target\Ranking.exe`):
+Command [**`build.bat -verbose -native clean run`**](Ranking/build.bat) builds and executes the *native* variant of the [JMH] benchmark (`target\Ranking.exe`):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="Ranking/build.bat">build</a> -verbose -native clean run</b>
@@ -342,7 +342,7 @@ Create native image "target\Ranking"
 GraalVM Native Image: Generating 'G:\examples\Ranking\target\Ranking' (executable)...
 ================================================================================================
 [1/7] Initializing...                                                           (15,5s @ 0,21GB)
- Version info: 'GraalVM 22.2.0 Java 11 CE'
+ Version info: 'GraalVM 22.3.0 Java 11 CE'
  C compiler: cl.exe (microsoft, x64, 19.29.30141)
  Garbage collector: Serial GC
 [2/7] Performing analysis...  [*********]                                       (16,5s @ 1,59GB)
@@ -412,7 +412,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/December 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

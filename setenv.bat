@@ -819,7 +819,8 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
-        set "PATH=%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_PYTHON_PATH%%_MAKE_PATH%%_GIT_PATH%;%~dp0bin"
+        @rem We prepend %_GIT_HOME%\bin to hide C:\Windows\System32\bash.exe
+        set "PATH=%_GIT_HOME%\bin;%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_PYTHON_PATH%%_MAKE_PATH%%_GIT_PATH%;%~dp0bin"
         call :print_env %_VERBOSE%
         if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2

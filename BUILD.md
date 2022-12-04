@@ -35,7 +35,7 @@ NO_FEMBED_BITCODE=
 
 ### **`graal\build.bat`**
 
-Command **`build clean dist:2`** generates the [GraalVM] build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
+Command **`build.bat clean dist:2`** generates the [GraalVM] build specified by build environment **`env2`** in configuration file [**`build.ini`**](bin/graal/build.ini).
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:2</b>
@@ -140,7 +140,7 @@ Archive file **`graalvm-8b1d3688a5-java8.zip`** is the [GraalVM] software distri
      8330  2021-11-14 21:16   graalvm-8b1d3688a5-java8-22.0.0-dev/jre/lib/polyglot/bin/polyglot.cmd
 </pre>
 
-Command [**`build -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
+Command [**`build.bat -verbose update`**](bin/graal/build.bat) merely updates the two Github local directories `graal\` and `mx\` (*convenience command*):
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -verbose update</b>
@@ -183,7 +183,7 @@ Fast-forward
 
 ## Troubleshooting
 
-Graal projects rely on the [**`mx`**][mx_cli] command-line tool to build, test, run and update the [GraalVM] software.
+Graal projects rely on the [**`mx.cmd`**][mx_cli] command-line tool to build, test, run and update the [GraalVM] software.
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="bin/graal/build.bat">build</a> -timer -verbose clean dist:1</b>
@@ -253,7 +253,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/December 2022* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
