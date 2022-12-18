@@ -172,7 +172,7 @@ set _INI[%_INI_N%]=global
 goto :eof
 
 @rem input parameter: %*
-@rem output paramter(s): _CLEAN, _DIST, _DIST_ENV, _HELP, _UPDATE, _VERBOSE
+@rem output paramters: _CLEAN, _DIST, _DIST_ENV, _HELP, _UPDATE, _VERBOSE
 :args
 set _CLEAN=0
 set _DIST=0
@@ -325,10 +325,10 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Current directory is "%_GRAAL_PATH%" 1>&2
 )
 pushd "%_GRAAL_PATH%"
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% fetch upstream master 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% fetch upstream 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Update local directory %_GRAAL_PATH% 1>&2
 )
-call "%_GIT_CMD%" %_GIT_OPTS% fetch upstream master
+call "%_GIT_CMD%" %_GIT_OPTS% fetch upstream
 if not %ERRORLEVEL%==0 (
     popd
     set _EXITCODE=1
@@ -384,9 +384,10 @@ if not %_EXITCODE%==0 goto :eof
 goto :eof
 
 :clone_graal
-if exist "%_GRAAL_PATH%\.travis.yml" goto :eof
+goto :eof
+@rem if exist "%_GRAAL_PATH%\.github\NUL" goto :eof
 
-set __GRAAL_URL=https://github.com/oracle/graal.git
+set "__GRAAL_URL=https://github.com/oracle/graal.git"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GIT_CMD%" %_GIT_OPTS% clone %__GRAAL_URL% %"_GRAAL_PATH%" 1>&2
 ) else if %_VERBOSE%==1 ( echo %_VERBOSE_LABEL% Clone Graal repository into directory "%_GRAAL_PATH%" 1>&2
@@ -469,15 +470,14 @@ goto :eof
 :jvmci
 if not %JDK%==jdk8 goto :eof
 
-@rem see https://github.com/graalvm/graal-jvmci-8/releases
-set __JVMCI_VERSION=jvmci-21.2-b08
-set __JDK8_UPDATE_VERSION=302
+@rem see https://github.com/graalvm/labs-openjdk-11/releases
+set __JVMCI_VERSION=jvmci-22.3-b09
 @rem rule: <os_name>-<os_arch>, eg. darwin-amd64, linux-amd64, windows-amd64
-set __JDK8_PLATFORM=windows-amd64
+set __JDK_PLATFORM=windows-amd64
 
-set "__JDK_INSTALL_NAME=openjdk1.8.0_%__JDK8_UPDATE_VERSION%-%__JVMCI_VERSION%"
-set "__JDK_TGZ_NAME=openjdk-8u%__JDK8_UPDATE_VERSION%-%__JVMCI_VERSION%-%__JDK8_PLATFORM%.tar.gz"
-set "__JDK_TGZ_URL=https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/%__JVMCI_VERSION%/%__JDK_TGZ_NAME%"
+set "__JDK_INSTALL_NAME=labsjdk-ce-11.0.18+2-%__JVMCI_VERSION%"
+set "__JDK_TGZ_NAME=labsjdk-ce-11.0.18+2-%__JVMCI_VERSION%-%__JDK_PLATFORM%.tar.gz"
+set "__JDK_TGZ_URL=https://github.com/graalvm/labs-openjdk-11/releases/download/%__JVMCI_VERSION%/%__JDK_TGZ_NAME%"
 set "__JDK_TGZ_FILE=%_ROOT_DIR%\%__JDK_TGZ_NAME%"
 
 if exist "%_ROOT_DIR%\%__JDK_INSTALL_NAME%\" goto jvmci_done

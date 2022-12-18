@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.38][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.39][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM Community Edition 22.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -32,10 +32,10 @@ For instance our development environment looks as follows (*December 2022*) <sup
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.38.1\                                    <i>(317 MB)</i>
+C:\opt\Git-2.39.0\                                    <i>(314 MB)</i>
 C:\opt\graalvm-ce-java11-22.3.0\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-22.3.0\<sup id="anchor_04">&emsp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
-C:\opt\Python-3.11.0\                                 <i>( 82 MB)</i>
+C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx-4.0.1-win64\                               <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
@@ -59,23 +59,26 @@ This repository is organized as follows:
 docs\
 examples\{<a href="./examples/README.md">README.md</a>, <a href="./examples/ClassInitialization"/>ClassInitialization</a>, ..}
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.13-jvmci-21.3-b05\</a>  <i>(314 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.18-jvmci-22.3-b10\</a>  <i>(313 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.5-jvmci-22.3-b08\</a>   <i>(377 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_302-jvmci-21.3-b05\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(310 MB)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
 <a href="setenv.bat">setenv.bat</a>
 </pre>
+<!--
+<a href="https://github.com/graalvm/graal-jvmci-8/releases">openjdk1.8.0_302-jvmci-22.0-b01\</a><sup id="anchor_05"><a href="#footnote_05">[5]</a></sup> <i>(310 MB)</i>
+-->
 
 where
 
-- file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch script for building [GraalVM] on a Windows machine.
+- file [**`bin\graal\build.bat`**](bin/graal/build.bat) is the batch file for building [GraalVM] on a Windows machine.
 - directory [**`docs\`**](docs/) contains [GraalVM] related papers/articles.
 - directory [**`examples\`**](examples/) contains [GraalVM] code examples (see [**`examples\README.md`**](examples/README.md)).
 - directory **`graal\`** contains a copy of the [oracle/graal][oracle_graal] repository as a [Github submodule](.gitmodules).
 - file [**`README.md`**](README.md) is the [Markdown][github_markdown] document for this page.
 - file [**`RESOURCES.md`**](RESOURCES.md) is the [Markdown][github_markdown] document presenting external resources.
-- file [**`setenv.bat`**](setenv.bat) is the batch script for setting up our environment.
+- file [**`setenv.bat`**](setenv.bat) is the batch file for setting up our environment.
 
 We also define a virtual drive **`G:`** in our working environment in order to reduce/hide the real path of our project directory (see article ["Windows command prompt limitation"][windows_limitation] from Microsoft Support).
 
@@ -91,7 +94,7 @@ In the next section we give a brief description of the batch files present in th
 
 We distinguish different sets of batch commands:
 
-1. [**`setenv.bat`**](setenv.bat) - This batch command makes external tools such as [**`clang.exe`**][llvm_clang], [**`cl.exe`**][cl_cli] or [**`git.exe`**][git_cli] directly available from the command prompt (see section [**Project dependencies**](#section_01)).
+1. [**`setenv.bat`**](setenv.bat) &ndash; This batch command makes external tools such as [**`clang.exe`**][llvm_clang], [**`cl.exe`**][cl_cli] or [**`git.exe`**][git_cli] directly available from the command prompt (see section [**Project dependencies**](#section_01)).
 
    <pre style="font-size:80%;">
    <b>&gt; <a href="setenv.bat">setenv</a> help</b>
@@ -104,7 +107,7 @@ We distinguish different sets of batch commands:
      Subcommands:
        help        display this help message</pre>
 
-2. [**`bin\graal\build.bat`**](bin/graal/build.bat) - This batch command generates the [GraalVM] software distribution.
+2. [**`bin\graal\build.bat`**](bin/graal/build.bat) &ndash; This batch command generates the [GraalVM] software distribution.
 
    <pre style="font-size:80%;">
    <b>&gt; <a href="bin/graal/build.bat">build</a> help</b>
@@ -123,7 +126,7 @@ We distinguish different sets of batch commands:
        update       fetch/merge local directories graal/mx</pre>
    > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&colon;&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in configuration file [**`build.ini`**](bin/graal/build.ini).
 
-## <span id="usage_examples">Usage examples</span>[**&#x25B4;**](#top)
+## <span id="usage_examples">Usage examples</span> [**&#x25B4;**](#top)
 
 ### **`setenv.bat`**
 
@@ -132,9 +135,9 @@ Command [**`setenv.bat`**](setenv.bat) is executed once to setup our development
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 11.0.16, python 3.11.0, pylint 2.13.1, mx 6.0.2
-   cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.29.30141.0, nmake 14.29.30141.0, git 2.38.1.windows.1
+   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.0.2
+   cl 19.29.30137, msbuild 4.8.3752.0,
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -142,33 +145,48 @@ C:\opt\graalvm-ce-java11-22.3.0\bin\java.exe
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
 </pre>
 
-Command **`setenv.bat -verbose`** also displays the tool paths:
+Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool paths:
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 11.0.16, python 3.11.0, pylint 2.13.1, mx 6.0.2
-   cl 16.00.40219.01 for x64, msbuild 4.8.3752.0,
-   link 14.29.30141.0, nmake 14.29.30141.0, git 2.38.1.windows.1
+   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.0.2
+   cl 19.29.30137, msbuild 4.8.3752.0,
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.0\bin\javac.exe
-   C:\opt\Python-3.11.0\python.exe
-   C:\opt\Python-3.11.0\Scripts\pylint.exe
+   C:\opt\Python-3.11.1\python.exe
+   C:\opt\Python-3.11.1\Scripts\pylint.exe
    G:\graalvm\mx\mx.cmd
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.38.1\usr\bin\link.exe
+   C:\opt\Git-2.39.0\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.38.1\bin\git.exe
-   C:\opt\Git-2.38.1\mingw64\bin\git.exe
+   C:\opt\Git-2.39.0\bin\git.exe
+Environment variables:
+   "GIT_HOME=C:\opt\Git-2.39.0"
+   "GRAALVM_HOME=C:\opt\graalvm-ce-java11-22.3.0"
+   "GRAALVM11_HOME=C:\opt\graalvm-ce-java11-22.3.0"
+   "GRAALVM17_HOME=C:\opt\graalvm-ce-java17-22.3.0"
+   "JAVA_HOME=C:\opt\graalvm-ce-java11-22.3.0"
+   "LLVM_HOME=C:\opt\LLVM-14.0.6"
+   "MAKE_HOME=C:\opt\make-3.81"
+   "MAVEN_HOME=C:\opt\apache-maven-3.8.6"
+   "MSVC_BIN_DIR=X:\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
+   "MSVC_HOME=X:\VC\Tools\MSVC\14.29.30133"
+   "MSVS_HOME=X:"
+   "PYTHON_HOME=C:\opt\Python-3.11.1"
+   "WABT_HOME=C:\opt\wabt-1.0.23"
+Path associations:
+   G:\: => C:\Users\michelou\workspace-perso\graalvm-examples
 </pre>
 
 ### **`graal\build.bat`**
 
 Directory **`graal\`** is a Github submodule with a copy of the [oracle/graal][oracle_graal] repository; it is setup as follows:
 <pre style="font-size:80%;">
-<b>&gt; cp bin\graal\build.* graal</b>
+<b>&gt; <a href="https://man7.org/linux/man-pages/man1/cp.1.html" rel="external">cp</a> bin\graal\build.* graal</b>
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cd">cd</a> graal</b>
 </pre>
 
@@ -182,7 +200,7 @@ See document [**`examples\README.md`**](examples/README.md).
 
 See document [**`RESOURCES.md`**](RESOURCES.md) for [GraalVM] related resources.
 
-## <span id="footnotes">Footnotes</span>
+## <span id="footnotes">Footnotes</span> [**&#x25B4;**](#top)
 
 <span id="footnote_01">[1]</span> ***Two GraalVM editions*** [↩](#anchor_01)
 
@@ -206,12 +224,12 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-22.3.0.zip</a>                    <i>(306 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java17-windows-amd64-22.3.0.zip</a>                    <i>(320 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.17+8-jvmci-22.3-b08-windows-amd64.tar.gz </a>     <i>(181 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.18+2-jvmci-22.3-b09-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.5+8-jvmci-22.3-b08-windows-amd64.tar.gz</a>       <i>(181 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-22.3.0.jar</a>  <i>( 14 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-22.3.0.jar</a>  <i>( 16 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.38.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
-<a href="https://www.python.org/downloads/windows/">python-3.11.0.amd64.msi</a>                                       <i>( 19 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.39.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.0.1-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
@@ -249,8 +267,15 @@ Extracting: LICENSE_NATIVEIMAGE.txt
 Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
 [..]
+<b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> list</b>
+ComponentId    Version   Component name      Stability           Origin
+---------------------------------------------------------------------------
+graalvm        22.3.0    GraalVM Core        Supported
+espresso       22.3.0    Java on Truffle     Experimental
+native-image   22.3.0    Native Image        Early adopter
+&nbsp;
 <b>&gt; c:\opt\graalvm-ce-java11-22.3.0\bin\<a href="https://www.graalvm.org/reference-manual/native-image/" rel="external">native-image.cmd</a> --version</b>
-GraalVM 22.2.0 Java 11 CE (Java Version 11.0.16+10-jvmci-22.1-b06)
+GraalVM 22.3.0 Java 11 CE (Java Version 11.0.17+8-jvmci-22.3-b08)
 </pre></li>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/polyglot/" rel="external"><code>polyglot.cmd</code></a> is finally part of the Windows distribution (<i>and</i> is native).
 <pre style="font-size:80%;">
@@ -286,7 +311,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
 [git_releases]: https://git-scm.com/download/win
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.38.1.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.39.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/
@@ -311,7 +336,7 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 [nodes_examples]: https://github.com/michelou/nodejs-examples
 [oracle_graal]: https://github.com/oracle/graal
 [python_downloads]: https://www.python.org/downloads/windows/
-[python_relnotes]: https://www.python.org/downloads/release/python-395/
+[python_relnotes]: https://www.python.org/downloads/release/python-3111/
 [rust_examples]: https://github.com/michelou/rust-examples
 [scala3_examples]: https://github.com/michelou/dotty-examples
 [spring_examples]: https://github.com/michelou/spring-examples

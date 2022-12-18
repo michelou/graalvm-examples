@@ -26,7 +26,7 @@ call :add_jar "junit" "junit" "4.13.2"
 
 
 @rem 2 JMH depencencies: jopts-simple 5.0.4, commons-math3 3.2
-set _JMH_VERSION=1.35
+set _JMH_VERSION=1.36
 
 @rem https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 call :add_jar "org.openjdk.jmh" "jmh-core" "%_JMH_VERSION%"
@@ -41,7 +41,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.7.3
+set _MICRONAUT_VERSION=3.7.4
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"

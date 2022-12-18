@@ -25,6 +25,7 @@ if %_HELP%==1 (
 
 set _JAVA_HOME=
 set _JAVA11_HOME=
+set _JAVA17_HOME=
 
 set _MAKE_PATH=
 set _MAVEN_PATH=
@@ -34,10 +35,14 @@ set _SDK_PATH=
 set _CYGWIN_PATH=
 set _GIT_PATH=
 
-call :java8
-if not %_EXITCODE%==0 goto end
+@rem deprecated
+@rem call :java8
+@rem if not %_EXITCODE%==0 goto end
 
 call :java11
+if not %_EXITCODE%==0 goto end
+
+call :java17
 if not %_EXITCODE%==0 goto end
 
 call :make
@@ -49,7 +54,7 @@ if not %_EXITCODE%==0 goto end
 call :python3
 if not %_EXITCODE%==0 goto end
 
-call :llvm12
+call :llvm14
 if not %_EXITCODE%==0 goto end
 
 @rem call :msvs
@@ -301,16 +306,22 @@ if "%__PREFIX%"=="1." ( set _JDK_VERSION=%__JAVAC_VERSION:~2,1%
 )
 goto :eof
 
-:java8
-call :graalvm java8
-if not %_EXITCODE%==0 goto :eof
-if defined _GRAALVM_HOME set "_GRAALVM_HOME=%_GRAALVM_HOME%"
-goto :eof
+@rem :java8
+@rem call :graalvm java8
+@rem if not %_EXITCODE%==0 goto :eof
+@rem if defined _GRAALVM_HOME set "_GRAALVM_HOME=%_GRAALVM_HOME%"
+@rem goto :eof
 
 :java11
 call :graalvm java11
 if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM11_HOME=%_GRAALVM_HOME%"
+goto :eof
+
+:java17
+call :graalvm java17
+if not %_EXITCODE%==0 goto :eof
+if defined _GRAALVM_HOME set "_GRAALVM17_HOME=%_GRAALVM_HOME%"
 goto :eof
 
 @rem output parameters: _MAKE_HOME, _MAKE_PATH
@@ -700,7 +711,7 @@ if not exist "%_GIT_HOME%\bin\git.exe" (
 )
 if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Git installation directory %_GIT_HOME% 1>&2
 
-set "_GIT_PATH=;%_GIT_HOME%\bin;%_GIT_HOME%\mingw64\bin;%_GIT_HOME%\usr\bin"
+set "_GIT_PATH=%_GIT_HOME%\bin;%_GIT_HOME%\mingw64\bin;%_GIT_HOME%\usr\bin;"
 goto :eof
 
 :print_env
@@ -783,6 +794,8 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
     if defined GRAALVM_HOME echo    "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     if defined GRAALVM11_HOME echo    "GRAALVM11_HOME=%GRAALVM11_HOME%" 1>&2
+    if defined GRAALVM17_HOME echo    "GRAALVM17_HOME=%GRAALVM17_HOME%" 1>&2
+    if defined JAVA_HOME echo    "JAVA_HOME=%JAVA_HOME%" 1>&2
     if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
     if defined MAKE_HOME echo    "MAKE_HOME=%MAKE_HOME%" 1>&2
     if defined MAVEN_HOME echo    "MAVEN_HOME=%MAVEN_HOME%" 1>&2
@@ -804,11 +817,11 @@ endlocal & (
     if %_EXITCODE%==0 (
         @rem if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
-        if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM_HOME%"
+        if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM11_HOME%"
         if not defined GRAALVM11_HOME set "GRAALVM11_HOME=%_GRAALVM11_HOME%"
+        if not defined GRAALVM17_HOME set "GRAALVM17_HOME=%_GRAALVM17_HOME%"
         @rem JAVA_HOME needed for Maven
-        if not defined JAVA_HOME set "JAVA_HOME=%_GRAALVM_HOME%"
-        if not defined JAVA11_HOME set "JAVA11_HOME=%_GRAALVM11_HOME%"
+        if not defined JAVA_HOME set "JAVA_HOME=%_GRAALVM11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
         if not defined MAKE_HOME set "MAKE_HOME=%_MAKE_HOME%"
         if not defined MAVEN_HOME set "MAVEN_HOME=%_MAVEN_HOME%"
@@ -821,8 +834,8 @@ endlocal & (
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"
         if not defined KIT_LIB_DIR set "KIT_LIB_DIR=%_KIT_LIB_DIR%"
         if not defined WABT_HOME set "WABT_HOME=%_WABT_HOME%"
-        @rem We prepend %_GIT_HOME%\bin to hide C:\Windows\System32\bash.exe
-        set "PATH=%_GIT_HOME%\bin;%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_PYTHON_PATH%%_MAKE_PATH%%_GIT_PATH%;%~dp0bin"
+        @rem We prepend %_GIT_PATH% to hide C:\Windows\System32\bash.exe and C:\Windows\System32\curl.exe
+        set "PATH=%_GIT_PATH%%PATH%%_MAVEN_PATH%%_LLVM_PATH%%_PYTHON_PATH%%_MAKE_PATH%%~dp0bin"
         call :print_env %_VERBOSE%
         if not "%CD:~0,2%"=="%_DRIVE_NAME%:" (
             if %_DEBUG%==1 echo %_DEBUG_LABEL% cd /d %_DRIVE_NAME%: 1>&2
