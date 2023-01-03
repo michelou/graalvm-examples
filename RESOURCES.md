@@ -23,6 +23,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="blogs">Blogs</span>
 
+- [A guide to GraalVM &ndash; a next-generation JVM][blog_chuyko] by Dimitri Chuyko, December 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
   - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
   - [GraalVM 22.2][blog_graalvm_22_2] by Alina Yurenko, July 2022.
@@ -119,7 +120,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/December 2022* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/January 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -130,6 +131,7 @@ For convenience resources are organized in several topics : [General](#general),
 [article_jellema]: https://technology.amis.nl/2019/10/24/calling-out-from-java-to-javascript-with-call-back-leveraging-interoperability-support-of-graalvm/
 [article_mandrel]: https://developers.redhat.com/blog/2021/04/14/mandrel-a-specialized-distribution-of-graalvm-for-quarkus#
 [blog_beyondjava]: https://www.beyondjava.net/graalvm-polyglot-programming
+[blog_chuyko]: https://bell-sw.com/blog/a-guide-to-graalvm-a-next-generation-jvm/
 [blog_frankel]: https://blog.frankel.ch/first-impressions-graalvm/
 [blog_graalvm_21_1]: https://medium.com/graalvm/graalvm-21-1-96e18f6806bf
 [blog_graalvm_21_2]: https://medium.com/graalvm/graalvm-21-2-ee2cce3b57aa
