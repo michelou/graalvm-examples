@@ -23,6 +23,7 @@ This project relies on the following external software for the **Microsoft Windo
 
 Optionally one may also install the following software:
 
+- [GraalVM Community Edition 23.0 DEV](https://github.com/graalvm/graalvm-ce-dev-builds/releases)
 - [UPX 4.0][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
@@ -34,7 +35,8 @@ For instance our development environment looks as follows (*January 2023*) <sup 
 <pre style="font-size:80%;">
 C:\opt\Git-2.39.0\                                    <i>(314 MB)</i>
 C:\opt\graalvm-ce-java11-22.3.0\                      <i>(731 MB)</i>
-C:\opt\graalvm-ce-java17-22.3.0\<sup id="anchor_04">&emsp;<a href="#footnote_04">4</a></sup>                    <i>(644 MB)</i>
+C:\opt\graalvm-ce-java17-22.3.0\<sup id="anchor_04"><a href="#footnote_04">4</a>&ensp;</sup>                    <i>(644 MB)</i>
+C:\opt\graalvm-ce-java17-23.0.0-dev\<sup id="anchor_05"><a href="#footnote_05">5</a></sup>                 <i>(464 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx-4.0.1-win64\                               <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
@@ -90,7 +92,7 @@ We also define a virtual drive **`G:`** in our working environment in order to r
 
 In the next section we give a brief description of the batch files present in this project.
 
-## <span id="batch_commands">Batch commands</span>[**&#x25B4;**](#top)
+## <span id="batch_commands">Batch commands</span> [**&#x25B4;**](#top)
 
 We distinguish different sets of batch commands:
 
@@ -135,8 +137,8 @@ Command [**`setenv.bat`**](setenv.bat) is executed once to setup our development
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.0.2
-   cl 19.29.30137, msbuild 4.8.3752.0,
+   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.14.12
+   cl 19.29.30137, msbuild 16.11.2.50704,
    link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
@@ -150,8 +152,8 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.0.2
-   cl 19.29.30137, msbuild 4.8.3752.0,
+   javac 11.0.17, python 3.11.1, pylint 2.15.8, mx 6.14.12
+   cl 19.29.30137, msbuild 16.11.2.50704,
    link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.0\bin\javac.exe
@@ -170,9 +172,9 @@ Environment variables:
    "GRAALVM11_HOME=C:\opt\graalvm-ce-java11-22.3.0"
    "GRAALVM17_HOME=C:\opt\graalvm-ce-java17-22.3.0"
    "JAVA_HOME=C:\opt\graalvm-ce-java11-22.3.0"
-   "LLVM_HOME=C:\opt\LLVM-14.0.6"
+   "LLVM_HOME=C:\opt\LLVM-15.0.6"
    "MAKE_HOME=C:\opt\make-3.81"
-   "MAVEN_HOME=C:\opt\apache-maven-3.8.6"
+   "MAVEN_HOME=C:\opt\apache-maven-3.8.7"
    "MSVC_BIN_DIR=X:\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
    "MSVC_HOME=X:\VC\Tools\MSVC\14.29.30133"
    "MSVS_HOME=X:"
@@ -221,8 +223,9 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 </dd>
 <dd>
 <pre style="font-size:80%;">
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java11-windows-amd64-22.3.0.zip</a>                    <i>(306 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">graalvm-ce-java17-windows-amd64-22.3.0.zip</a>                    <i>(320 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-ce-java11-windows-amd64-22.3.0.zip</a>                    <i>(306 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-ce-java17-windows-amd64-22.3.0.zip</a>                    <i>(320 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-ce-java17-windows-amd64-dev.zip</a> <i>(23.0.0-dev) </i>         <i>(257 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.18+2-jvmci-22.3-b09-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.5+8-jvmci-22.3-b08-windows-amd64.tar.gz</a>       <i>(181 MB)</i>
@@ -254,15 +257,15 @@ c:\opt\graalvm-ce-java11-22.3.0\lib\installer\bin\gu.exe
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/echo">echo</a> %JAVA_HOME%</b>
 C:\opt\graalvm-ce-java11-22.3.0
 &nbsp;
-<b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java11-windows-amd64-21.3.0.jar --verbose</b>
-Processing Component archive: native-image-installable-svm-java11-windows-amd64-22.2.0.jar
-Preparing to install native-image-installable-svm-java11-windows-amd64-22.2.0.jar, contains org.graalvm.native-image, version 22.2.0 (org.graalvm.native-image)
-Checking requirements of component Native Image (native-image), version 22.2.0
-        Requires Graal Version = 22.2.0, GraalVM provides: 22.2.0
+<b>&gt; %JAVA_HOME%\bin\<a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external">gu.cmd</a> install --file native-image-installable-svm-java11-windows-amd64-22.3.0.jar --verbose</b>
+Processing Component archive: native-image-installable-svm-java11-windows-amd64-22.3.0.jar
+Preparing to install native-image-installable-svm-java11-windows-amd64-22.3.0.jar, contains org.graalvm.native-image, version 22.3.0 (org.graalvm.native-image)
+Checking requirements of component Native Image (native-image), version 22.3.0
+        Requires Graal Version = 22.3.0, GraalVM provides: 22.3.0
         Requires Java Version = 11, GraalVM provides: 11
         Requires Architecture = amd64, GraalVM provides: amd64
         Requires Operating System = windows, GraalVM provides: windows
-Installing new component: Native Image (org.graalvm.native-image, version 22.2.0)
+Installing new component: Native Image (org.graalvm.native-image, version 22.3.0)
 Extracting: LICENSE_NATIVEIMAGE.txt
 Extracting: bin/native-image.cmd
 Extracting: bin/rebuild-images.cmd
@@ -289,10 +292,17 @@ GraalVM CE polyglot launcher 22.3.0
 </ul>
 </dd></dl>
 
+<!--
 <span id="footnote_05">[5]</span> ***JVMCI** (JVM compiler interface)* [↩](#anchor_05)
 
 <dl><dd>
 The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href="https://github.com/graalvm/graal-jvmci-8">fork</a> of JDK8u/HotSpot with  <a href="https://openjdk.java.net/jeps/243">JVMCI</a> support for building the <a href="https://www.graalvm.org/">GraalVM</a> software distribution. <a href="https://github.com/graalvm/graal-jvmci-8/releases"><code>openjdk-jvmci</code></a> binaries are available for the Darwin, Linux and Windows platforms.
+</dd></dl>
+-->
+<span id="footnote_05">[5]</span> ***JDK 11 Support*** [↩](#anchor_05)
+
+<dl><dd>
+Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href="https://www.graalvm.org/release-notes/release-calendar/#planned-releases">March 2023</a>).
 </dd></dl>
 
 ***
