@@ -1,6 +1,6 @@
 # <span id="top">GraalVM Resources</span> <span style="size:30%;"><a href="README.md">↩</a></span>
 
-<table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
+<table style="font-family:Helvetica,Arial;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/" rel="external"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM project"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/" rel="external">GraalVM</a> related resources that caught our attention.
@@ -24,6 +24,7 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="blogs">Blogs</span>
 
 - [A guide to GraalVM &ndash; a next-generation JVM][blog_chuyko] by Dimitri Chuyko, December 2022.
+- [GraalVM: running C/C++ application safely in the Java world](https://www.adyen.com/blog/graalvm-running-c-applications--in-the-cloud) by Chang-Iun Wang, November 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
   - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
   - [GraalVM 22.2][blog_graalvm_22_2] by Alina Yurenko, July 2022.
@@ -33,6 +34,7 @@ For convenience resources are organized in several topics : [General](#general),
   - [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
   - [GraalVM 21.0: Introducing a New Way to Run Java][blog_run_java], January 2021.
   - [Announcing GraalVM 20.2.0](https://medium.com/graalvm/announcing-graalvm-20-2-0-674e7f6dae27) by Oleg Selajev, August 2020.
+- [GraalVM : on y va ou pas ?](https://k49.fr.nf/graalvm-on-y-va-ou-pas/) by Anthony Pena, October 2021.
 - [GraalVM - Episode 2: The Holy Grail](https://faun.pub/episode-2-the-holy-grail-graalvm-building-super-optimum-microservices-architecture-series-c068b72735a1) by V. Kumar, September 2020.
 - [GraalVM - Episode 1: The Evolution](https://faun.pub/episode-1-the-evolution-java-jit-hotspot-c2-compilers-building-super-optimum-containers-f0db19e6f19a) by V. Kumar, September 2020.
 - [Playing with GraalVM on Windows 10 and WSL2][blog_ushio] by Tsuyoshi Ushio, May 2020.
@@ -61,6 +63,8 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="talks">Talks</span>
 
 - [Understanding How Graal Works - a Java JIT Compiler Written in Java](https://chrisseaton.com/truffleruby/jokerconf17/) by Chris Seaton, JokerConf 2017, November 3, 2017.
+
+<!--=============================================================================-->
 
 ## <span id="ni">Native image</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
 
@@ -120,7 +124,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/January 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/February 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

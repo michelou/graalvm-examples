@@ -16,7 +16,7 @@ endif
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) "$(SOURCE_DIR)/main/java" -type f -name *.java)
+SOURCES  = $(shell $(FIND) "$(SOURCE_DIR)/main/java" -type f -name "*.java")
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -30,7 +30,7 @@ all: build
 build: $(TARGET)
 
 $(TARGET): $(SOURCES)
-	[ -d "$(CLASSES_DIR)" ] || $(MKDIR) -p "$(CLASSES_DIR)"
+	[ -d "$(CLASSES_DIR)" ] || "$(MKDIR)" -p "$(CLASSES_DIR)"
 	@$(ECHO) $(JAVAC_FLAGS) -d "$(CLASSES_DIR)" > "$(OPTS_FILE)"
 	@$(ECHO) $(SOURCES) > "$(SOURCES_FILE)"
 	"$(JAVAC)" "@$(OPTS_FILE)" "@$(SOURCES_FILE)"
@@ -52,7 +52,7 @@ help:
 	@$(ECHO) "     clean  delete generated files"
 	@$(ECHO) "     help   display this help message"
 	@$(ECHO) "     lint   analyze Java source files with CheckStyle"
-	@$(ECHO) "     run    execute main program $(MAIN_CLASS)"
+	@$(ECHO) "     run    execute main program \"$(MAIN_CLASS)\""
 	@$(ECHO) "     test   execute unit tests with JUnit"
 
 ##############################################################################
@@ -69,7 +69,7 @@ DOC_OPTS_FILE    = $(TARGET_DIR)/javadoc_opts.txt
 DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
-	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
+	[ -d "$(DOC_TARGET_DIR)" ] || "$(MKDIR)" -p "$(DOC_TARGET_DIR)"
 	@$(ECHO) -d "$(DOC_TARGET_DIR)" -doctitle "$(PROJECT_NAME)" -footer "$(PROJECT_URL)" -top "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
 	@$(ECHO) $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	"$(JAVADOC)" "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
@@ -81,10 +81,10 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 9.0.1
+CHECKSTYLE_VERSION = 10.7.0
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
-CHECKSTYLE_SOURCES = $(shell $(FIND) $(SOURCE_DIR) -name *.java)
+CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -name "*.java")
 CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
 
 ## "checkstyle-all" version not available from Maven Central
@@ -105,7 +105,7 @@ $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
 ##############################################################################
 ## test rules
 
-TEST_SOURCES     = $(shell $(FIND) "$(SOURCE_DIR)/test" -type f -name *.java)
+TEST_SOURCES     = $(shell $(FIND) "$(SOURCE_DIR)/test" -type f -name "*.java")
 TEST_CLASSES_DIR = $(TARGET_DIR)/test-classes
 TEST_TARGET      = $(TARGET_DIR)/.latest-test-build
 
@@ -116,7 +116,7 @@ TEST_MAIN_CLASS  = $(MAIN_CLASS)JUnitTest
 TEST_CPATH       = $(HAMCREST_JAR)$(PSEP)$(JUNIT_JAR)$(PSEP)$(CLASSES_DIR)$(PSEP)$(TEST_CLASSES_DIR)
 
 $(TEST_TARGET): $(TEST_SOURCES)
-	[ -d "$(TEST_CLASSES_DIR)" ] || $(MKDIR) -p "$(TEST_CLASSES_DIR)"
+	[ -d "$(TEST_CLASSES_DIR)" ] || "$(MKDIR)" -p "$(TEST_CLASSES_DIR)"
 	@$(ECHO) -classpath "$(TEST_CPATH)" -d "$(TEST_CLASSES_DIR)" > "$(TEST_OPTS_FILE)"
 	@$(ECHO) $(TEST_SOURCES) > "$(TEST_SOURCES_FILE)"
 	"$(JAVAC)" "@$(TEST_OPTS_FILE)" "@$(TEST_SOURCES_FILE)"
