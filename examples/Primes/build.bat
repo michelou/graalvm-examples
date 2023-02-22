@@ -159,7 +159,8 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=9.2
+@rem https://github.com/checkstyle/checkstyle/releases/
+set _CHECKSTYLE_VERSION=10.7.0
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -261,7 +262,7 @@ goto :eof
 
 :help
 if %_VERBOSE%==1 (
-    set __BEG_P=%_NORMAL_FG_GREEN%%_UNDERSCORE%
+    set __BEG_P=%_NORMAL_FG_GREEN%
     set __BEG_O=%_STRONG_FG_GREEN%
     set __BEG_N=%_NORMAL_FG_YELLOW%
     set __END=%_RESET%
@@ -286,7 +287,7 @@ echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
 echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
-echo     %__BEG_O%run%__END%         execute main program
+echo     %__BEG_O%run%__END%         execute main program "%__BEG_O%%_MAIN_CLASS%%__END%"
 echo     %__BEG_O%test%__END%        execute JMH benchmarks
 if %_VERBOSE%==0 goto :eof
 echo.
@@ -337,7 +338,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -c "& '%__PS1_FILE%' -Uri '%__JA
 )
 powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to download file %__JAR_NAME% 1>&2
+    echo %_ERROR_LABEL% Failed to download file "%__JAR_NAME%" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -394,11 +395,18 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     echo %%f>> "%__SOURCES_FILE%"
     set /a __N+=1
 )
+if %__N%==0 (
+    echo %_WARNING_LABEL% No Java source file found 1>&2
+    goto :eof
+) else if %__N%==1 ( set __N_FILES=%__N% Java source file
+) else ( set __N_FILES=%__N% Java source files
+)
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Compile %__N% Java source files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+) else if %_VERBOSE%==1 ( echo Compile %__N_FILES% to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to compile %__N_FILES% to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )

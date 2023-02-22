@@ -4,7 +4,7 @@
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/" rel="external"><img style="border:0;" src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM project"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This repository gathers <a href="https://www.graalvm.org/" rel="external">GraalVM</a> examples coming from various websites and books.<br/>
-  It also includes several <a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting" rel="external">batch files</a> for experimenting with <a href="https://www.graalvm.org/" rel="external">GraalVM</a> on a Windows machine.
+  It also includes several build scripts (<a href="https://en.wikibooks.org/wiki/Windows_Batch_Scripting" rel="external">batch files</a>) for experimenting with <a href="https://www.graalvm.org/" rel="external">GraalVM</a> on a Windows machine.
   </td>
   </tr>
 </table>
@@ -34,7 +34,7 @@ For instance our development environment looks as follows (*February 2023*) <sup
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.39.1\                                    <i>(314 MB)</i>
+C:\opt\Git-2.39.2\                                    <i>(314 MB)</i>
 C:\opt\graalvm-ce-java11-22.3.1\                      <i>(731 MB)</i>
 C:\opt\graalvm-ce-java17-22.3.1\<sup id="anchor_04"><a href="#footnote_04">4</a>&ensp;</sup>                    <i>(644 MB)</i>
 C:\opt\graalvm-ce-java17-23.0.0-dev\<sup id="anchor_05"><a href="#footnote_05">5</a></sup>                 <i>(464 MB)</i>
@@ -141,7 +141,7 @@ Command [**`setenv.bat`**](setenv.bat) is executed once to setup our development
 Tool versions:
    javac 11.0.18, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.1.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.2.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -156,7 +156,7 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 Tool versions:
    javac 11.0.18, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.1.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.39.2.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.1\bin\javac.exe
    C:\opt\Python-3.11.1\python.exe
@@ -165,18 +165,18 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.39.1\usr\bin\link.exe
+   C:\opt\Git-2.39.2\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.39.1\bin\git.exe
+   C:\opt\Git-2.39.2\bin\git.exe
 Environment variables:
-   "GIT_HOME=C:\opt\Git-2.39.1"
+   "GIT_HOME=C:\opt\Git-2.39.2"
    "GRAALVM_HOME=C:\opt\graalvm-ce-java11-22.3.1
    "GRAALVM11_HOME=C:\opt\graalvm-ce-java11-22.3.1"
    "GRAALVM17_HOME=C:\opt\graalvm-ce-java17-22.3.1"
    "JAVA_HOME=C:\opt\graalvm-ce-java11-22.3.1"
    "LLVM_HOME=C:\opt\LLVM-15.0.6"
    "MAKE_HOME=C:\opt\make-3.81"
-   "MAVEN_HOME=C:\opt\apache-maven-3.8.7"
+   "MAVEN_HOME=C:\opt\apache-maven-3.9.0"
    "MSVC_BIN_DIR=X:\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
    "MSVC_HOME=X:\VC\Tools\MSVC\14.29.30133"
    "MSVS_HOME=X:"
@@ -233,7 +233,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.6+10-jvmci-22.3-b13-windows-amd64.tar.gz</a>      <i>(190 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-22.3.1.jar</a>  <i>( 14 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-22.3.1.jar</a>  <i>( 16 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.39.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.39.2-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.0.2-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
@@ -326,7 +326,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
 [git_releases]: https://git-scm.com/download/win
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.39.1.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.39.2.txt
 [github_markdown]: https://github.github.com/gfm/
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/

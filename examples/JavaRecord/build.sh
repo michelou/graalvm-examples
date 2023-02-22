@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2018-2021 Stéphane Micheloud
+# Copyright (c) 2018-2023 Stéphane Micheloud
 #
 # Licensed under the MIT License.
 #
@@ -96,7 +96,7 @@ Usage: $BASENAME { <option> | <subcommand> }
     clean        delete generated files
     compile      compile C/Java source files
     help         display this help message
-    run          execute main class $MAIN_CLASS
+    run          execute main class "$MAIN_CLASS"
 EOS
 }
 
@@ -158,14 +158,20 @@ compile_java() {
         echo $f >> "$sources_file"
         n=$((n + 1))
     done
+    if [[ $n -eq 0 ]]; then
+        warning "No Java source file found"
+        return 1
+    fi
+    local s=; [[ $n -gt 1 ]] && s="s"
+    local n_files="$n Java source file$s"
     if $DEBUG; then
         debug "$JAVAC_CMD @$opts_file @$sources_file"
     elif $VERBOSE; then
-        echo "Compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
+        echo "Compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
     fi
     eval "$JAVAC_CMD" "@$opts_file" "@$sources_file"
     if [[ $? -ne 0 ]]; then
-        error "Compilation of $n Java source files failed"
+        error "Failed to compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
         cleanup 1
     fi
     touch "$timestamp_file"
@@ -215,14 +221,14 @@ case "`uname -s`" in
 esac
 $linux || error "Only Linux/MacOS platforms are supported"
 
-if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
 
-if [ ! -x "$GRAALVM_HOME/bin/lli" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/lli" ]]; then
     error "lli command not found"
     cleanup 1
 fi

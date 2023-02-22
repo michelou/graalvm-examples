@@ -90,7 +90,7 @@ Usage: $BASENAME { <option> | <subcommand> }
 
   Options:
     -cached      select main class with cached startup time
-    -debug       show commands executed by this script
+    -debug       display commands executed by this script
     -timer       display total elapsed time
     -verbose     display progress messages
 
@@ -99,7 +99,7 @@ Usage: $BASENAME { <option> | <subcommand> }
     compile      compile C/Java source files
     doc          generate HTML documentation
     help         display this help message
-    run          execute main class $MAIN_CLASS
+    run          execute main class "$MAIN_CLASS"
 EOS
 }
 
@@ -157,7 +157,7 @@ compile_java() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $JAVA_SOURCE_DIR/ -name *.java 2>/dev/null); do
+    for f in $(find $JAVA_SOURCE_DIR/ -name "*.java" 2>/dev/null); do
         echo $f >> "$sources_file"
         n=$((n + 1))
     done
@@ -168,7 +168,7 @@ compile_java() {
     fi
     eval "$JAVAC_CMD" "@$opts_file" "@$sources_file"
     if [[ $? -ne 0 ]]; then
-        error "Compilation of $n Java source files failed"
+        error "Failed to compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
         cleanup 1
     fi
     touch "$timestamp_file"

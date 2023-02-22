@@ -84,7 +84,7 @@ doc: $(DOC_TARGET)
 CHECKSTYLE_VERSION = 10.7.0
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
-CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -name "*.java")
+CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")
 CHECKSTYLE_TARGET  = $(TARGET_DIR)/.latest-lint
 
 ## "checkstyle-all" version not available from Maven Central
@@ -96,7 +96,7 @@ XML_FILE = $(CHECKSTYLE_DIR)/graal_checks.xml
 lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
 
 $(JAR_FILE):
-	[ -d "$(CHECKSTYLE_DIR)" ] || $(MKDIR) -p "$(CHECKSTYLE_DIR)"
+	[ -d "$(CHECKSTYLE_DIR)" ] || "$(MKDIR)" -p "$(CHECKSTYLE_DIR)"
 	"$(CURL)" --silent --location --output $(JAR_FILE) $(JAR_URL)
 
 $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
