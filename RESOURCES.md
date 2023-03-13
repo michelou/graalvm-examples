@@ -66,10 +66,11 @@ For convenience resources are organized in several topics : [General](#general),
 
 <!--=============================================================================-->
 
-## <span id="ni">Native image</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
+## <span id="ni">Native image</span> [**&#x25B4;**](#top)
 
 ### <span id="ni-articles">Articles</span>
 
+- [Super-fast Java with Spring Boot Native](https://blog.tratif.com/2023/01/17/super-fast-java-with-spring-boot-native/) by Jakub Radica, January 2023.
 - [Using Unsafe safely in GraalVM Native Image](https://developers.redhat.com/articles/2022/05/09/using-unsafe-safely-graalvm-native-image) by Ashutosh Mehra, May 2022.
 - [Create a Native Image Binary Executable for a Polyglot Java Application using GraalVM](https://technology.amis.nl/2019/10/28/create-a-native-image-binary-executable-for-a-polyglot-java-application-using-graalvm/), by Lucas Jellema, October 28, 2019.
 
@@ -87,7 +88,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 <!--=======================================================================-->
 
-## <span id="pg">Polyglot</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
+## <span id="pg">Polyglot</span> [**&#x25B4;**](#top)
 
 ### <span id="pg-articles">Articles</span>
 
@@ -109,7 +110,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 <!--=======================================================================-->
 
-## <span id="sulong">Sulong</span> <sup><sub>[**&#9650;**](#top)</sub></sup>
+## <span id="sulong">Sulong</span> [**&#x25B4;**](#top)
 
 ### <span id="sulong-talks">Talks</span>
 
@@ -124,7 +125,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

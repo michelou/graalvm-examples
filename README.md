@@ -23,14 +23,14 @@ This project relies on the following external software for the **Microsoft Windo
 
 Optionally one may also install the following software:
 
-- [Checkstyle 10.7][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
+- [Checkstyle 10.8][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
 - [GraalVM Community Edition 23.0 DEV](https://github.com/graalvm/graalvm-ce-dev-builds/releases)
 - [UPX 4.0][upx_downloads] <sup id="anchor_03"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*February 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*March 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -42,7 +42,7 @@ C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx-4.0.2-win64\                               <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
-<a href="https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables#variables-that-are-recognized-only-in-the-user-context" rel="external">%USERPROFILE%</a>\.checkstyle\                            <i>( 12 MB)</i>
+<a href="https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables#variables-that-are-recognized-only-in-the-user-context" rel="external">%USERPROFILE%</a>\.checkstyle\                            <i>( 16 MB)</i>
 </pre>
 <!-- ce-java8 : 19.3.1 = 360 MB, 20.0.0 = 670 MB, 20.1.0 = 630 MB -->
 <!--            20.2.0 = 644 MB, 20.3.0 = 668 MB, 21.0.0 = 760 MB -->
@@ -309,7 +309,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/February 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -317,7 +317,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [ada_examples]: https://github.com/michelou/ada-examples
 [akka_examples]: https://github.com/michelou/akka-examples
 [checkstyle_downloads]: https://github.com/checkstyle/checkstyle/releases
-[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.7.0
+[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.8.1
 [cl_cli]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
 [cpp_examples]: https://github.com/michelou/cpp-examples
 [dart_examples]: https://github.com/michelou/dart-examples
