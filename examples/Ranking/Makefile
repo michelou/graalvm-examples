@@ -1,3 +1,10 @@
+##
+## Copyright (c) 2018-2023 Stéphane Micheloud
+##
+## Licensed under the MIT License.
+##
+##############################################################################
+
 include ../Makefile.inc
 
 SOURCE_DIR  = src
@@ -7,8 +14,9 @@ CLASSES_DIR = $(TARGET_DIR)/classes
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
 SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
 
-JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
-JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)"
+CPATH       = $(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)
+JAVAC_FLAGS = -deprecation -classpath "$(CPATH)"
+JAVA_FLAGS  = -classpath "$(CPATH)"
 
 ##############################################################################
 ## main rules
@@ -78,7 +86,7 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 10.7.0
+CHECKSTYLE_VERSION = 10.9.2
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
 CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")
@@ -94,7 +102,7 @@ lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
 
 $(JAR_FILE):
 	[ -d "$(CHECKSTYLE_DIR)" ] || "$(MKDIR)" -p "$(CHECKSTYLE_DIR)"
-	"$(CURL)" --silent --location --output "$(JAR_FILE)" $(JAR_URL)
+	"$(CURL)" --insecure --silent --location --output "$(JAR_FILE)" $(JAR_URL)
 
 $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
 	"$(JAVA)" -jar $(JAR_FILE) -c=$(XML_FILE) $^
@@ -126,3 +134,6 @@ test: build $(TEST_TARGET)
 ## phony
 
 .PHONY: all build clean doc help lint run test
+
+.SUFFIXES:
+.SUFFIXES: .jar .java

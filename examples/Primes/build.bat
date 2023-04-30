@@ -160,7 +160,7 @@ goto :eof
 :props
 @rem value may be overwritten if file build.properties exists
 @rem https://github.com/checkstyle/checkstyle/releases/
-set _CHECKSTYLE_VERSION=10.7.0
+set _CHECKSTYLE_VERSION=10.9.2
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples

@@ -1,3 +1,10 @@
+##
+## Copyright (c) 2018-2023 Stéphane Micheloud
+##
+## Licensed under the MIT License.
+##
+##############################################################################
+
 include ../Makefile.inc
 
 SOURCE_DIR  = src
@@ -37,7 +44,7 @@ $(TARGET): $(SOURCES)
 	@$(TOUCH) "$(TARGET)"
 
 clean:
-	$(RM) -rf "$(TARGET_DIR)"
+	"$(RM)" -rf "$(TARGET_DIR)"
 
 run: build
 	"$(JAVA)" $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
@@ -81,7 +88,7 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 10.7.0
+CHECKSTYLE_VERSION = 10.9.3
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
 CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")
@@ -129,3 +136,6 @@ test: build $(TEST_TARGET)
 ## phony
 
 .PHONY: all build clean doc help lint run test
+
+.SUFFIXES:
+.SUFFIXES: .classes .jar .java

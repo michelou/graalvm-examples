@@ -256,7 +256,7 @@ echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
 echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
-echo     %__BEG_O%run%__END%         execute main program
+echo     %__BEG_O%run%__END%         execute main program "%_MAIN_CLASS%"
 echo     %__BEG_O%test%__END%        execute JMH benchmarks
 if %_VERBOSE%==0 goto :eof
 echo.

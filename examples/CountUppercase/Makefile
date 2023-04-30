@@ -1,17 +1,25 @@
+##
+## Copyright (c) 2018-2023 Stéphane Micheloud
+##
+## Licensed under the MIT License.
+##
+##############################################################################
+
 include ../Makefile.inc
 
 SOURCE_DIR  = src
 TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
+CPATH       = $(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)
 LOG_FILE    = $(TARGET_DIR)/graal_log.txt
-JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
-JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
+JAVAC_FLAGS = -deprecation -classpath "$(CPATH)"
+JAVA_FLAGS  = -classpath "$(CPATH)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
 
 ##############################################################################
 ## main rules
 
-SOURCES  = $(shell $(FIND) $(SOURCE_DIR)/main/java -type f -name *.java)
+SOURCES  = $(shell $(FIND) "$(SOURCE_DIR)/main/java" -type f -name "java")
 TARGET   = $(TARGET_DIR)/.latest-build
 
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
@@ -124,3 +132,6 @@ test: build $(TEST_TARGET)
 ## phony
 
 .PHONY: all build clean doc help lint run test
+
+.SUFFIXES:
+.SUFFIXES: .jar .java

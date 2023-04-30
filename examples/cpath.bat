@@ -7,7 +7,7 @@ if not defined _DEBUG set _DEBUG=%~1
 if not defined _DEBUG set _DEBUG=0
 set _VERBOSE=0
 
-if not defined _MVN_CMD set "_MVN_CMD=%MVN_HOME%\bin\mvn.cmd"
+if not defined _MVN_CMD set "_MVN_CMD=%MAVEN_HOME%\bin\mvn.cmd"
 if %_DEBUG%==1 echo [%~n0] "_MVN_CMD=%_MVN_CMD%" 1>&2
 
 if %_DEBUG%==1 ( set _MVN_OPTS=
@@ -46,7 +46,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.8.4
+set _MICRONAUT_VERSION=3.8.7
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -63,7 +63,7 @@ call :add_jar "javax.inject" "javax.inject" "1"
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
 call :add_jar "info.picocli" "picocli" "4.7.1"
 
-set _LOG4J_VERSION=2.19.0
+set _LOG4J_VERSION=2.20.0
 
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
 call :add_jar "org.apache.logging.log4j" "log4j-api" "%_LOG4J_VERSION%"

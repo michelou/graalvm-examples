@@ -27,17 +27,19 @@ set _JAVA_HOME=
 set _JAVA11_HOME=
 set _JAVA17_HOME=
 
-set _MAKE_PATH=
-set _MAVEN_PATH=
+set _GIT_PATH=
 set _LLVM_PATH=
+set _MAVEN_PATH=
+set _MSYS_PATH=
 set _PYTHON_PATH=
 set _SDK_PATH=
-set _CYGWIN_PATH=
-set _GIT_PATH=
 
 @rem deprecated
 @rem call :java8
 @rem if not %_EXITCODE%==0 goto end
+
+call :cmake
+if not %_EXITCODE%==0 goto end
 
 call :java11
 if not %_EXITCODE%==0 goto end
@@ -45,16 +47,16 @@ if not %_EXITCODE%==0 goto end
 call :java17
 if not %_EXITCODE%==0 goto end
 
-call :make
+call :llvm
 if not %_EXITCODE%==0 goto end
 
 call :maven
 if not %_EXITCODE%==0 goto end
 
-call :python3
+call :msys
 if not %_EXITCODE%==0 goto end
 
-call :llvm14
+call :python3
 if not %_EXITCODE%==0 goto end
 
 @rem call :msvs
@@ -241,6 +243,34 @@ echo   %__BEG_P%Subcommands:%__END%
 echo     %__BEG_O%help%__END%        display this help message
 goto :eof
 
+@rem output parameter: _CMAKE_HOME
+:cmake
+set _CMAKE_HOME=
+
+set __CMAKE_CMD=
+for /f %%f in ('where cmake.exe 2^>NUL') do set "__CMAKE_CMD=%%f"
+if defined __CMAKE_CMD (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of CMake executable found in PATH 1>&2
+    for /f "delims=" %%i in ("%__CMAKE_CMD%") do set "__CMAKE_BIN_DIR=%%~dpi"
+    for %%f in ("!__CMAKE_BIN_DIR!") do set "_CMAKE_HOME=%%~dpf"
+) else if defined CMAKE_HOME (
+    set "_CMAKE_HOME=%CMAKE_HOME%"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CMAKE_HOME 1>&2
+) else (
+    set "__PATH=%ProgramFiles%"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"
+    if not defined _CMAKE_HOME (
+        set __PATH=C:\opt
+        for /f %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"
+    )
+)
+if not exist "%_CMAKE_HOME%\bin\cmake.exe" (
+    echo %_ERROR_LABEL% cmake executable not found ^(%_CMAKE_HOME%^) 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
 @rem input parameter: %1=Java version
 @rem output parameter: _GRAALVM_HOME
 :graalvm
@@ -324,35 +354,6 @@ if not %_EXITCODE%==0 goto :eof
 if defined _GRAALVM_HOME set "_GRAALVM17_HOME=%_GRAALVM_HOME%"
 goto :eof
 
-@rem output parameters: _MAKE_HOME, _MAKE_PATH
-:make
-set _MAKE_HOME=
-set _MAKE_PATH=
-
-set __MAKE_CMD=
-for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
-if defined __MAKE_CMD (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Make executable found in PATH 1>&2
-    rem keep _MAKE_PATH undefined since executable already in path
-    goto :eof
-) else if defined MAKE_HOME (
-    set "_MAKE_HOME=%MAKE_HOME%"
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MAKE_HOME 1>&2
-) else (
-    set _PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!_PATH!\make-3*" 2^>NUL') do set "_MAKE_HOME=!_PATH!\%%f"
-    if defined _MAKE_HOME (
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Make installation directory !_MAKE_HOME! 1>&2
-    )
-)
-if not exist "%_MAKE_HOME%\bin\make.exe" (
-    echo %_ERROR_LABEL% Make executable not found ^(%_MAKE_HOME%^) 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-set "_MAKE_PATH=;%_MAKE_HOME%\bin"
-goto :eof
-
 @rem output parameters: _MAVEN_HOME, _MAVEN_PATH
 :maven
 set _MAVEN_HOME=
@@ -385,6 +386,40 @@ if not exist "%_MAVEN_HOME%\bin\mvn.cmd" (
     goto :eof
 )
 set "_MAVEN_PATH=;%_MAVEN_HOME%\bin"
+goto :eof
+
+@rem output parameters: _MSYS_HOME, _MSYS_PATH
+:msys
+set _MSYS_HOME=
+set _MSYS_PATH=
+
+set __MAKE_CMD=
+for /f %%f in ('where make.exe 2^>NUL') do set __MAKE_CMD=%%f
+if defined __MAKE_CMD (
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
+    for /f "delims=" %%i in ("%__MAKE_CMD%") do set "__MAKE_BIN_DIR=%%~dpi"
+    for %%f in ("!__MAKE_BIN_DIR!") do set "_MSYS_HOME=%%~dpf"
+    @rem keep _MSYS_PATH undefined since executable already in path
+    goto :eof
+) else if defined MSYS_HOME (
+    set "_MSYS_HOME=%MSYS_HOME%"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MSYS_HOME 1>&2
+) else (
+    set "__PATH=%ProgramFiles%"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
+    if not defined _MSYS_HOME (
+        set __PATH=C:\opt
+        for /f %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
+    )
+)
+if not exist "%_MSYS_HOME%\usr\bin\make.exe" (
+    echo %_ERROR_LABEL% GNU Make executable not found ^(%_MSYS_HOME%^) 1>&2
+    set _MSYS_HOME=
+    set _EXITCODE=1
+    goto :eof
+)
+@rem 1st path -> (make.exe, python.exe), 2nd path -> gcc.exe
+set "_MSYS_PATH=;%_MSYS_HOME%\usr\bin;%_MSYS_HOME%\mingw64\bin"
 goto :eof
 
 @rem output parameters: _PYTHON_HOME, _PYTHON_PATH
@@ -434,11 +469,11 @@ goto :eof
 
 @rem output parameters: _LLVM_HOME, _LLVM_PATH
 @rem NB. GraalVM 23.2 = LLVM 14, GraalVM 21.3 = LLVM 12
-:llvm14
+:llvm
 set _LLVM_HOME=
 set _LLVM_PATH=
 
-set __LLVM_VERSION=14
+set __LLVM_VERSION=15
 
 set __CLANG_CMD=
 for /f %%f in ('where clang.exe 2^>NUL') do set "__CLANG_CMD=%%f"
@@ -509,7 +544,7 @@ if not exist "%__MSBUILD_HOME%\MSBuild.exe" (
 @rem set "_MSVS_PATH=;%_MSVC_HOME%\bin%__MSVC_ARCH%;%__MSBUILD_HOME%"
 goto :eof
 
-@rem output parameter(s): _MSVC_BIN_DIR, _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME
+@rem output parameters: _MSVC_BIN_DIR, _MSVC_HOME, _MSVS_CMAKE_CMD, _MSVS_HOME
 @rem Visual Studio 2019
 :msvs_2019
 set _MSVC_BIN_DIR=
@@ -550,9 +585,8 @@ if not exist "%__MSBUILD_BIN_DIR%\MSBuild.exe" (
 )
 set "__PATH=%_MSVS_HOME%\Common7\IDE\CommonExtensions\Microsoft\CMake"
 for /f "delims=" %%i in ('where /r "!__PATH!" cmake.exe') do set "__CMAKE_BIN_DIR=%%~dpi"
-for %%f in ("!__CMAKE_BIN_DIR!..") do set _CMAKE_HOME=%%~sf
 if not exist "%__CMAKE_BIN_DIR%\cmake.exe" (
-    echo %_ERROR_LABEL% Could not find Microsoft CMake ^(%_CMAKE_HOME%^) 1>&2
+    echo %_ERROR_LABEL% Could not find Microsoft CMake ^(%%_MSVS_HOME%%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -639,40 +673,6 @@ if not exist "%_WABT_HOME%\bin\wat2wasm.exe" (
 )
 goto :eof
 
-@rem output parameter(s): _CYGWIN_HOME, _CYGWIN_PATH
-:cygwin
-set _CYGWIN_HOME=
-set _CYGWIN_PATH=
-
-set __MAKE_CMD=
-for /f %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
-if defined __MAKE_CMD (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
-    for /f "delims=" %%i in ("%__MAKE_CMD%") do set "__MAKE_BIN_DIR=%%~dpi"
-    for %%f in ("!__MAKE_BIN_DIR!..\.") do set "_CYGWIN_HOME=%%~dpf"
-    @rem keep _CYGWIN_PATH undefined since executable already in path
-    goto :eof
-) else if defined CYGWIN_HOME (
-    set "_CYGWIN_HOME=%CYGWIN_HOME%"
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CYGWIN_HOME 1>&2
-) else (
-    set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
-    if not defined _CYGWIN_HOME (
-        set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\Cygwin*" 2^>NUL') do set "_CYGWIN_HOME=!__PATH!\%%f"
-    )
-)
-if not exist "%_CYGWIN_HOME%\bin\make.exe" (
-    echo %_ERROR_LABEL% GNU Make executable not found ^("%_CYGWIN_HOME%"^) 1>&2
-    echo ^(execute command: setup-x86_64.exe -q --packages=make^) 1>&2
-    set _CYGWIN_HOME=
-    set _EXITCODE=1
-    goto :eof
-)
-set "_CYGWIN_PATH=;%_CYGWIN_HOME%\bin"
-goto :eof
-
 @rem output parameters: _GIT_HOME, _GIT_PATH
 :git
 set _GIT_HOME=
@@ -733,13 +733,13 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%PYTHON_HOME%\Scripts:pylint.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\Scripts\pylint.exe" --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j"
+    for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\Scripts\pylint.exe" --version 2^>^NUL ^| findstr pylint') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% pylint %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%PYTHON_HOME%\Scripts:pylint.exe"
 )
-where /q "%CYGWIN_HOME%\bin:make.exe"
+where /q "%MSYS_HOME%\usr\bin:make.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('"%CYGWIN_HOME%\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% "%CYGWIN_HOME%\bin:make.exe"
+    for /f "tokens=1,2,3,*" %%i in ('"%MSYS_HOME%\usr\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSYS_HOME%\usr\bin:make.exe"
 )
 where /q "%LLVM_HOME%\bin:clang.exe"
 if %ERRORLEVEL%==0 (
@@ -756,15 +756,24 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1-6,7,*" %%i in ('"%MSVC_BIN_DIR%\cl.exe" -version 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cl %%o,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:cl.exe"
 )
-where /q "%CYGWIN_HOME%\bin:cmake.exe"
+where /q "%CMAKE_HOME%\bin:cmake.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('"%CYGWIN_HOME%\bin\cmake.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cmake %%k,"
-    set __WHERE_ARGS=%__WHERE_ARGS% "%CYGWIN_HOME%\bin:cmake.exe"
+    for /f "tokens=1,2,3,*" %%i in ('"%CMAKE_HOME%\bin\cmake.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% cmake %%k,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%CMAKE_HOME%\bin:cmake.exe"
 )
-where /q msbuild.exe
+where /q "%MSYS_HOME%\mingw64\bin:cppcheck.exe"
 if %ERRORLEVEL%==0 (
-    for /f %%i in ('msbuild.exe -version ^| findstr /b "[0-9]"') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% msbuild %%i,"
-    set __WHERE_ARGS=%__WHERE_ARGS% msbuild.exe
+    for /f "tokens=1,*" %%i in ('"%MSYS_HOME%\mingw64\bin\cppcheck.exe" --version') do set __VERSIONS_LINE2=%__VERSIONS_LINE2% cppcheck %%j,
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSYS_HOME%\mingw64\bin:cppcheck.exe"
+)
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __BIN_DIR=Bin\amd64
+) else ( set __BIN_DIR=Bin
+)
+where /q "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%:msbuild.exe"
+if %ERRORLEVEL%==0 (
+    "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%\msbuild.exe" -version | findstr /b [0-9]
+    for /f "delims=" %%i in ('"%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%\msbuild.exe" -version ^| findstr /b [0-9]') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% msbuild %%i"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%:msbuild.exe"
 )
 where /q "%MSVC_BIN_DIR%:link.exe"
 if %ERRORLEVEL%==0 (
@@ -790,18 +799,18 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     echo Tool paths: 1>&2
     for /f "tokens=*" %%p in ('where %__WHERE_ARGS%') do echo    %%p 1>&2
     echo Environment variables: 1>&2
-    @rem if defined CYGWIN_HOME echo    "CYGWIN_HOME=%CYGWIN_HOME%" 1>&2
+    if defined CMAKE_HOME echo    "CMAKE_HOME=%CMAKE_HOME%" 1>&2
     if defined GIT_HOME echo    "GIT_HOME=%GIT_HOME%" 1>&2
     if defined GRAALVM_HOME echo    "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     if defined GRAALVM11_HOME echo    "GRAALVM11_HOME=%GRAALVM11_HOME%" 1>&2
     if defined GRAALVM17_HOME echo    "GRAALVM17_HOME=%GRAALVM17_HOME%" 1>&2
     if defined JAVA_HOME echo    "JAVA_HOME=%JAVA_HOME%" 1>&2
     if defined LLVM_HOME echo    "LLVM_HOME=%LLVM_HOME%" 1>&2
-    if defined MAKE_HOME echo    "MAKE_HOME=%MAKE_HOME%" 1>&2
     if defined MAVEN_HOME echo    "MAVEN_HOME=%MAVEN_HOME%" 1>&2
     if defined MSVC_BIN_DIR echo    "MSVC_BIN_DIR=%MSVC_BIN_DIR%" 1>&2
     if defined MSVC_HOME echo    "MSVC_HOME=%MSVC_HOME%" 1>&2
     if defined MSVS_HOME echo    "MSVS_HOME=%MSVS_HOME%" 1>&2
+    if defined MSYS_HOME echo    "MSYS_HOME=%MSYS_HOME%" 1>&2
     if defined PYTHON_HOME echo    "PYTHON_HOME=%PYTHON_HOME%" 1>&2
     if defined WABT_HOME echo    "WABT_HOME=%WABT_HOME%" 1>&2
     echo Path associations: 1>&2
@@ -815,7 +824,7 @@ goto :eof
 :end
 endlocal & (
     if %_EXITCODE%==0 (
-        @rem if not defined CYGWIN_HOME set "CYGWIN_HOME=%_CYGWIN_HOME%"
+        if not defined CMAKE_HOME set "CMAKE_HOME=%_CMAKE_HOME%"
         if not defined GIT_HOME set "GIT_HOME=%_GIT_HOME%"
         if not defined GRAALVM_HOME set "GRAALVM_HOME=%_GRAALVM11_HOME%"
         if not defined GRAALVM11_HOME set "GRAALVM11_HOME=%_GRAALVM11_HOME%"
@@ -823,12 +832,12 @@ endlocal & (
         @rem JAVA_HOME needed for Maven
         if not defined JAVA_HOME set "JAVA_HOME=%_GRAALVM11_HOME%"
         if not defined LLVM_HOME set "LLVM_HOME=%_LLVM_HOME%"
-        if not defined MAKE_HOME set "MAKE_HOME=%_MAKE_HOME%"
         if not defined MAVEN_HOME set "MAVEN_HOME=%_MAVEN_HOME%"
         if not defined MSVC_BIN_DIR set "MSVC_BIN_DIR=%_MSVC_BIN_DIR%"
         if not defined MSVC_HOME set "MSVC_HOME=%_MSVC_HOME%"
         if not defined MSVS_CMAKE_CMD set "MSVS_CMAKE_CMD=%_MSVS_CMAKE_CMD%"
         if not defined MSVS_HOME set "MSVS_HOME=%_MSVS_HOME%"
+        if not defined MSYS_HOME set "MSYS_HOME=%_MSYS_HOME%"
         if not defined PYTHON_HOME set "PYTHON_HOME=%_PYTHON_HOME%"
         if not defined SDK_HOME set "SDK_HOME=%_SDK_HOME%"
         if not defined KIT_INC_DIR set "KIT_INC_DIR=%_KIT_INC_DIR%"

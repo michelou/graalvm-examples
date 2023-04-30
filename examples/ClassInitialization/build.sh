@@ -78,7 +78,7 @@ args() {
 
     debug "Options    : CACHED=$CACHED TIMER=$TIMER VERBOSE=$VERBOSE"
     debug "Subcommands: CLEAN=$CLEAN COMPILE=$COMPILE HELP=$HELP RUN=$RUN"
-    debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME_HOME"
+    debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME"
     debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
     $TIMER && TIMER_START=$(date +"%s")
@@ -161,14 +161,20 @@ compile_java() {
         echo $f >> "$sources_file"
         n=$((n + 1))
     done
+    if [[ $n -eq 0 ]]; then
+        warning "No Java source file found"
+        return 1
+    fi
+    local s=; [[ $n -gt 1 ]] && s="s"
+    local n_files="$n Java source file$s"
     if $DEBUG; then
         debug "$JAVAC_CMD @$opts_file @$sources_file"
     elif $VERBOSE; then
-        echo "Compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
+        echo "Compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
     fi
     eval "$JAVAC_CMD" "@$opts_file" "@$sources_file"
     if [[ $? -ne 0 ]]; then
-        error "Failed to compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
+        error "Failed to compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
         cleanup 1
     fi
     touch "$timestamp_file"
