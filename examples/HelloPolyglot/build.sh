@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2018-2021 Stéphane Micheloud
+# Copyright (c) 2018-2023 Stéphane Micheloud
 #
 # Licensed under the MIT License.
 #
@@ -10,7 +10,7 @@
 
 getHome() {
     local source="${BASH_SOURCE[0]}"
-    while [ -h "$source" ] ; do
+    while [[ -h "$source" ]]; do
         local linked="$(readlink "$source")"
         local dir="$( cd -P $(dirname "$source") && cd -P $(dirname "$linked") && pwd )"
         source="$dir/$(basename "$linked")"
@@ -97,7 +97,7 @@ EOS
 }
 
 clean() {
-    if [ -d "$TARGET_DIR" ]; then
+    if [[ -d "$TARGET_DIR" ]]; then
         if $DEBUG; then
             debug "Delete directory $TARGET_DIR"
         elif $VERBOSE; then
@@ -116,10 +116,10 @@ action_required() {
     for f in $(find $search_path -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
-    if [ -z "$latest" ]; then
+    if [[ -z "$latest" ]]; then
         ## Do not compile if no source file
         echo 0
-    elif [ ! -f "$timestamp_file" ]; then
+    elif [[ ! -f "$timestamp_file" ]]; then
         ## Do compile if timestamp file doesn't exist
         echo 1
     else
@@ -145,7 +145,7 @@ compile() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $MAIN_SOURCE_DIR/ -name *.java 2>/dev/null); do
+    for f in $(find "$MAIN_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
         n=$((n + 1))
     done
@@ -163,7 +163,7 @@ compile() {
 }
 
 mixed_path() {
-    if [ -x "$CYGPATH_CMD" ]; then
+    if [[ -x "$CYGPATH_CMD" ]]; then
         $CYGPATH_CMD -am $1
     elif $mingw || $msys; then
         echo $1 | sed 's|/|\\\\|g'
@@ -182,7 +182,7 @@ doc() {
 
     local sources_file="$TARGET_DIR/javadoc_sources.txt"
     [[ -f "$sources_file" ]] && rm -rf "$sources_file"
-    for f in $(find $SOURCE_DIR/main/java/ -name *.java 2>/dev/null); do
+    for f in $(find "$SOURCE_DIR/main/java/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
     done
     local opts_file="$TARGET_DIR/javadoc_opts.txt"
@@ -210,7 +210,7 @@ run() {
     ##cp "$TARGET_DIR/$MAIN_CLASS.wasm" "$CLASSES_DIR"
 
     $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS"
-    eval "$JAVA_CMD" -cp $CLASSES_DIR $MAIN_CLASS
+    eval "$JAVA_CMD" -cp "$CLASSES_DIR" $MAIN_CLASS
     [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
 }
 
@@ -263,7 +263,7 @@ if $cygwin || $mingw || $msys; then
     [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
     PSEP=";"
 fi
-if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
     error "GraalVM installation not found"
     cleanup 1
 fi

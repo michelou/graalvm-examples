@@ -10,7 +10,7 @@
 
 getHome() {
     local source="${BASH_SOURCE[0]}"
-    while [ -h "$source" ] ; do
+    while [[ -h "$source" ]]; do
         local linked="$(readlink "$source")"
         local dir="$( cd -P $(dirname "$source") && cd -P $(dirname "$linked") && pwd )"
         source="$dir/$(basename "$linked")"
@@ -84,26 +84,30 @@ Usage: $BASENAME { <option> | <subcommand> }
 
   Options:
     -debug       display commands executed by this script
-    -timer       display total elapsed time
+    -timer       display total execution time
     -verbose     display progress messages
 
   Subcommands:
     clean        delete generated files
     compile      compile C/Java source files
     help         display this help message
-    run          execute main class $MAIN_CLASS
+    run          execute main class "$MAIN_CLASS"
 EOS
 }
 
 clean() {
-    if [ -d "$TARGET_DIR" ]; then
+    if [[ -d "$TARGET_DIR" ]]; then
         if $DEBUG; then
             debug "Delete directory $TARGET_DIR"
         elif $VERBOSE; then
             echo "Delete directory \"${TARGET_DIR/$ROOT_DIR\//}\"" 1>&2
         fi
         rm -rf "$TARGET_DIR"
-        [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
+        if [[ $? -ne 0 ]]; then
+            error "Failed to delete directory \"${TARGET_DIR/$ROOT_DIR\//}\""
+            EXITCODE=1
+            return 0
+        fi
     fi
 }
 
@@ -123,7 +127,7 @@ compile() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $JAVA_SOURCE_DIR/ -name *.java 2>/dev/null); do
+    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
         n=$((n + 1))
     done
@@ -154,10 +158,10 @@ action_required() {
     for f in $(find $search_path -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
-    if [ -z "$latest" ]; then
+    if [[ -z "$latest" ]]; then
         ## Do not compile if no source file
         echo 0
-    elif [ ! -f "$timestamp_file" ]; then
+    elif [[ ! -f "$timestamp_file" ]]; then
         ## Do compile if timestamp file doesn't exist
         echo 1
     else
@@ -168,7 +172,7 @@ action_required() {
 }
 
 mixed_path() {
-    if [ -x "$CYGPATH_CMD" ]; then
+    if [[ -x "$CYGPATH_CMD" ]]; then
         $CYGPATH_CMD -am $1
     elif $mingw || $msys; then
         echo $1 | sed 's|/|\\\\|g'
@@ -178,8 +182,8 @@ mixed_path() {
 }
 
 run() {
-    $DEBUG && debug "$JAVA_CMD -cp $(mixed_path $CLASSES_DIR) $MAIN_CLASS"
-    eval "$JAVA_CMD" -cp $(mixed_path $CLASSES_DIR) $MAIN_CLASS
+    $DEBUG && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS"
+    eval "$JAVA_CMD" -cp "$(mixed_path $CLASSES_DIR)" $MAIN_CLASS
 }
 
 ##############################################################################
@@ -227,14 +231,14 @@ if $cygwin || $mingw || $msys; then
     [[ -n "$GRAALVM" ]] && GRAALVM="$(mixed_path $GRAALVM)"
 	PSEP=";"
 fi
-if [ ! -x "$GRAALVM/bin/javac" ]; then
+if [[ ! -x "$GRAALVM/bin/javac" ]]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
 JAVA_CMD="$GRAALVM/bin/java"
 JAVAC_CMD="$GRAALVM/bin/javac"
 
-if [ ! -x "$GRAALVM/bin/lli" ]; then
+if [[ ! -x "$GRAALVM/bin/lli" ]]; then
     error "lli command not found"
     cleanup 1
 fi

@@ -18,7 +18,7 @@
     </parent>
 
     <properties>
-        <javac.target>1.8</javac.target>
+        <javac.target>11</javac.target>
 
         <uberjar.name>benchmark</uberjar.name>
     </properties>

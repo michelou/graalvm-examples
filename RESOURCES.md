@@ -23,6 +23,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="blogs">Blogs</span>
 
+- [Building native images in Java with GraalVM][blog_vega] by Dan Vega, February 2023.
 - [A guide to GraalVM &ndash; a next-generation JVM][blog_chuyko] by Dimitri Chuyko, December 2022.
 - [GraalVM: running C/C++ application safely in the Java world](https://www.adyen.com/blog/graalvm-running-c-applications--in-the-cloud) by Chang-Iun Wang, November 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
@@ -125,7 +126,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -149,6 +150,7 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33
 [blog_marr]: https://stefan-marr.de/2015/11/add-graal-jit-compilation-to-your-jvm-language-in-5-easy-steps-step-1/
 [blog_run_java]: https://medium.com/graalvm/graalvm-21-0-introducing-a-new-way-to-run-java-df894256de28
+[blog_vega]: https://www.danvega.dev/blog/2023/02/03/native-images-graalvm/
 [book_dummies]: http://www.oracle.com/a/ocom/docs/beta0/js/graalvm-for-dummies-ebook.pdf
 [book_kumar]: https://www.packtpub.com/product/supercharge-your-applications-with-graalvm/9781800564909
 [ch_epfl_paper9]: https://lampwww.epfl.ch/~hmiller/scala2013/resources/pdfs/paper9.pdf

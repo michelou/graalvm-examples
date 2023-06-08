@@ -46,7 +46,7 @@ call :add_jar "net.sf.jopt-simple" "jopt-simple" "5.0.4"
 call :add_jar "org.apache.commons" "commons-math3" "3.6.1"
 
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=3.8.7
+set _MICRONAUT_VERSION=3.9.1
 
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 call :add_jar "io.micronaut" "micronaut-core" "%_MICRONAUT_VERSION%"
@@ -61,7 +61,7 @@ call :add_jar "io.micronaut.configuration" "micronaut-picocli" "1.2.1"
 call :add_jar "javax.inject" "javax.inject" "1"
 
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
-call :add_jar "info.picocli" "picocli" "4.7.1"
+call :add_jar "info.picocli" "picocli" "4.7.3"
 
 set _LOG4J_VERSION=2.20.0
 

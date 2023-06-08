@@ -43,7 +43,7 @@ clean:
 
 run: build
 	"$(JAVA)" $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
-	@[ -f "$(LOG_FILE)" ] & echo Compilation log written to file "$(LOG_FILE)" 1>&2
+	@[ -f "$(LOG_FILE)" ] & $(ECHO) "Compilation log written to file \"$(LOG_FILE)\"" 1>&2
 
 help:
 	@$(ECHO) "Usage: make all|build|clean|help|lint|run|test"
@@ -54,7 +54,7 @@ help:
 	@$(ECHO) "     clean  delete generated files"
 	@$(ECHO) "     help   display this help message"
 	@$(ECHO) "     lint   analyze Java source files with CheckStyle"
-	@$(ECHO) "     run    execute main program $(MAIN_CLASS)"
+	@$(ECHO) "     run    execute main program \"$(MAIN_CLASS)\""
 	@$(ECHO) "     test   execute unit tests with JUnit"
 
 ##############################################################################
@@ -71,7 +71,7 @@ DOC_OPTS_FILE    = $(TARGET_DIR)/javadoc_opts.txt
 DOC_SOURCES_FILE = $(TARGET_DIR)/javadoc_sources.txt
 
 $(DOC_TARGET): $(SOURCES)
-	[ -d "$(DOC_TARGET_DIR)" ] || $(MKDIR) -p "$(DOC_TARGET_DIR)"
+	[ -d "$(DOC_TARGET_DIR)" ] || "$(MKDIR)" -p "$(DOC_TARGET_DIR)"
 	@$(ECHO) -d "$(DOC_TARGET_DIR)" -doctitle "$(PROJECT_NAME)" -footer "$(PROJECT_URL)" -top "$(PROJECT_VERSION)" > "$(DOC_OPTS_FILE)"
 	@$(ECHO) $(SOURCES) > "$(DOC_SOURCES_FILE)"
 	"$(JAVADOC)" "@$(DOC_OPTS_FILE)" "@$(DOC_SOURCES_FILE)"
@@ -99,10 +99,10 @@ lint: $(JAR_FILE) $(CHECKSTYLE_TARGET)
 
 $(JAR_FILE):
 	[ -d "$(CHECKSTYLE_DIR)" ] || "$(MKDIR)" -p "$(CHECKSTYLE_DIR)"
-	"$(CURL)" --silent --location --output "$(JAR_FILE)" $(JAR_URL)
+	"$(CURL)" --insecure --silent --location --output "$(JAR_FILE)" $(JAR_URL)
 
 $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
-	"$(JAVA)" -jar $(JAR_FILE) -c=$(XML_FILE) $^
+	"$(JAVA)" -jar "$(JAR_FILE)" -c=$(XML_FILE) $^
 
 ##############################################################################
 ## test rules

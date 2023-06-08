@@ -10,7 +10,7 @@
 
 getHome() {
     local source="${BASH_SOURCE[0]}"
-    while [ -h "$source" ] ; do
+    while [[ -h "$source" ]]; do
         local linked="$(readlink "$source")"
         local dir="$( cd -P $(dirname "$source") && cd -P $(dirname "$linked") && pwd )"
         source="$dir/$(basename "$linked")"
@@ -104,14 +104,18 @@ EOS
 }
 
 clean() {
-    if [ -d "$TARGET_DIR" ]; then
+    if [[ -d "$TARGET_DIR" ]]; then
         if $DEBUG; then
             debug "Delete directory $TARGET_DIR"
         elif $VERBOSE; then
             echo "Delete directory \"${TARGET_DIR/$ROOT_DIR\//}\"" 1>&2
         fi
         rm -rf "$TARGET_DIR"
-        [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
+        if [[ $? -ne 0 ]]; then
+            error "Failed to delete directory \"${TARGET_DIR/$ROOT_DIR\//}\""
+            EXITCODE=1
+            return 0
+        fi
     fi
 }
 
@@ -128,10 +132,10 @@ action_required() {
     for f in $(find $search_path -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
-    if [ -z "$latest" ]; then
+    if [[ -z "$latest" ]]; then
         ## Do not compile if no source file
         echo 0
-    elif [ ! -f "$timestamp_file" ]; then
+    elif [[ ! -f "$timestamp_file" ]]; then
         ## Do compile if timestamp file doesn't exist
         echo 1
     else
@@ -157,7 +161,7 @@ compile_java() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $JAVA_SOURCE_DIR/ -name "*.java" 2>/dev/null); do
+    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $f >> "$sources_file"
         n=$((n + 1))
     done
@@ -184,9 +188,19 @@ doc() {
     echo "doc"
 }
 
+mixed_path() {
+    if [[ -x "$CYGPATH_CMD" ]]; then
+        $CYGPATH_CMD -am $1
+    elif $mingw || $msys; then
+        echo $1 | sed 's|/|\\\\|g'
+    else
+        echo $1
+    fi
+}
+
 run() {
-    $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS"
-    eval "$JAVA_CMD" -cp $CLASSES_DIR $MAIN_CLASS $MAIN_ARGS
+    $DEBUG && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS $MAIN_ARGS"
+    eval "$JAVA_CMD" -cp "$(mixed_path $CLASSES_DIR)" $MAIN_CLASS $MAIN_ARGS
 }
 
 ##############################################################################
@@ -229,14 +243,14 @@ case "$(uname -s)" in
 esac
 $linux || error "Only Linux/MacOS platforms are supported"
 
-if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
 
-if [ ! -x "$GRAALVM_HOME/bin/lli" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/lli" ]]; then
     error "lli command not found"
     cleanup 1
 fi

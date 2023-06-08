@@ -1,0 +1,16 @@
+[
+{
+  "name":"dev.danvega.MeanMessage",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"printMessage","parameterTypes":[] }
+  ]
+},
+{
+  "name":"dev.danvega.NiceMessage",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"printMessage","parameterTypes":[] }
+  ]
+}
+]

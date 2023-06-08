@@ -1,6 +1,6 @@
-# <span id="top">Building GraalVM on Microsoft Windows</span> <span style="size:30%;"><a href="README.md">↩</a></span>
+# <span id="top">Building GraalVM on Windows</span> <span style="size:30%;"><a href="README.md">↩</a></span>
 
-<table style="font-family:Helvetica,Arial;font-size:14px;line-height:1.6;">
+<table style="font-family:Helvetica,Arial;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
   <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/" rel="external">GraalVM</a> software distribution on a Windows machine.
@@ -253,7 +253,7 @@ G:\graal\wasm\mx.wasm\suite.py
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

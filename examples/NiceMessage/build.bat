@@ -21,8 +21,40 @@ if not %_EXITCODE%==0 goto end
 @rem #########################################################################
 @rem ## Main
 
-for %%i in (%_COMMANDS%) do (
-    call :%%i
+if %_HELP%==1 (
+    call :help
+    exit /b !_EXITCODE!
+)
+if %_CLEAN%==1 (
+    call :clean
+    if not !_EXITCODE!==0 goto end
+)
+if %_LINT%==1 (
+    call :checkstyle
+    if not !_EXITCODE!==0 goto end
+)
+if %_COMPILE%==1 (
+    call :compile
+    if not !_EXITCODE!==0 goto end
+    if %_TARGET%==native (
+        call :native_image
+        if not !_EXITCODE!==0 goto end
+    )
+)
+if %_DOC%==1 (
+    call :doc
+    if not !_EXITCODE!==0 goto end
+)
+if %_PACK%==1 (
+    call :pack
+    if not !_EXITCODE!==0 goto end
+)
+if %_RUN%==1 (
+    call :run_%_TARGET%
+    if not !_EXITCODE!==0 goto end
+)
+if %_TEST%==1 (
+    call :test_%_TARGET%
     if not !_EXITCODE!==0 goto end
 )
 goto end
@@ -47,8 +79,10 @@ set "_CLASSES_DIR=%_TARGET_DIR%\classes"
 set "_TARGET_DOCS_DIR=%_TARGET_DIR%\docs"
 set "_TEST_CLASSES_DIR=%_TARGET_DIR%\test-classes"
 
-set _PKG_NAME=
-set _MAIN_NAME=HelloPolyglot
+set _PKG_NAME=dev.danvega
+@rem both _MAIN_NAME and _MAIN_NATIVE_FILE are defined in args (option -native)
+
+set "_BENCH_JAR_FILE=%_TARGET_DIR%\benchmarks.jar"
 
 if not exist "%GRAALVM_HOME%\bin\javac.exe" (
     echo %_ERROR_LABEL% GraalVM installation not found 1>&2
@@ -69,20 +103,12 @@ if not exist "%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat" (
 set "_VCVARALL_BAT=%MSVS_HOME%\VC\Auxiliary\Build\vcvarsall.bat"
 
 if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
-    echo %_ERROR_LABEL% GraalVM installation not found 1>&2
+    echo %_ERROR_LABEL% GraalVM omponent 'native-image' not installed 1>&2
     echo %_ERROR_LABEL% ^(GRAALVM="%GRAALVM_HOME%"^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
 set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
-
-if not exist "%WABT_HOME%\bin\wat2wasm.exe" (
-    echo %_ERROR_LABEL% WABT installation not found 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-@rem see https://github.com/WebAssembly/wabt/releases
-set "_WAT2WASM_CMD=%WABT_HOME%\bin\wat2wasm.exe"
 goto :eof
 
 :env_colors
@@ -133,8 +159,8 @@ goto :eof
 
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
-@rem value may be overwritten if the property checkstyle.version
-@rem is defined in file build.properties
+@rem https://github.com/checkstyle/checkstyle/releases/
+@rem value may be overwritten if file build.properties exists
 set _CHECKSTYLE_VERSION=10.12.0
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
@@ -163,23 +189,28 @@ goto :eof
 
 @rem input parameter %*
 :args
-set _COMMANDS=
-set _JVMCI=0
-set __TARGET=jvm
+set _CLEAN=0
+set _COMPILE=0
+set _DOC=0
+set _HELP=0
+set _LINT=0
+set _PACK=0
+set _RUN=0
+set _TARGET=jvm
+set _TEST=0
 set _TIMER=0
 set _VERBOSE=0
 set __N=0
 :args_loop
 set "__ARG=%~1"
 if not defined __ARG (
-    if !__N!==0 set _COMMANDS=help
+    if !__N!==0 set _HELP=1
     goto args_done
 )
 if "%__ARG:~0,1%"=="-" (
     @rem option
     if "%__ARG%"=="-debug" ( set _DEBUG=1
-    ) else if "%__ARG%"=="-jvmci" ( set _JVMCI=1
-    ) else if "%__ARG%"=="-native" ( set __TARGET=native
+    ) else if "%__ARG%"=="-native" ( set _TARGET=native
     ) else if "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
@@ -189,14 +220,14 @@ if "%__ARG:~0,1%"=="-" (
     )
 ) else (
     @rem subcommand
-    if "%__ARG%"=="clean" ( set _COMMANDS=!_COMMANDS! clean
-    ) else if "%__ARG%"=="compile" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET%
-    ) else if "%__ARG%"=="doc" ( set _COMMANDS=!_COMMANDS! doc
-    ) else if "%__ARG%"=="help" ( set _COMMANDS=help
-    ) else if "%__ARG%"=="lint" ( set _COMMANDS=!_COMMANDS! checkstyle
-    ) else if "%__ARG%"=="pack" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack
-    ) else if "%__ARG%"=="run" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% run_%__TARGET%
-    ) else if "%__ARG%"=="test" ( set _COMMANDS=!_COMMANDS! compile_%__TARGET% pack test_%__TARGET%
+    if "%__ARG%"=="clean" ( set _CLEAN=1
+    ) else if "%__ARG%"=="compile" ( set _COMPILE=1
+    ) else if "%__ARG%"=="doc" ( set _DOC=1
+    ) else if "%__ARG%"=="help" ( set _HELP=1
+    ) else if "%__ARG%"=="lint" ( set _LINT=1
+    ) else if "%__ARG%"=="pack" ( set _COMPILE=1& set _PACK=1
+    ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
+    ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
     ) else (
         echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
         set _EXITCODE=1
@@ -210,6 +241,9 @@ goto :args_loop
 set _STDOUT_REDIRECT=1^>CON
 if %_DEBUG%==0 if %_VERBOSE%==0 set _STDOUT_REDIRECT=1^>NUL
 
+set _MAIN_NAME=Application
+set _MAIN_ARGS=MeanMessage
+
 if defined _PKG_NAME ( set _MAIN_CLASS=%_PKG_NAME%.%_MAIN_NAME%
 ) else ( set _MAIN_CLASS=%_MAIN_NAME%
 )
@@ -217,14 +251,13 @@ set "_MAIN_NATIVE_FILE=%_TARGET_DIR%\%_MAIN_NAME%"
 
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Properties : _PROJECT_NAME=%_PROJECT_NAME% _PROJECT_VERSION=%_PROJECT_VERSION% 1>&2
-    echo %_DEBUG_LABEL% Options    : _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
-    echo %_DEBUG_LABEL% Subcommands: %_COMMANDS% 1>&2
+    echo %_DEBUG_LABEL% Options    : _TARGET=%_TARGET% _TIMER=%_TIMER% _VERBOSE=%_VERBOSE% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _CLEAN=%_CLEAN% _COMPILE=%_COMPILE% _DOC=%_DOC% _LINT=%_LINT% _PACK=%_PACK% _RUN=%_RUN% _TEST=%_TEST% 1>&2
     echo %_DEBUG_LABEL% Variables  : "GRAALVM_HOME=%GRAALVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "JAVA_HOME=%JAVA_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "LLVM_HOME=%LLVM_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
-    echo %_DEBUG_LABEL% Variables  : "WABT_HOME=%WABT_HOME%" 1>&2
-	echo %_DEBUG_LABEL% Variables  : _MAIN_CLASS=%_MAIN_CLASS% 1>&2
+    echo %_DEBUG_LABEL% Variables  : _MAIN_CLASS=%_MAIN_CLASS% 1>&2
 )
 if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
@@ -256,7 +289,7 @@ echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
 echo     %__BEG_O%help%__END%        display this help message
 echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
-echo     %__BEG_O%run%__END%         execute main program "%_MAIN_CLASS%"
+echo     %__BEG_O%run%__END%         execute main program "%__BEG_O%%_MAIN_CLASS%%__END%"
 echo     %__BEG_O%test%__END%        execute JMH benchmarks
 if %_VERBOSE%==0 goto :eof
 echo.
@@ -280,6 +313,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% rmdir /s /q "%__DIR%" 1>&2
 )
 rmdir /s /q "%__DIR%"
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to delete directory "!__DIR:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -305,23 +339,31 @@ if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 set __PS1_VERBOSE[0]=
 set __PS1_VERBOSE[1]=-Verbose
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -Outfile '%__JAR_FILE%'" 1>&2
-) else if %_VERBOSE%==1 ( echo Download file %__JAR_NAME% 1>&2
+) else if %_VERBOSE%==1 ( echo Download file "%__JAR_NAME%" 1>&2
 )
 powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to download file %__JAR_NAME% 1>&2
+    echo %_ERROR_LABEL% Failed to download file "%__JAR_NAME%" 1>&2
     set _EXITCODE=1
     goto :eof
 )
 :checkstyle_analyze
 set __SOURCE_FILES=
 set __N=0
-for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java 2^>NUL') do (
     set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
     set /a __N+=1
 )
+for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\test\java" *.java 2^>NUL') do (
+    set __SOURCE_FILES=!__SOURCE_FILES! "%%f"
+    set /a __N+=1
+)
+if not defined __SOURCE_FILES (
+    echo %_WARNING_LABEL% No Java source file found 1>&2
+    goto :eof
+)
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%\=%%USERPROFILE%%!" 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%LOCALAPPDATA%=%%LOCALAPPDATA%%%!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -330,17 +372,28 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:compile_jvm
+:compile
 if not exist "%_CLASSES_DIR%" mkdir "%_CLASSES_DIR%" 1>NUL
 
 set "__TIMESTAMP_FILE=%_CLASSES_DIR%\.latest-build"
 
-call :action_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java"
+call :action_required "%__TIMESTAMP_FILE%" "%_SOURCE_DIR%\main\java\*.java" "%_SOURCE_DIR%\main\resources\*"
 if %_ACTION_REQUIRED%==0 goto :eof
 
 call :compile_java
 if not %_EXITCODE%==0 goto :eof
 
+if exist "%_SOURCE_DIR%\main\resources\*" (
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% xcopy /y "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+    )
+    xcopy /y /s "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>NUL
+    if not !ERRORLEVEL!==0 (
+        echo %_ERROR_LABEL% Failed to copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+        set _EXITCODE=1
+        goto :eof
+    )
+)
 echo. > "%__TIMESTAMP_FILE%"
 goto :eof
 
@@ -356,8 +409,11 @@ for /f "delims=" %%f in ('where /r "%_SOURCE_DIR%\main\java" *.java') do (
     echo %%f>> "%__SOURCES_FILE%"
     set /a __N+=1
 )
-if %__N% gtr 1 ( set __N_FILES=%__N% Java source files
-) else ( set __N_FILES=%__N% Java source file
+if %__N%==0 (
+    echo %_WARNING_LABEL% No Java soure file found 1>&2
+    goto :eof
+) else if %__N%==1 ( set __N_FILES=%__N% Java source file
+) else ( set __N_FILES=%__N% Java source files
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Compile %__N_FILES% to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
@@ -370,46 +426,6 @@ if not %ERRORLEVEL%==0 (
 )
 goto :eof
 
-:compile_native
-call :compile_jvm
-if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
-)
-call :native_image
-goto :eof
-
-:native_image
-setlocal
-if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
-call "%_VCVARALL_BAT%" x64
-if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
-)
-if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% "INCLUDE=%INCLUDE%" 1>&2
-    echo %_DEBUG_LABEL% "LIB=%LIB%" 1>&2
-    echo %_DEBUG_LABEL% "LIBPATH=%LIBPATH%" 1>&2
-)
-if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
-
-set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback --language:js
-if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=--trace-class-initialization %__NATIVE_IMAGE_OPTS%
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
-)
-call "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% %_MAIN_CLASS% "%_MAIN_NATIVE_FILE%" %_STDOUT_REDIRECT%
-if not %ERRORLEVEL%==0 (
-    endlocal
-    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-endlocal
-goto :eof
-
 @rem input parameter: 1=target file 2,3,..=path (wildcards accepted)
 @rem output parameter: _ACTION_REQUIRED
 :action_required
@@ -419,11 +435,13 @@ set __PATH_ARRAY=
 set __PATH_ARRAY1=
 :action_path
 shift
-set __PATH=%~1
-if not defined __PATH goto :action_next
-set __PATH_ARRAY=%__PATH_ARRAY%,'%__PATH%'
-set __PATH_ARRAY1=%__PATH_ARRAY1%,'!__PATH:%_ROOT_DIR%=!'
-goto :action_path
+set "__PATH=%~1"
+if not defined __PATH goto action_next
+if defined __PATH_ARRAY set "__PATH_ARRAY=%__PATH_ARRAY%,"
+set __PATH_ARRAY=%__PATH_ARRAY%'%__PATH%'
+if defined __PATH_ARRAY1 set "__PATH_ARRAY1=%__PATH_ARRAY1%,"
+set __PATH_ARRAY1=%__PATH_ARRAY1%'!__PATH:%_ROOT_DIR%=!'
+goto action_path
 
 :action_next
 set __TARGET_TIMESTAMP=00000000000000
@@ -431,17 +449,17 @@ for /f "usebackq" %%i in (`powershell -c "gci -path '%__TARGET_FILE%' -ea Stop |
      set __TARGET_TIMESTAMP=%%i
 )
 set __SOURCE_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci -recurse -path %__PATH_ARRAY:~1% -ea Stop | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+for /f "usebackq" %%i in (`powershell -c "$files=@(gci -recurse -path %__PATH_ARRAY% -ea SilentlyContinue); if($files.length -eq 0){exit}; $files | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
 set _ACTION_REQUIRED=%_NEWER%
 if %_DEBUG%==1 (
-    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '%__TARGET_FILE%' 1>&2
-    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY:~1% 1>&2
+    echo %_DEBUG_LABEL% %__TARGET_TIMESTAMP% Target : '!__TARGET_FILE:%_ROOT_DIR%=!' 1>&2
+    echo %_DEBUG_LABEL% %__SOURCE_TIMESTAMP% Sources: %__PATH_ARRAY1% 1>&2
     echo %_DEBUG_LABEL% _ACTION_REQUIRED=%_ACTION_REQUIRED% 1>&2
 ) else if %_VERBOSE%==1 if %_ACTION_REQUIRED%==0 if %__SOURCE_TIMESTAMP% gtr 0 (
-    echo No action required ^(%__PATH_ARRAY1:~1%^) 1>&2
+    echo No action required ^(%__PATH_ARRAY1%^) 1>&2
 )
 goto :eof
 
@@ -463,6 +481,19 @@ if %__DATE1% gtr %__DATE2% ( set _NEWER=1
 )
 goto :eof
 
+@rem output parameter: _LIBS_CPATH
+:libs_cpath
+for %%f in ("%~dp0\.") do set "__BATCH_FILE=%%~dpfcpath.bat"
+if not exist "%__BATCH_FILE%" (
+    echo %_ERROR_LABEL% Batch file "%__BATCH_FILE%" not found 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__BATCH_FILE%" %_DEBUG% 1>&2
+call "%__BATCH_FILE%" %_DEBUG%
+set "_LIBS_CPATH=%_CPATH%"
+goto :eof
+
 :doc
 if not exist "%_TARGET_DOCS_DIR%" mkdir "%_TARGET_DOCS_DIR%" 1>NUL
 
@@ -474,21 +505,56 @@ for /f %%i in ('dir /s /b "%_SOURCE_DIR%\main\java\*.java" 2^>NUL') do (
     echo %%i>> "%__SOURCES_FILE%"
 )
 set "__OPTS_FILE=%_TARGET_DIR%\javadoc_opts.txt"
-echo -cp "%_CPATH:\=\\%" -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
+echo -d "%_TARGET_DOCS_DIR:\=\\%" -doctitle "%_PROJECT_NAME%" -footer "%_PROJECT_URL%" -top "%_PROJECT_VERSION%" > "%__OPTS_FILE%"
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%" 1>&2
 ) else if %_VERBOSE%==1 ( echo Generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
 )
 call "%_JAVADOC_CMD%" "@%__OPTS_FILE%" "@%__SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Generation of HTML documentation failed 1>&2
+    echo %_ERROR_LABEL% Failed to generate HTML documentation into directory "!_TARGET_DOCS_DIR:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
+goto :eofta
+
+:native_image
+call :action_required "%_MAIN_NATIVE_FILE%.exe" "%_CLASSES_DIR%\*"
+if %_ACTION_REQUIRED%==0 goto :eof
+
+setlocal
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_VCVARALL_BAT%" x64 1>&2
+call "%_VCVARALL_BAT%" x64
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+if %_DEBUG%==1 (
+    echo %_DEBUG_LABEL% INCLUDE="%INCLUDE%" 1>&2
+    echo %_DEBUG_LABEL% LIB="%LIB%" 1>&2
+    echo %_DEBUG_LABEL% LIBPATH="%LIBPATH%" 1>&2
+)
+if exist "%_MAIN_NATIVE_FILE%.exe" del "%_MAIN_NATIVE_FILE%.*"
+
+set __NATIVE_IMAGE_OPTS=-cp "%_CLASSES_DIR%" --no-fallback
+set __NATIVE_IMAGE_OPTS=%__NATIVE_IMAGE_OPTS% "--initialize-at-build-time=%_PKG_NAME%" "--initialize-at-run-time=%_PKG_NAME%"
+if %_DEBUG%==1 set __NATIVE_IMAGE_OPTS=%__NATIVE_IMAGE_OPTS% "--trace-class-initialization=%_PKG_NAME%"
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% 1>&2
+) else if %_VERBOSE%==1 ( echo Create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_NATIVE_IMAGE_CMD%" %__NATIVE_IMAGE_OPTS% %_MAIN_CLASS% %_MAIN_NATIVE_FILE% %_STDOUT_REDIRECT%
+if not %ERRORLEVEL%==0 (
+    endlocal
+    echo %_ERROR_LABEL% Failed to create native image "!_MAIN_NATIVE_FILE:%_ROOT_DIR%=!" 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+endlocal
 goto :eof
 
 :pack
-call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java"
+call :action_required "%_TARGET_DIR%\%_PROJECT_NAME%.jar" "%_SOURCE_DIR%\main\java\*.java" "%_SOURCE_DIR%\main\resources\*"
 if %_ACTION_REQUIRED%==0 goto :eof
 
 set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
@@ -504,58 +570,26 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
 )
 call "%_JAR_CMD%" %__JAR_OPTS%
 if not %ERRORLEVEL%==0 (
-    set _EXITCODE=1
-    goto :eof
-)
-goto :eof
-
-:wasm
-set "__WAT_FILE=%_SOURCE_DIR%\resources\%_PROJECT_NAME%.wat"
-if not exist "%__WAT_FILE%" (
-    echo %_ERROR_LABEL% WASM-text file not found 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
-set "__WASM_FILE=%_CLASSES_DIR%\%_PROJECT_NAME%.wasm"
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_WAT2WASM_CMD%" "%__WAT_FILE%" -o "%__WASM_FILE%" 1>&2
-) else if %_VERBOSE%==1 ( echo Generated WASM file 1>&2
-)
-call "%_WAT2WASM_CMD%" "%__WAT_FILE%" -o "%__WASM_FILE%"
-if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to create Java archive into directory "!__TARGET_DIR:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
 goto :eof
 
 :run_jvm
-call :wasm
-if not %_EXITCODE%==0 goto :eof
-
-set __MAIN_ARGS=
-
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% copy /y "%_ROOT_DIR%\%_PROJECT_NAME%.wasm" "%_CLASSES_DIR%" 1>&2
-) else if %_VERBOSE%==1 ( echo Copy file %_PROJECT_NAME%.wasm to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
-)
-copy /y "%_ROOT_DIR%\%_PROJECT_NAME%.wasm" "%_CLASSES_DIR%" %_STDOUT_REDIRECT%
-
-set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
+set __AGENTLIB_OPTS="-agentlib:native-image-agent=config-output-dir=%_TARGET_DIR%\META-INF\native-image"
+set __JAVA_OPTS=-cp "%_CLASSES_DIR%" "--illegal-access=warn" %__AGENTLIB_OPTS%
 if %_DEBUG%==1 (
     set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
     set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"
 )
-if %_JVMCI%==1 (
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% GraalVM compiler is disabled 1>&2
-    ) else if %_VERBOSE%==1 ( echo GraalVM compiler is disabled 1>&2
-    )
-    set __JAVA_OPTS=%__JAVA_OPTS% -XX:-UseJVMCICompiler
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %_MAIN_ARGS% 1>&2
+) else if %_VERBOSE%==1 ( echo Execute Java main class "%_MAIN_CLASS%" %_MAIN_ARGS% 1>&2
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
-) else if %_VERBOSE%==1 ( echo Execute Java main class %_MAIN_CLASS% %__MAIN_ARGS% 1>&2
-)
-call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %__MAIN_ARGS%
+call "%_JAVA_CMD%" %__JAVA_OPTS% %_MAIN_CLASS% %_MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Execution failed ^(%_MAIN_CLASS%^) 1>&2
+    echo %_ERROR_LABEL% Failed to execute Java main class "%_MAIN_CLASS%" %_MAIN_ARGS% 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -567,17 +601,18 @@ if %_DEBUG%==1 if exist "%__GRAAL_LOG_FILE%" (
 goto :eof
 
 :run_native
-set "__EXE_FILE=%_TARGET_DIR%\%_MAIN_NAME%.exe"
+set "__EXE_FILE=%_MAIN_NATIVE_FILE%.exe"
 if not exist "%__EXE_FILE%" (
     echo %_ERROR_LABEL% Executable not found ^(%__EXE_FILE%^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%__EXE_FILE%" 1>&2
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__EXE_FILE%" %_MAIN_ARGS% 1>&2
 ) else if %_VERBOSE%==1 ( echo Execute JMH benchmark "!__EXE_FILE:%_ROOT_DIR%=!" 1>&2
 )
-call "%__EXE_FILE%"
+call "%__EXE_FILE%" %_MAIN_ARGS%
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to execute JMH benchmark "!__EXE_FILE:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -587,40 +622,20 @@ goto :eof
 call :test_compile
 if not %_EXITCODE%==0 goto end
 
-call :libs_cpath
-if not %_EXITCODE%==0 goto :eof
+call :test_pack
+if not %_EXITCODE%==0 goto end
 
-set __TEST_JAVA_OPTS=-classpath "%_LIBS_CPATH%%_CLASSES_DIR%;%_TEST_CLASSES_DIR%"
+set __TEST_JAVA_OPTS=-Xmx1G -jar "%_BENCH_JAR_FILE%"
 
-@rem see https://github.com/junit-team/junit4/wiki/Getting-started
-for /f "usebackq" %%f in (`dir /s /b "%_TEST_CLASSES_DIR%\*JUnitTest.class" 2^>NUL`) do (
-    for %%i in (%%~dpf) do set __PKG_NAME=%%i
-    set __PKG_NAME=!__PKG_NAME:%_TEST_CLASSES_DIR%\=!
-    if defined __PKG_NAME ( set "__MAIN_CLASS=!__PKG_NAME:\=.!%%~nf"
-    ) else ( set "__MAIN_CLASS=%%~nf"
-    )
-    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__TEST_JAVA_OPTS% org.junit.runner.JUnitCore !__MAIN_CLASS! 1>&2
-    ) else if %_VERBOSE%==1 ( echo Execute test !__MAIN_CLASS! 1>&2
-    )
-    call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% org.junit.runner.JUnitCore !__MAIN_CLASS!
-    if not !ERRORLEVEL!==0 (
-        set _EXITCODE=1
-        goto :eof
-    )
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__TEST_JAVA_OPTS% startupTime 1>&2
+) else if %_VERBOSE%==1 ( echo Execute JMH benchmark ^(JVM^) 1>&2
 )
-goto :eof
-
-@rem output parameter: _LIBS_CPATH
-:libs_cpath
-for %%f in ("%~dp0\.") do set "__BATCH_FILE=%%~dpfcpath.bat"
-if not exist "%__BATCH_FILE%" (
-    echo %_ERROR_LABEL% Batch file "%__BATCH_FILE%" not found 1>&2
+@rem call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% cachedTime
+call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% startupTime
+if not %ERRORLEVEL%==0 (
     set _EXITCODE=1
     goto :eof
 )
-if %_DEBUG%==1 echo %_DEBUG_LABEL% "%__BATCH_FILE%" %_DEBUG% 1>&2
-call "%__BATCH_FILE%" %_DEBUG%
-set "_LIBS_CPATH=%_CPATH%"
 goto :eof
 
 :test_compile
@@ -657,6 +672,68 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVAC_CMD%" "@%__TEST_OPTS_FILE%" "@%__T
 )
 call "%_JAVAC_CMD%" "@%__TEST_OPTS_FILE%" "@%__TEST_SOURCES_FILE%"
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to compile %__N% Java test source files to directory "!_TEST_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
+    set _EXITCODE=1
+    goto :eof
+)
+goto :eof
+
+:test_pack
+call :libs_cpath
+if not %_EXITCODE%==0 goto :eof
+
+call :action_required "%_BENCH_JAR_FILE%" "%_TEST_CLASSES_DIR%\*.class"
+if %_ACTION_REQUIRED%==0 goto :eof
+
+@rem The benchmark jar file contains class files from 3 locations:
+@rem _CLASSES_DIR, _TEST_CLASSES_DIR and JMH library dependencies.
+set "__MANIFEST_FILE=%_TARGET_DIR%\manifest.txt"
+(
+    echo Manifest-Version: 1.0
+    echo Main-Class: org.openjdk.jmh.Main
+) > "%__MANIFEST_FILE%"
+
+set "__CPATH_TAIL=%_LIBS_CPATH%"
+:pack_loop
+for /f "delims=; tokens=1,*" %%f in ("%__CPATH_TAIL%") do (
+    set "__JAR_FILE=%%f"
+    if not "!__JAR_FILE:jopt-simple=!"=="!__JAR_FILE!" (
+        pushd "%_TEST_CLASSES_DIR%"
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        call "%_JAR_CMD%" xf "!__JAR_FILE!"
+        popd
+    ) else if not "!__JAR_FILE:jmh-core=!"=="!__JAR_FILE!" (
+        pushd "%_TEST_CLASSES_DIR%"
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        call "%_JAR_CMD%" xf "!__JAR_FILE!"
+        popd
+    ) else if not "!__JAR_FILE:commons-math3=!"=="!__JAR_FILE!" (
+        pushd "%_TEST_CLASSES_DIR%"
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_JAR_CMD%" xf "!__JAR_FILE!" 1>&2
+        call "%_JAR_CMD%" xf "!__JAR_FILE!"
+        popd
+    )
+    set "__CPATH_TAIL=%%g"
+    goto pack_loop
+)
+set __JAR_OPTS=cfm "%_BENCH_JAR_FILE%" "%__MANIFEST_FILE%" -C "%_TEST_CLASSES_DIR%" .
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
+) else if %_VERBOSE%==1 ( echo Create Java archive file "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAR_CMD%" %__JAR_OPTS%
+if not %ERRORLEVEL%==0 (
+    set _EXITCODE=1
+    goto :eof
+)
+set __JAR_OPTS=uf "%_BENCH_JAR_FILE%" -C "%_CLASSES_DIR%" .
+
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
+) else if %_VERBOSE%==1 ( echo Update Java archive file "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
+)
+call "%_JAR_CMD%" %__JAR_OPTS%
+if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to update Java archive file "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )

@@ -48,7 +48,7 @@ clean:
 
 run: build
 	"$(JAVA)" $(JAVA_FLAGS) $(MAIN_CLASS) $(MAIN_ARGS)
-	@[ -f "$(LOG_FILE)" ] & $(ECHO) Compilation log written to file "$(LOG_FILE)" 1>&2
+	@[ -f "$(LOG_FILE)" ] & $(ECHO) "Compilation log written to file \"$(LOG_FILE)\"" 1>&2
 
 help:
 	@$(ECHO) "Usage: make all|build|clean|help|lint|run|test"
@@ -88,7 +88,7 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 10.9.3
+CHECKSTYLE_VERSION = 10.12.0
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
 CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")
@@ -138,4 +138,4 @@ test: build $(TEST_TARGET)
 .PHONY: all build clean doc help lint run test
 
 .SUFFIXES:
-.SUFFIXES: .classes .jar .java
+.SUFFIXES: .class .jar .java

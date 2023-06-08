@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2018-2021 Stéphane Micheloud
+# Copyright (c) 2018-2023 Stéphane Micheloud
 #
 # Licensed under the MIT License.
 #
@@ -10,7 +10,7 @@
 
 getHome() {
     local source="${BASH_SOURCE[0]}"
-    while [ -h "$source" ] ; do
+    while [[ -h "$source" ]]; do
         local linked="$(readlink "$source")"
         local dir="$( cd -P $(dirname "$source") && cd -P $(dirname "$linked") && pwd )"
         source="$dir/$(basename "$linked")"
@@ -52,10 +52,10 @@ args() {
     for arg in "$@"; do
         case "$arg" in
         ## options
-        -debug)       DEBUG=true ;;
-        -help)        HELP=true ;;
-        -timer)       TIMER=true ;;
-        -verbose)     VERBOSE=true ;;
+        -debug)   DEBUG=true ;;
+        -help)    HELP=true ;;
+        -timer)   TIMER=true ;;
+        -verbose) VERBOSE=true ;;
         -*)
             error "Unknown option $arg"
             EXITCODE=1 && return 0
@@ -83,27 +83,32 @@ help() {
 Usage: $BASENAME { <option> | <subcommand> }
 
   Options:
-    -debug       show commands executed by this script
-    -timer       display total elapsed time
+    -debug       display commands executed by this script
+    -timer       display total execution time
     -verbose     display progress messages
 
   Subcommands:
     clean        delete generated files
     compile      compile C/Java source files
+    doc          generate HTML documentation
     help         display this help message
-    run          execute main class $MAIN_CLASS
+    run          execute main class "$MAIN_CLASS"
 EOS
 }
 
 clean() {
-    if [ -d "$TARGET_DIR" ]; then
+    if [[ -d "$TARGET_DIR" ]]; then
         if $DEBUG; then
             debug "Delete directory $TARGET_DIR"
         elif $VERBOSE; then
             echo "Delete directory \"${TARGET_DIR/$ROOT_DIR\//}\"" 1>&2
         fi
         rm -rf "$TARGET_DIR"
-        [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
+        if [[ $? -ne 0 ]]; then
+            error "Failed to delete directory \"${TARGET_DIR/$ROOT_DIR\//}\""
+            EXITCODE=1
+            return 0
+        fi
     fi
 }
 
@@ -123,7 +128,7 @@ compile() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $JAVA_SOURCE_DIR/ -name *.java 2>/dev/null); do
+    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
         n=$((n + 1))
     done
@@ -134,7 +139,7 @@ compile() {
     fi
     eval "$JAVAC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
     if [[ $? -ne 0 ]]; then
-        error "Compilation of $n Java source files failed"
+        error "Failed to compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
         cleanup 1
     fi
     touch "$timestamp_file"
@@ -148,10 +153,10 @@ action_required() {
     for f in $(find $search_path -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
-    if [ -z "$latest" ]; then
+    if [[ -z "$latest" ]]; then
         ## Do not compile if no source file
         echo 0
-    elif [ ! -f "$timestamp_file" ]; then
+    elif [[ ! -f "$timestamp_file" ]]; then
         ## Do compile if timestamp file doesn't exist
         echo 1
     else
@@ -162,7 +167,7 @@ action_required() {
 }
 
 mixed_path() {
-    if [ -x "$CYGPATH_CMD" ]; then
+    if [[ -x "$CYGPATH_CMD" ]]; then
         $CYGPATH_CMD -am $1
     elif $mingw || $msys; then
         echo $1 | sed 's|/|\\\\|g'
@@ -172,8 +177,8 @@ mixed_path() {
 }
 
 run() {
-    $DEBUG && debug "$JAVA_CMD -cp $(mixed_path $CLASSES_DIR) $MAIN_CLASS $MAIN_ARGS"
-    eval "$JAVA_CMD" -cp $(mixed_path $CLASSES_DIR) $MAIN_CLASS $MAIN_ARGS
+    $DEBUG && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS $MAIN_ARGS"
+    eval "$JAVA_CMD" -cp "$(mixed_path $CLASSES_DIR)" $MAIN_CLASS $MAIN_ARGS
 }
 
 ##############################################################################
@@ -221,14 +226,14 @@ if $cygwin || $mingw || $msys; then
     [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
 	PSEP=";"
 fi
-if [ ! -x "$GRAALVM_HOME/bin/javac" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
     error "GraalVM installation not found"
     cleanup 1
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
 
-if [ ! -x "$GRAALVM_HOME/bin/lli" ]; then
+if [[ ! -x "$GRAALVM_HOME/bin/lli" ]]; then
     error "lli command not found"
     cleanup 1
 fi
@@ -249,10 +254,14 @@ args "$@"
 
 $HELP && help && cleanup
 
-$CLEAN && clean || cleanup 1
-
+if $CLEAN; then
+    clean || cleanup 1
+fi
 if $COMPILE; then
     compile || cleanup 1
+fi
+if $DOC; then
+    doc || cleanup 1
 fi
 if $RUN; then
     run || cleanup 1

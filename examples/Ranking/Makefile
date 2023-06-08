@@ -86,7 +86,7 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 10.9.2
+CHECKSTYLE_VERSION = 10.10.0
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
 CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")
@@ -105,7 +105,7 @@ $(JAR_FILE):
 	"$(CURL)" --insecure --silent --location --output "$(JAR_FILE)" $(JAR_URL)
 
 $(CHECKSTYLE_TARGET): $(CHECKSTYLE_SOURCES)
-	"$(JAVA)" -jar $(JAR_FILE) -c=$(XML_FILE) $^
+	"$(JAVA)" -jar "$(JAR_FILE)" -c=$(XML_FILE) $^
 
 ##############################################################################
 ## test rules
@@ -136,4 +136,4 @@ test: build $(TEST_TARGET)
 .PHONY: all build clean doc help lint run test
 
 .SUFFIXES:
-.SUFFIXES: .jar .java
+.SUFFIXES: .class .jar .java

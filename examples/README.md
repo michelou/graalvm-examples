@@ -15,10 +15,11 @@ In this document we present the following code examples in more detail:
 
 - [**`ClassInitialization`**](#ClassInitialization)
 - [**`CountUppercase`**](#CountUppercase)
+- [**`NiceMessage`**](#NiceMessage)
 - [**`Ranking`**](#Ranking)
 
 
-## <span id="ClassInitialization">`ClassInitialization`</span>
+## <span id="ClassInitialization">`ClassInitialization` Example</span>
 
 Project [**`ClassInitialization\`**](ClassInitialization/) consists of the two classes [**`HelloStartupTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloStartupTime.java) and [**`HelloCachedTime.java`**](ClassInitialization/src/main/java/org/graalvm/example/HelloCachedTime.java).
 
@@ -125,12 +126,12 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
 [build] Options    : _CACHED=0 _TARGET=native _TIMER=0 _VERBOSE=0
 [build] Subcommands: _CLEAN=0 _COMPILE=1 _DOC=0 _LINT=0 _PACK=0 _RUN=0 _TEST=0
-[build] Variables  : "GRAALVM=C:\opt\graalvm-ce-java11-22.3.1"
+[build] Variables  : "GRAALVM=C:\opt\graalvm-ce-java11-22.3.2"
 [build] Variables  : "MSVS_HOME=X:"
 [build] 00000000000000 Target : 'G:\examples\ClassInitialization\target\classes\.latest-build'
 [build] 20191115223804 Sources: 'G:\examples\ClassInitialization\src\main\java\*.java'
 [build] _COMPILE_REQUIRED=1
-[build] "C:\opt\graalvm-ce-java11-22.3.1\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
+[build] "C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
 [build] "X:\VC\Auxiliary\Build\vcvarsall.bat" x64
 **********************************************************************
 ** Visual Studio 2019 Developer Command Prompt v16.0
@@ -140,7 +141,7 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 [build] INCLUDE="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\include;..."
 [build] LIB="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
 [build] LIBPATH="X:\\VC\Tools\MSVC\14.28.29910\ATLMFC\lib\x64;..."
-[build] "C:\opt\graalvm-ce-java11-22.3.1\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
+[build] "C:\opt\graalvm-ce-java11-22.3.2\bin\native-image.cmd" --trace-class-initialization --initialize-at-build-time=org.graalvm.example --initialize-at-run-time=org.graalvm.example.Startup -cp G:\examples\ClassInitialization\target\classes org.graalvm.example.HelloStartupTime G:\examples\ClassInitialization\target\HelloStartupTime
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]    classlist:   1,423.32 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        (cap):   7,889.67 ms,  1.16 GB
 [G:\examples\ClassInitialization\target\HelloStartupTime:12076]        setup:   9,858.53 ms,  1.16 GB
@@ -160,7 +161,7 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 [build] _EXITCODE=0
 </pre>
 
-## <span id="CountUppercase">`CountUppercase`</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
+## <span id="CountUppercase">`CountUppercase` Example</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
 
 Project [**`CountUppercase\`**](CountUppercase/) is a micro-benchmark:
 - system property `iterations` defines how many times the counting test is performed.
@@ -221,8 +222,8 @@ total: 69999993 (1375 ms)
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /b "[debug]"</b>
 > [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java11-22.3.1\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java11-22.3.1\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
+> [build] C:\opt\graalvm-ce-java11-22.3.2\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
 > [build] Compilation log written to G:\examples\CountUppercase\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
@@ -259,7 +260,73 @@ Audit done.
 > <b>&lt;/module&gt;</b>
 > </pre>
 
-## <span id="Ranking">`Ranking`</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
+## <span id="NiceMessage">`NiceMessage` Example</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
+
+Example [`NiceMessage`](./NiceMessage/) illustrates how dynamic class loading is handled by the [`native-image`](https://www.graalvm.org/22.0/reference-manual/native-image/) tool when generating the native variant of a Java application. 
+
+> **:mag_right:** The example comes from Vega's blog post "[Building native images in Java with GraalVM](https://www.danvega.dev/blog/2023/02/03/native-images-graalvm/)", published on February 3, 2023.
+
+Command [**`build.bat clean run`**](NiceMessage/build.bat) builds and executes the JVM variant of the Java application (`target\Application.jar`):
+
+<pre style="font-size:80%;">
+<b>&gt; <a href="./NiceMessage/build.bat">build</a> -verbose clean run</b>
+Delete directory "target"
+Compile 4 Java source files to directory "target\classes"
+Copy resource files to directory "target\classes"
+Execute Java main class "dev.danvega.Application" MeanMessage
+This is a mean message!
+</pre>
+
+> **:mag_right:** Passing the special GraalVM option `-agentlib:native-image-agent=...` when running the JVM application generates useful metadata information; in particular the file `META-INF\native-image\reflect-config.json` will be needed when generating the native application.
+> <pre style="font-size:80%;">
+> <b>&gt; tree /a /f target\META-INF |findstr /v "^[A-Z]"</b>
+> \---native-image
+>     |   jni-config.json
+>     |   predefined-classes-config.json
+>     |   proxy-config.json
+>     |   reflect-config.json
+>     |   resource-config.json
+>     |   serialization-config.json
+>     |
+>     \---agent-extracted-predefined-classes
+> </pre>
+
+Command [**`build.bat -native clean run`**](NiceMessage/build.bat) builds and executes the native variant of the Java application (`target\Application.exe`):
+
+> **:mag_right:** The configuration file [`META-INF\native-image\reflect-config.json`](./NiceMessage/src/main/resources/META-INF/native-image/reflect-config.json) enumerates the two class variants which may be dynamically loaded in [`Application.java`](./NiceMessage/src/main/java/Application.java).
+> <pre style="font-size:80%;">
+> [
+> {
+>   "name":"dev.danvega.MeanMessage",
+>   "methods":[
+>     {"name":"<init>","parameterTypes":[] }, 
+>     {"name":"printMessage","parameterTypes":[] }
+>   ]
+> },
+> {
+>   "name":"dev.danvega.NiceMessage",
+>   "methods":[
+>     {"name":"<init>","parameterTypes":[] }, 
+>     {"name":"printMessage","parameterTypes":[] }
+>   ]
+> }
+> ]
+> </pre>
+
+<pre style="font-size:80%;">
+<b>&gt; <a href="./NiceMessage/build.bat">build</a> -verbose -native run</b>
+No action required ('src\main\java\*.java','src\main\resources\*')
+No action required ('target\classes\*')
+This is a mean message!
+
+<b>&gt; target\Application.exe NiceMessage</b>
+This is a nice message!
+
+<b>&gt; target\Application.exe MeanMessage</b>
+This is a mean message!
+</pre>
+
+## <span id="Ranking">`Ranking` Example</span> <sup style="font-size:60%;">[**&#9650;**](#top)</sup>
 
 Project [**`Ranking\`**](Ranking/) is a micro-benchmark.
 
@@ -290,7 +357,7 @@ Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 Command [**`build.bat clean run`**](Ranking/build.bat) builds and executes the JVM variant of the [JMH] benchmark (`target\benchmarks.jar`):
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="(Ranking/build.bat">build</a> -verbose clean run</b>
+<b>&gt; <a href="./Ranking/build.bat">build</a> -verbose clean run</b>
 Delete directory "target"
 Compile 2 Java source files to directory "target\classes"
 Create Java archive "target\benchmarks.jar"
@@ -298,7 +365,7 @@ Copy chart file to directory "target"
 Execute JMH benchmark (JVM)
 # JMH version: 1.35
 # VM version: JDK 11.0.16, OpenJDK 64-Bit Server VM, 11.0.16+8-jvmci-22.2-b06
-# VM invoker: C:\opt\graalvm-ce-java11-22.3.1\jre\bin\java.exe
+# VM invoker: C:\opt\graalvm-ce-java11-22.3.2\jre\bin\java.exe
 # VM options: -XX:ThreadPriorityPolicy=1 [...] -Xmx1G
 # Warmup: 3 iterations, 10 s each
 # Measurement: 3 iterations, 10 s each
@@ -338,11 +405,11 @@ Delete directory "target"
 Compile 2 Java source files to directory "target\classes"
 Create Java archive "target\benchmarks.jar"
 Create native image "target\Ranking"
-================================================================================================
+===============================================================================================
 GraalVM Native Image: Generating 'G:\examples\Ranking\target\Ranking' (executable)...
-================================================================================================
+===============================================================================================
 [1/7] Initializing...                                                           (15,5s @ 0,21GB)
- Version info: 'GraalVM 22.3.1 Java 11 CE'
+ Version info: 'GraalVM 22.3.2 Java 11 CE'
  C compiler: cl.exe (microsoft, x64, 19.29.30141)
  Garbage collector: Serial GC
 [2/7] Performing analysis...  [*********]                                       (16,5s @ 1,59GB)
@@ -385,11 +452,11 @@ Produced artifacts:
 Finished generating 'G:\examples\Ranking\target\Ranking' in 54,9s.
 Execute JMH benchmark "target\Ranking.exe"
 Exception in thread "main" java.lang.ExceptionInInitializerError
-        at org.openjdk.jmh.runner.options.CommandLineOptions.<init>(CommandLineOptions.java:99)
+        at org.openjdk.jmh.runner.options.CommandLineOptions.&lt;init&gt;(CommandLineOptions.java:99)
         at org.openjdk.jmh.Main.main(Main.java:41)
 Caused by: java.lang.IllegalArgumentException: int is not a value type
         at joptsimple.internal.Reflection.findConverter(Reflection.java:66)
-        at org.openjdk.jmh.runner.options.IntegerValueConverter.<clinit>(IntegerValueConverter.java:35)
+        at org.openjdk.jmh.runner.options.IntegerValueConverter.&lt;clinit&gt;(IntegerValueConverter.java:35)
         ... 2 more
 </pre>
 
@@ -412,7 +479,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
