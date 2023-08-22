@@ -9,14 +9,14 @@
   </tr>
 </table>
 
-[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [Dart][dart_examples], [Deno][deno_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX Toolset][wix_examples] are other trending topics we are continuously monitoring.
+[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [Dart][dart_examples], [Deno][deno_examples], [Docker][docker_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX Toolset][wix_examples] are other trending topics we are continuously monitoring.
 
 ## <span id="proj_deps">Project dependencies</span>
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.40][git_downloads] ([*release notes*][git_relnotes])
-- [GraalVM Community Edition 22.3 LTS][graalvm_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm_relnotes])
+- [Git 2.41][git_downloads] ([*release notes*][git_relnotes])
+- [GraalVM for JDK 17 LTS][graalvm17_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm17_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
 - [Python 3.11][python_downloads] ([*release notes*][python_relnotes])
@@ -24,22 +24,21 @@ This project relies on the following external software for the **Microsoft Windo
 Optionally one may also install the following software:
 
 - [Checkstyle 10.12][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
-- [GraalVM Community Edition 23.1 DEV](https://github.com/graalvm/graalvm-ce-dev-builds/releases)
-- [UPX 4.0][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
+- [GraalVM for JDK 21 DEV][graalvm21_releases]
+- [UPX 4.1][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*June 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*August 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git-2.41.0\                                    <i>(358 MB)</i>
-C:\opt\graalvm-ce-java11-22.3.2\                      <i>(731 MB)</i>
-C:\opt\graalvm-ce-java17-22.3.2\<sup id="anchor_04"><a href="#footnote_04">4</a>&ensp;</sup>                    <i>(644 MB)</i>
-C:\opt\graalvm-ce-java17-23.0.0-dev\<sup id="anchor_05"><a href="#footnote_05">5</a></sup>                 <i>(464 MB)</i>
+C:\opt\jdk-graalvm-ce-17.0.8_7.1\                     <i>(591 MB)</i>
+C:\opt\jdk-graalvm-ce-21_34.1\                        <i>(635 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
-C:\opt\upx-4.0.2-win64\                               <i>( &lt;1 MB)</i>
+C:\opt\upx\                                           <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 <a href="https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables#variables-that-are-recognized-only-in-the-user-context" rel="external">%USERPROFILE%</a>\.checkstyle\                            <i>( 16 MB)</i>
@@ -63,8 +62,8 @@ This repository is organized as follows:
 docs\
 examples\{<a href="./examples/README.md">README.md</a>, <a href="./examples/ClassInitialization"/>ClassInitialization</a>, ..}
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.19-jvmci-22.3-b18\</a>  <i>(313 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.7-jvmci-23.0-b12\</a>   <i>(377 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.8-jvmci-23.0-b15\</a>   <i>(377 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-21/releases">labsjdk-ce-21_35-jvmci-23.1-b14\</a>    <i>(313 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
@@ -84,7 +83,7 @@ where
 - file [**`RESOURCES.md`**](RESOURCES.md) is the [Markdown][github_markdown] document presenting external resources.
 - file [**`setenv.bat`**](setenv.bat) is the batch file for setting up our environment.
 
-We also define a virtual drive **`G:`** in our working environment in order to reduce/hide the real path of our project directory (see article ["Windows command prompt limitation"][windows_limitation] from Microsoft Support).
+We also define a virtual drive &ndash; e.g. drive **`G:`** &ndash; in our working environment in order to reduce/hide the real path of our project directory (see article ["Windows command prompt limitation"][windows_limitation] from Microsoft Support).
 
 > **:mag_right:** We use the Windows external command [**`subst`**][windows_subst] to create virtual drives; for instance:
 >
@@ -105,8 +104,8 @@ We distinguish different sets of batch commands:
    Usage: setenv { &lt;option&gt; | &lt;subcommand&gt; }
    &nbsp;
      Options:
-       -debug      show commands executed by this script
-       -verbose    display environment settings
+       -debug      display commands executed by this script
+       -verbose    display progress messages
    &nbsp;
      Subcommands:
        help        display this help message</pre>
@@ -118,8 +117,8 @@ We distinguish different sets of batch commands:
    Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
    &nbsp;
      Options:
-       -debug       show commands executed by this script
-       -timer       display total elapsed time
+       -debug       display commands executed by this script
+       -timer       display total execution time
        -verbose     display progress messages
    &nbsp;
      Subcommands:
@@ -134,7 +133,7 @@ We distinguish different sets of batch commands:
 
 ### **`setenv.bat`**
 
-Command [**`setenv.bat`**](setenv.bat) is executed once to setup our development environment; it makes external tools such as [**`javac.exe`**][javac_cli], [**`cl.exe`**][cl_cli] and [**`git.exe`**][git_cli] directly available from the command prompt:
+We execute command [**`setenv.bat`**](setenv.bat) once to setup our development environment; it makes external tools such as [**`javac.exe`**][javac_cli], [**`cl.exe`**][cl_cli] and [**`git.exe`**][git_cli] directly available from the command prompt:
 
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
@@ -176,7 +175,7 @@ Environment variables:
    "JAVA_HOME=C:\opt\graalvm-ce-java11-22.3.2"
    "LLVM_HOME=C:\opt\LLVM-15.0.6"
    "MAKE_HOME=C:\opt\make-3.81"
-   "MAVEN_HOME=C:\opt\apache-maven-3.9.0"
+   "MAVEN_HOME=C:\opt\apache-maven-3.9.4"
    "MSVC_BIN_DIR=X:\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
    "MSVC_HOME=X:\VC\Tools\MSVC\14.29.30133"
    "MSVS_HOME=X:"
@@ -225,23 +224,17 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 </dd>
 <dd>
 <pre style="font-size:80%;">
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-ce-java11-windows-amd64-22.3.2.zip</a>                    <i>(306 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-ce-java17-windows-amd64-22.3.2.zip</a>                    <i>(320 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-ce-java17-windows-amd64-dev.zip</a> <i>(23.0.0-dev) </i>         <i>(257 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-community-java21-windows-amd64-dev.zip</a><sup><b>(*)</b></sup>             <i>(298 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-community-jdk-17.0.8_windows-x64_bin.zip</a><sup><b>(*)</b></sup>           <i>(297 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.19+7-jvmci-22.3-b09-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.7+7-jvmci-23.0-b11-windows-amd64.tar.gz</a>       <i>(190 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java11-windows-amd64-22.3.2.jar</a>  <i>( 14 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">native-image-installable-svm-java17-windows-amd64-22.3.2.jar</a>  <i>( 16 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.41.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
-<a href="https://github.com/upx/upx/releases">upx-4.0.2-win64.zip</a>                                           <i>( &lt;1 MB)</i>
+<a href="https://github.com/upx/upx/releases">upx-4.1.0-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
-<!--
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">visualvm-installable-ce-java11-windows-amd64-22.3.2.jar</a>       <i>( 18 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases">visualvm-installable-ce-java17-windows-amd64-22.3.2.jar</a>       <i>( 18 MB)</i>
--->
 </pre>
+<span style="font-size:80%;"><sup><b>(*)</b></sup> The tool <a href="https://www.graalvm.org/latest/reference-manual/native-image/" rel="external"><code><b>native-image</b></code></a> was initially installed separately with <b>GraalVM</b> distributions and is now included in <b>GraalVM for JDK</b> distributions (see article <a href="https://medium.com/graalvm/a-new-graalvm-release-and-new-free-license-4aab483692f5">"New GraalVM Release and new Free Licence!"</a>).</span>
 </dd></dl>
 
 <span id="footnote_04">[4]</span> ***Improvements in GraalVM 20*** [↩](#anchor_04)
@@ -313,7 +306,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/June 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/August 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -326,6 +319,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [cpp_examples]: https://github.com/michelou/cpp-examples
 [dart_examples]: https://github.com/michelou/dart-examples
 [deno_examples]: https://github.com/michelou/deno-examples
+[docker_examples]: https://github.com/michelou/docker-examples
 [flix_examples]: https://github.com/michelou/flix-examples
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
@@ -335,8 +329,9 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
-[graalvm_releases]: https://github.com/graalvm/graalvm-ce-builds/releases/latest
-[graalvm_relnotes]: https://www.graalvm.org/release-notes/22_3/
+[graalvm17_releases]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.8
+[graalvm17_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.8
+[graalvm21_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kotlin_examples]: https://github.com/michelou/kotlin-examples
