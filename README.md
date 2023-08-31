@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.41][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.42][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM for JDK 17 LTS][graalvm17_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm17_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -34,7 +34,7 @@ For instance our development environment looks as follows (*August 2023*) <sup i
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
-C:\opt\Git-2.41.0\                                    <i>(358 MB)</i>
+C:\opt\Git\                                           <i>(367 MB)</i>
 C:\opt\jdk-graalvm-ce-17.0.8_7.1\                     <i>(591 MB)</i>
 C:\opt\jdk-graalvm-ce-21_34.1\                        <i>(635 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
@@ -140,7 +140,7 @@ We execute command [**`setenv.bat`**](setenv.bat) once to setup our development 
 Tool versions:
    javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.41.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.42.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -155,7 +155,7 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 Tool versions:
    javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.41.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.42.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe
    C:\opt\Python-3.11.1\python.exe
@@ -164,11 +164,11 @@ Tool paths:
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
    C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link.exe
-   C:\opt\Git-2.41.0\usr\bin\link.exe
+   C:\opt\Git\usr\bin\link.exe
    C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\nmake.exe
-   C:\opt\Git-2.41.0\bin\git.exe
+   C:\opt\Git\bin\git.exe
 Environment variables:
-   "GIT_HOME=C:\opt\Git-2.41.0"
+   "GIT_HOME=C:\opt\Git"
    "GRAALVM_HOME=C:\opt\graalvm-ce-java11-22.3.2
    "GRAALVM11_HOME=C:\opt\graalvm-ce-java11-22.3.2"
    "GRAALVM17_HOME=C:\opt\graalvm-ce-java17-22.3.2"
@@ -229,7 +229,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.19+7-jvmci-22.3-b09-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.7+7-jvmci-23.0-b11-windows-amd64.tar.gz</a>       <i>(190 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.41.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.42.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.1.0-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
@@ -324,7 +324,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
 [git_releases]: https://git-scm.com/download/win
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.41.0.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.42.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/
