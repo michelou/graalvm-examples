@@ -30,7 +30,7 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*August 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*October 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -104,11 +104,11 @@ We distinguish different sets of batch commands:
    Usage: setenv { &lt;option&gt; | &lt;subcommand&gt; }
    &nbsp;
      Options:
-       -debug      display commands executed by this script
-       -verbose    display progress messages
+       -debug      print commands executed by this script
+       -verbose    print progress messages
    &nbsp;
      Subcommands:
-       help        display this help message</pre>
+       help        print this help message</pre>
 
 2. [**`bin\graal\build.bat`**](bin/graal/build.bat) &ndash; This batch command generates the [GraalVM] software distribution.
 
@@ -117,15 +117,15 @@ We distinguish different sets of batch commands:
    Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
    &nbsp;
      Options:
-       -debug       display commands executed by this script
-       -timer       display total execution time
-       -verbose     display progress messages
+       -debug       print commands executed by this script
+       -timer       print total execution time
+       -verbose     print progress messages
    &nbsp;
      Subcommands:
        clean        delete generated files
        dist[:&lt;n&gt;]   generate distribution with environment n=1-9 (default=2)
                     (see environment definitions in file build.ini)
-       help         display this help message
+       help         print this help message
        update       fetch/merge local directories graal/mx</pre>
    > **:mag_right:** Parameter <code>n</code> in subcommand <code>dist[&colon;&lt;n&gt;]</code> refers to environment <code>env&lt;n&gt;</code> defined in configuration file [**`build.ini`**](bin/graal/build.ini).
 
@@ -175,7 +175,7 @@ Environment variables:
    "JAVA_HOME=C:\opt\graalvm-ce-java11-22.3.2"
    "LLVM_HOME=C:\opt\LLVM-15.0.6"
    "MAKE_HOME=C:\opt\make-3.81"
-   "MAVEN_HOME=C:\opt\apache-maven-3.9.4"
+   "MAVEN_HOME=C:\opt\apache-maven"
    "MSVC_BIN_DIR=X:\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64"
    "MSVC_HOME=X:\VC\Tools\MSVC\14.29.30133"
    "MSVS_HOME=X:"
@@ -306,7 +306,7 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/August 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/October 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

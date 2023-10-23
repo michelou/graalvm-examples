@@ -58,7 +58,7 @@ if not %_EXITCODE%==0 goto end
 @rem call :msvs
 call :msvs_2019
 if not %_EXITCODE%==0 (
-	set _EXITCODE=0
+    set _EXITCODE=0
     @rem goto end
 )
 call :sdk
@@ -67,12 +67,12 @@ if not %_EXITCODE%==0 goto end
 call :kit
 if not %_EXITCODE%==0 (
     set _EXITCODE=0
-	@rem goto end
+    @rem goto end
 )
 call :wabt
 if not %_EXITCODE%==0 (
     @rem optional
-	set _EXITCODE=0
+    set _EXITCODE=0
     @rem goto end
 )
 call :git
@@ -156,7 +156,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="-debug" ( set _DEBUG=1
     ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
-        echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
+        echo %_ERROR_LABEL% Unknown option "%__ARG%" 1>&2
         set _EXITCODE=1
         goto args_done
     )
@@ -164,7 +164,7 @@ if "%__ARG:~0,1%"=="-" (
     @rem subcommand
     if "%__ARG%"=="help" ( set _HELP=1
     ) else (
-        echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
+        echo %_ERROR_LABEL% Unknown subcommand "%__ARG%" 1>&2
         set _EXITCODE=1
         goto args_done
     )
@@ -177,7 +177,7 @@ call :drive_name "%_ROOT_DIR%"
 if not %_EXITCODE%==0 goto :eof
 if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Options    : _BASH=%_BASH% _VERBOSE=%_VERBOSE% 1>&2
-	echo %_DEBUG_LABEL% Subcommands: _HELP=%_HELP% 1>&2
+    echo %_DEBUG_LABEL% Subcommands: _HELP=%_HELP% 1>&2
     echo %_DEBUG_LABEL% Variables  : _DRIVE_NAME=%_DRIVE_NAME% 1>&2
 )
 goto :eof
@@ -261,11 +261,11 @@ echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
 echo   %__BEG_P%Options:%__END%
 echo     %__BEG_O%-bash%__END%       start Git bash shell instead of Windows command prompt
-echo     %__BEG_O%-debug%__END%      display commands executed by this script
-echo     %__BEG_O%-verbose%__END%    display environment settings
+echo     %__BEG_O%-debug%__END%      print commands executed by this script
+echo     %__BEG_O%-verbose%__END%    print progress messages
 echo.
 echo   %__BEG_P%Subcommands:%__END%
-echo     %__BEG_O%help%__END%        display this help message
+echo     %__BEG_O%help%__END%        print this help message
 goto :eof
 
 @rem output parameter: _CMAKE_HOME
@@ -276,7 +276,7 @@ set __CMAKE_CMD=
 for /f "delims=" %%f in ('where cmake.exe 2^>NUL') do set "__CMAKE_CMD=%%f"
 if defined __CMAKE_CMD (
     for /f "delims=" %%i in ("%__CMAKE_CMD%") do set "__CMAKE_BIN_DIR=%%~dpi"
-    for %%f in ("!__CMAKE_BIN_DIR!\.") do set "_CMAKE_HOME=%%~dpf"
+    for /f "delims=" %%f in ("!__CMAKE_BIN_DIR!\.") do set "_CMAKE_HOME=%%~dpf"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of CMake executable found in PATH 1>&2
 ) else if defined CMAKE_HOME (
     set "_CMAKE_HOME=%CMAKE_HOME%"
@@ -316,8 +316,8 @@ if defined __JAVAC_CMD (
     )
 )
 if defined __JAVAC_CMD (
-    for %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
-    for %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAALVM_HOME=%%~dpf"
+    for /f "delims=" %%i in ("%__JAVAC_CMD%") do set "__GRAAL_BIN_DIR=%%~dpi"
+    for /f "delims=" %%f in ("!__GRAAL_BIN_DIR!\.") do set "_GRAALVM_HOME=%%~dpf"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of javac executable found in PATH 1>&2
     goto :eof
 ) else if defined GRAAL_HOME (
@@ -385,18 +385,21 @@ for /f "delims=" %%f in ('where mvn.cmd 2^>NUL') do (
     if not "!__MVN_CMD:scoop=!"=="!__MVN_CMD!" set __MVN_CMD=
 )
 if defined __MVN_CMD (
-    for %%i in ("%__MVN_CMD%") do set "__MAVEN_BIN_DIR=%%~dpi"
-    for %%f in ("!__MAVEN_BIN_DIR!\.") do set "_MAVEN_HOME=%%~dpf"
+    for /f "delims=" %%i in ("%__MVN_CMD%") do set "__MAVEN_BIN_DIR=%%~dpi"
+    for /f "delims=" %%f in ("!__MAVEN_BIN_DIR!\.") do set "_MAVEN_HOME=%%~dpf"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Maven executable found in PATH 1>&2
     goto :eof
 ) else if defined MAVEN_HOME (
     set "_MAVEN_HOME=%MAVEN_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MAVEN_HOME 1>&2
 ) else (
-    set _PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!_PATH!\apache-maven-*" 2^>NUL') do set "_MAVEN_HOME=!_PATH!\%%f"
+    set __PATH=C:\opt
+    if exist "!__PATH!\apache-maven\" ( set "_MAVEN_HOME=!__PATH!\apache-maven"
+    ) else (
+        for /f %%f in ('dir /ad /b "!__PATH!\apache-maven-*" 2^>NUL') do set "_MAVEN_HOME=!__PATH!\%%f"
+    )
     if defined _MAVEN_HOME (
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Maven installation directory !_MAVEN_HOME! 1>&2
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Maven installation directory "!_MAVEN_HOME!" 1>&2
     )
 )
 if not exist "%_MAVEN_HOME%\bin\mvn.cmd" (
@@ -415,9 +418,9 @@ set _MSYS_PATH=
 set __MAKE_CMD=
 for /f "delims=" %%f in ('where make.exe 2^>NUL') do set "__MAKE_CMD=%%f"
 if defined __MAKE_CMD (
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
     for /f "delims=" %%i in ("%__MAKE_CMD%") do set "__MAKE_BIN_DIR=%%~dpi"
-    for %%f in ("!__MAKE_BIN_DIR!") do set "_MSYS_HOME=%%~dpf"
+    for /f "delims=" %%f in ("!__MAKE_BIN_DIR!") do set "_MSYS_HOME=%%~dpf"
+    if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of GNU Make executable found in PATH 1>&2
     @rem keep _MSYS_PATH undefined since executable already in path
     goto :eof
 ) else if defined MSYS_HOME (
@@ -504,7 +507,7 @@ if defined __CLANG_CMD (
 )
 if defined __CLANG_CMD (
     for /f "delims=" %%i in ("%__CLANG_CMD%") do set "__LLVM_BIN_DIR=%%~dpi"
-    for %%f in ("!__LLVM_BIN_DIR!\.") do set "_LLVM_HOME=%%~dpf"
+    for /f "delims=" %%f in ("!__LLVM_BIN_DIR!\.") do set "_LLVM_HOME=%%~dpf"
     @rem keep _LLVM_PATH undefined since executable already in path
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using path of Clang executable found in PATH 1>&2
     goto :eof
@@ -597,10 +600,10 @@ for /f "delims=" %%f in ('where /r "%_MSVS_HOME%" cl.exe ^| findstr "%__MSVC_ARC
     set "_MSVC_HOME=!_MSVC_HOME:bin%__MSVC_ARCH%\=!"
 )
 if not defined _MSVC_HOME (
-	for /f "delims=" %%f in ('where /r "%_MSVS_HOME%" cl.exe ^| findstr "VC\bin\" 2^>NUL') do (
-		set "_MSVC_HOME=%%~dpf"
-		set "_MSVC_HOME=!_MSVC_HOME:bin%__MSVC_ARCH%\=!"
-	)
+    for /f "delims=" %%f in ('where /r "%_MSVS_HOME%" cl.exe ^| findstr "VC\bin\" 2^>NUL') do (
+        set "_MSVC_HOME=%%~dpf"
+        set "_MSVC_HOME=!_MSVC_HOME:bin%__MSVC_ARCH%\=!"
+    )
 )
 if not defined _MSVC_HOME (
     echo %_WARNING_LABEL% Could not find installation directory for MSVC compiler 1>&2
@@ -633,11 +636,11 @@ for /f "tokens=1,2,*" %%f in ('subst ^| findstr /b "%__DRIVE_NAME%" 2^>NUL') do 
 )
 if not defined __ASSIGNED_PATH (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% subst "%__DRIVE_NAME%" "%_SUBST_PATH%" 1>&2
-	) else if %_VERBOSE%==1 ( echo Assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
-	)
+    ) else if %_VERBOSE%==1 ( echo Assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
+    )
     subst "%__DRIVE_NAME%" "%_SUBST_PATH%"
     if not !ERRORLEVEL!==0 (
-	    echo %_ERROR_LABEL% Failed to assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
+        echo %_ERROR_LABEL% Failed to assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
         set _EXITCODE=1
         goto :eof
     )
@@ -708,8 +711,8 @@ set _GIT_PATH=
 set __GIT_CMD=
 for /f "delims=" %%f in ('where git.exe 2^>NUL') do set "__GIT_CMD=%%f"
 if defined __GIT_CMD (
-    for %%i in ("%__GIT_CMD%") do set "__GIT_BIN_DIR=%%~dpi"
-    for %%f in ("!__GIT_BIN_DIR!\.") do set "_GIT_HOME=%%~dpf"
+    for /f "delims=" %%i in ("%__GIT_CMD%") do set "__GIT_BIN_DIR=%%~dpi"
+    for /f "delims=" %%f in ("!__GIT_BIN_DIR!\.") do set "_GIT_HOME=%%~dpf"
     @rem Executable git.exe is present both in bin\ and \mingw64\bin\
     if not "!_GIT_HOME:mingw=!"=="!_GIT_HOME!" (
         for %%f in ("!_GIT_HOME!\..") do set "_GIT_HOME=%%f"
@@ -853,7 +856,11 @@ if %__VERBOSE%==1 if defined __WHERE_ARGS (
     if defined PYTHON_HOME echo    "PYTHON_HOME=%PYTHON_HOME%" 1>&2
     if defined WABT_HOME echo    "WABT_HOME=%WABT_HOME%" 1>&2
     echo Path associations: 1>&2
-    for /f "delims=" %%i in ('subst') do echo    %%i 1>&2
+    for /f "delims=" %%i in ('subst') do (
+        set "__LINE=%%i"
+        setlocal enabledelayedexpansion
+        echo    !__LINE:%USERPROFILE%=%%USERPROFILE%%! 1>&2
+    )
 )
 goto :eof
 
