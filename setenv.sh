@@ -7,7 +7,7 @@
 
 getHome() {
     local source="${BASH_SOURCE[0]}"
-    while [ -h "$source" ] ; do
+    while [[ -h "$source" ]]; do
         local linked="$(readlink "$source")"
         local dir="$( cd -P $(dirname "$source") && cd -P $(dirname "$linked") && pwd )"
         source="$dir/$(basename "$linked")"
@@ -46,16 +46,18 @@ if [[ $OS == "cygwin" || $OS == "mingw" ]]; then
     [[ $OS == "cygwin" ]] && prefix="/cygdrive" || prefix=""
     export HOME=$prefix/c/Users/$USER
     export GIT_HOME="$(getPath "$prefix/c/opt/Git-2")"
-    export GRAALVM_HOME="$(getPath "$prefix/c/opt/graalvm-ce-java8-21")"
-    export GRAALVM11_HOME="$(getPath "$prefix/c/opt/graalvm-ce-java11-23")"
+    export GRAALVM_HOME="$(getPath "$prefix/c/opt/jdk-graalvm-ce-17")"
+    export GRAALVM17_HOME="$(getPath "$prefix/c/opt/jdk-graalvm-ce-17")"
+    export GRAALVM20_HOME="$(getPath "$prefix/c/opt/jdk-graalvm-ce-20")"
     export LLVM_HOME="$(getPath "$prefix/c/opt/LLVM-15")"
     export MAVEN_HOME="$(getPath "$prefix/c/opt/apache-maven-3")"
 	export WABT_HOME="$(getPath "$prefix/c/opt/wabt-1")"
 else
     export ANT_HOME="$(getPath "/opt/apache-ant-1")"
     export GIT_HOME="$(getPath "/opt/git-2")"
-    export GRAALVM_HOME="$(getPath "/opt/graalvm-ce-java8-21")"
-    export GRAALVM11_HOME="$(getPath "/opt/graalvm-ce-java11-23")"
+    export GRAALVM_HOME="$(getPath "/opt/jdk-graalvm-ce-17")"
+    export GRAALVM17_HOME="$(getPath "/opt/jdk-graalvm-ce-17")"
+    export GRAALVM20_HOME="$(getPath "/opt/jdk-graalvm-ce-20")"
     export LLVM_HOME="$(getPath "/opt/llvm-15")"
     export KOTLIN_NATIVE_HOME="$(getPath "/opt/kotlin-native-linux-1.5")"
     export MAVEN_HOME="$(getPath "/opt/apache-maven-3")"

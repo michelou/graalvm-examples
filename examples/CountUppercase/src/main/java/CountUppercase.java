@@ -1,7 +1,12 @@
+/** Benchmark example
+ */
 public class CountUppercase {
 
     static final int ITERATIONS = Math.max(Integer.getInteger("iterations", 1), 1);
 
+    /** Main program
+     *  @param args the given arguments joined as a sentence
+     */
     public static void main(String[] args) {
         String sentence = String.join(" ", args);
         System.out.println("sentence=" + sentence);
@@ -11,6 +16,10 @@ public class CountUppercase {
         }
     }
 
+    /** Compute total number of words written in uppercase
+     *  @param  sentence the sentence to be analyzed
+     *  @return the total number of words written in uppercase
+     */
     public static long computeTotal(String sentence) {
         long total = 0, start = System.currentTimeMillis(), last = start;
         for (int i = 1; i < 10_000_000; i++) {

@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [Dart][dart_examples], [Deno][deno_examples], [Docker][docker_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX Toolset][wix_examples] are other trending topics we are continuously monitoring.
+[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [Dart][dart_examples], [Deno][deno_examples], [Docker][docker_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kafka][kafka_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX Toolset][wix_examples] are other trending topics we are continuously monitoring.
 
 ## <span id="proj_deps">Project dependencies</span>
 
@@ -24,19 +24,20 @@ This project relies on the following external software for the **Microsoft Windo
 Optionally one may also install the following software:
 
 - [Checkstyle 10.12][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
-- [GraalVM for JDK 21 DEV][graalvm21_releases]
-- [UPX 4.1][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
+- [CMake 3.28][cmake_downloads] ([*release notes*][cmake_relnotes])
+- [GraalVM for JDK 21 LTS][graalvm21_releases] ([*release notes*][graalvm21_relnotes])
+- [UPX 4.2][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*October 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*November 2023*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\Git\                                           <i>(367 MB)</i>
-C:\opt\jdk-graalvm-ce-17.0.8_7.1\                     <i>(591 MB)</i>
-C:\opt\jdk-graalvm-ce-21_34.1\                        <i>(635 MB)</i>
+C:\opt\jdk-graalvm-ce-17.0.9_9.1\                     <i>(592 MB)</i>
+C:\opt\jdk-graalvm-ce-21.0.1_12.1\                    <i>(585 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx\                                           <i>( &lt;1 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
@@ -51,6 +52,8 @@ C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 <!--            21.1.0 = 817 MB, 21.3.0 = 708 MB, 22.2.0 = 1.1 GB -->
 <!--            22.3.0 = 653 MB -->
 <!-- ce-java17: 21.3.0 = 723 MB, 22.2.0 = 1.0 GB, 22.3.0 = 447 MB -->
+<!--            17.0.9 = 592 mB -->
+<!-- ce-java21: 21.0.1 = 585 MB -->
 
 > **:mag_right:** [Git for Windows][git_releases] provides a BASH emulation used to run [**`git.exe`**][git_cli] from the command line (as well as over 250 Unix commands like [**`awk`**][man1_awk], [**`diff`**][man1_diff], [**`file`**][man1_file], [**`grep`**][man1_grep], [**`more`**][man1_more], [**`mv`**][man1_mv], [**`rmdir`**][man1_rmdir], [**`sed`**][man1_sed] and [**`wc`**][man1_wc]).
 
@@ -62,8 +65,8 @@ This repository is organized as follows:
 docs\
 examples\{<a href="./examples/README.md">README.md</a>, <a href="./examples/ClassInitialization"/>ClassInitialization</a>, ..}
 graal\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
-<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.8-jvmci-23.0-b15\</a>   <i>(377 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-21/releases">labsjdk-ce-21_35-jvmci-23.1-b14\</a>    <i>(313 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.9-jvmci-23.0-b22\</a>   <i>(385 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-21/releases">labsjdk-ce-21.0.1-jvmci-23.1-b22\</a>   <i>(420 MB)</i>
 mx\  <i>(<a href=".gitmodules">Git submodule</a>)</i>
 README.md
 <a href="RESOURCES.md">RESOURCES.md</a>
@@ -224,14 +227,14 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 </dd>
 <dd>
 <pre style="font-size:80%;">
-<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-community-java21-windows-amd64-dev.zip</a><sup><b>(*)</b></sup>             <i>(298 MB)</i>
-<a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-community-jdk-17.0.8_windows-x64_bin.zip</a><sup><b>(*)</b></sup>           <i>(297 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-community-java21-windows-amd64-dev.zip</a><sup><b> (*)</b></sup>             <i>(298 MB)</i>
+<a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-community-jdk-17.0.8_windows-x64_bin.zip</a><sup><b> (*)</b></sup>           <i>(297 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-11/releases">labsjdk-ce-11.0.19+7-jvmci-22.3-b09-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
-<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.7+7-jvmci-23.0-b11-windows-amd64.tar.gz</a>       <i>(190 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.9+9-jvmci-23.0-b22-windows-amd64.tar.gz</a>       <i>(190 MB)</i>
+<a href="https://github.com/graalvm/labs-openjdk-21/releases">labsjdk-ce-21.0.1+12-jvmci-23.1-b22-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
 <a href="https://git-scm.com/download/win">PortableGit-2.42.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
-<a href="https://github.com/upx/upx/releases">upx-4.1.0-win64.zip</a>                                           <i>( &lt;1 MB)</i>
+<a href="https://github.com/upx/upx/releases">upx-4.2.1-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
 </pre>
 <span style="font-size:80%;"><sup><b>(*)</b></sup> The tool <a href="https://www.graalvm.org/latest/reference-manual/native-image/" rel="external"><code><b>native-image</b></code></a> was initially installed separately with <b>GraalVM</b> distributions and is now included in <b>GraalVM for JDK</b> distributions (see article <a href="https://medium.com/graalvm/a-new-graalvm-release-and-new-free-license-4aab483692f5">"New GraalVM Release and new Free Licence!"</a>).</span>
@@ -246,9 +249,9 @@ Versions 20.x of GraalVM bring major improvements to Windows users:
 <ul>
 <li>Command <a href="https://www.graalvm.org/docs/reference-manual/gu/" rel="external"><code>gu.cmd</code></a> is finally part of the Windows distribution !
 <pre style="font-size:80%;">
-<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\graalvm-ce-java11-22.3.2\ gu.*</b>
-c:\opt\graalvm-ce-java11-22.3.2\bin\gu.cmd
-c:\opt\graalvm-ce-java11-22.3.2\lib\installer\bin\gu.exe
+<b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1" rel="external">where</a> /r c:\opt\jdk-graalvm-ce-17.0.9_9.1 gu.*</b>
+c:\opt\jdk-graalvm-ce-17.0.9_9.1\bin\gu.cmd
+c:\opt\jdk-graalvm-ce-17.0.9_9.1\lib\installer\bin\gu.cmd
 </pre>
 </li>
 <li><a href="https://www.graalvm.org/reference-manual/native-image/" rel="external"><code>native-image</code></a> and <code>rebuild-images</code> are now available as an installable component.
@@ -301,12 +304,12 @@ The <a href="https://www.graalvm.org/">GraalVM</a> project uses its own <a href=
 <span id="footnote_05">[5]</span> ***JDK 11 Support*** [↩](#anchor_05)
 
 <dl><dd>
-Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href="https://www.graalvm.org/release-notes/release-calendar/#planned-releases">June 2023</a>).
+Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in <a href="https://www.graalvm.org/release-notes/release-calendar/#planned-releases">June 2023</a>).
 </dd></dl>
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/October 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -314,8 +317,10 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [ada_examples]: https://github.com/michelou/ada-examples
 [akka_examples]: https://github.com/michelou/akka-examples
 [checkstyle_downloads]: https://github.com/checkstyle/checkstyle/releases
-[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.12.0
+[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.12.2
 [cl_cli]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
+[cmake_downloads]: https://cmake.org/download/
+[cmake_relntoes]: https://cmake.org/cmake/help/v3.28/release/3.28.html
 [cpp_examples]: https://github.com/michelou/cpp-examples
 [dart_examples]: https://github.com/michelou/dart-examples
 [deno_examples]: https://github.com/michelou/deno-examples
@@ -329,11 +334,13 @@ Oracle plans to retire JDK 11 support in GraalVM 23.0 (to be released in <a href
 [golang_examples]: https://github.com/michelou/golang-examples
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
-[graalvm17_releases]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.8
-[graalvm17_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.8
-[graalvm21_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
+[graalvm17_releases]: https://github.com/graalvm/labs-openjdk-17/releases
+[graalvm17_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9
+[graalvm21_releases]: https://github.com/graalvm/labs-openjdk-21/releases
+[graalvm21_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-21.0.1
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
+[kafka_examples]: https://github.com/michelou/kafka-examples
 [kotlin_examples]: https://github.com/michelou/kotlin-examples
 [linux_opt]: https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/opt.html
 [llvm_clang]: https://clang.llvm.org/docs/ClangCommandLineReference.html#introduction

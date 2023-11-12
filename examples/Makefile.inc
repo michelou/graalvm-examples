@@ -24,7 +24,7 @@ CURL       = $(subst \,/,$(GIT_HOME))/mingw64/bin/curl.exe
 ECHO       = $(subst \,/,$(GIT_HOME))/usr/bin/echo.exe
 ## We grab Mingw version instead of C:\Windows\System32\find.exe
 FIND       = $(subst \,/,$(GIT_HOME))/usr/bin/find.exe
-MAKE       = $(subst \,/,$(GIT_HOME))/usr/bin/make.exe
+MAKE       = $(subst \,/,$(MSYS_HOME))/usr/bin/make.exe
 MKDIR      = $(subst \,/,$(GIT_HOME))/usr/bin/mkdir.exe
 RM         = $(subst \,/,$(GIT_HOME))/usr/bin/rm.exe
 TOUCH      = $(subst \,/,$(GIT_HOME))/usr/bin/touch.exe

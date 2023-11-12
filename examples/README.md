@@ -33,17 +33,17 @@ Usage: <a href="ClassInitialization/build.bat">build</a> { &lt;option&gt; | &lt;
 &nbsp;
   Options:
     -cached     select main class with cached startup time
-    -debug      display commands executed by this script
+    -debug      print commands executed by this script
     -jvmci      add JVMCI options
     -native     generate both JVM files and native image
-    -timer      display total elapsed time
-    -verbose    display progress messages
+    -timer      print total execution time
+    -verbose    print progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
     compile     generate executable
     doc         generate HTML documentation
-    help        display this help message
+    help        print this help message
     lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     run         run the generated executable
     test        execute JMH benchmarks
@@ -126,12 +126,14 @@ Command [**`build -native -debug compile`**](ClassInitialization/build.bat) show
 <b>&gt; <a href="ClassInitialization/build.bat">build</a> -native -debug compile</b>
 [build] Options    : _CACHED=0 _TARGET=native _TIMER=0 _VERBOSE=0
 [build] Subcommands: _CLEAN=0 _COMPILE=1 _DOC=0 _LINT=0 _PACK=0 _RUN=0 _TEST=0
-[build] Variables  : "GRAALVM=C:\opt\graalvm-ce-java11-22.3.2"
+[build] Variables  : "GRAALVM_HOME=C:\opt\jdk-graalvm-ce-17.0.9_9.1"
+[build] Variables  : "JAVA_HOME=C:\opt\jdk-graalvm-ce-17.0.9_9.1"
 [build] Variables  : "MSVS_HOME=X:"
+[build] Variables  : _MAIN_CLASS=org.graalvm.example.HelloStartupTime
 [build] 00000000000000 Target : 'G:\examples\ClassInitialization\target\classes\.latest-build'
 [build] 20191115223804 Sources: 'G:\examples\ClassInitialization\src\main\java\*.java'
 [build] _COMPILE_REQUIRED=1
-[build] "C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
+[build] "C:\opt\jdk-graalvm-ce-17.0.9_9.1\bin\javac.exe" "@G:\examples\ClassInitialization\target\javac_opts.txt" "@G:\examples\ClassInitialization\target\javac_sources.txt"
 [build] "X:\VC\Auxiliary\Build\vcvarsall.bat" x64
 **********************************************************************
 ** Visual Studio 2019 Developer Command Prompt v16.0
@@ -174,17 +176,17 @@ Command [**`build.bat`**](CountUppercase/build.bat) with no argument displays th
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
-    -debug      display commands executed by this script
+    -debug      print commands executed by this script
     -jvmci      add JVMCI options
     -native     generate both JVM files and native image
-    -timer      display total elapsed time
-    -verbose    display progress messages
+    -timer      print total execution time
+    -verbose    print progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
     compile     generate executable
     doc         generate HTML documentation
-    help        display this help message
+    help        print this help message
     lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     run         run executable
 </pre>
@@ -221,23 +223,28 @@ total: 69999993 (1375 ms)
 > **:mag_right:** Executing the above command with option <b><code>-debug</code></b> also displays operations performed internally. The interesting parts are prefixed with label <b><code>[build]</code></b> (e.g. <b><code>-Diterations=5</code></b>):
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="CountUppercase/build.bat">build</a> run -debug | <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr">findstr</a> /b "[debug]"</b>
-> [build] _CLEAN=0 _COMPILE=1 _RUN=1 _VERBOSE=0
-> [build] C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
-> [build] C:\opt\graalvm-ce-java11-22.3.2\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
+> [build] Properties : _PROJECT_NAME=CountUppercase _PROJECT_VERSION=1.0-SNAPSHOT
+> [build] Options    : _TIMER=0 _VERBOSE=0
+> [build] Subcommands:  clean compile_jvm run_jvm
+> [build] Variables  : "GRAALVM_HOME=C:\opt\jdk-graalvm-ce-17.0.9_9.1"
+> [build] Variables  : "JAVA_HOME=C:\opt\jdk-graalvm-ce-17.0.9_9.1"
+> [...]
+> [build] C:\opt\jdk-graalvm-ce-17.0.9_9.1\bin\javac.exe -d G:\examples\CountUppercase\target\classes @G:\examples\CountUppercase\target\source_list.txt
+> [build] C:\opt\jdk-graalvm-ce-17.0.9_9.1\bin\java.exe -cp G:\examples\CountUppercase\target\classes <b>-Diterations=5</b> -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile=G:\examples\CountUppercase\target\graal_log.txt CountUppercase In 2019 I would like to run ALL languages in one VM.
 > [build] Compilation log written to G:\examples\CountUppercase\target\graal_log.txt
 > [build] _EXITCODE=0
 > </pre>
 
-Command [**`build.bat -verbose check`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">[1]</a></sup>:
+Command [**`build.bat -verbose lint`**](CountUppercase/build.bat) analyzes the source files with our custom [CheckStyle][checkstyle_home] configuration <sup id="anchor_01"><a href="#footnote_01">1</a></sup>:
 
 <pre style="font-size:80%;">
-<b>&gt; <a href="CountUppercase/build.bat">build</a> -verbose check</b>
-Analyze Java source files with CheckStyle configuration .checkstyle\graal_checks.xml
+<b>&gt; <a href="CountUppercase/build.bat">build</a> -verbose lint</b>
+Analyze 1 Java source file with CheckStyle configuration "%LOCALAPPDATA%\Checkstyle\graal_checks.xml"
 Starting audit...
 Audit done.
 </pre>
 
-> **:mag_right:** Directory **`%USERPROFILE%\.checkstyle`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
+> **:mag_right:** Directory **`%LOCALAPPDATA%\Checkstyle`** contains both the [CheckStyle][checkstyle_home] configuration file **`graal_checks.xml`** and the CheckStyle library **`checkstyle-*-all.jar`** :
 > <pre style="font-size:80%;">
 > <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dir">dir</a> /b <a href="https://en.wikipedia.org/wiki/Environment_variable#Default_values">%USERPROFILE%</a>\.graal</b>
 > checkstyle-10.2-all.jar
@@ -339,17 +346,17 @@ Command [**`build.bat`**](Ranking/build.bat) with no argument displays the help 
 Usage: build { &lt;option&gt; | &lt;subcommand&gt; }
 &nbsp;
   Options:
-    -debug      show commands executed by this script
+    -debug      print commands executed by this script
     -jvmci      add JVMCI options
     -native     generate both JVM files and native image
-    -timer      display total elapsed time
-    -verbose    display progress messages
+    -timer      print total execution time
+    -verbose    print progress messages
 &nbsp;
   Subcommands:
     clean       delete generated files
     compile     generate executable
     doc         generate HTML documentation
-    help        display this help message
+    help        print this help message
     lint        analyze Java source files with <a href="https://checkstyle.sourceforge.io/">CheckStyle</a>
     test        execute micro benchmark
 </pre>
@@ -479,7 +486,7 @@ Note that the full CheckStyle distribution (aka "<code>checkstyle-all</code>") i
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/June 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/November 2023* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

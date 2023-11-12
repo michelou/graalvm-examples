@@ -109,6 +109,7 @@ if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
     goto :eof
 )
 set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
+set "_LLI_CMD=%GRAALVM_HOME%\lib\llvm\bin\lli.exe"
 goto :eof
 
 :env_colors
@@ -160,7 +161,7 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=9.2
+set _CHECKSTYLE_VERSION=10.12.4
 
 for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
@@ -217,7 +218,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="-timer" ( set _TIMER=1
     ) else if "%__ARG%"=="-verbose" ( set _VERBOSE=1
     ) else (
-        echo %_ERROR_LABEL% Unknown option %__ARG% 1>&2
+        echo %_ERROR_LABEL% Unknown option "%__ARG%" 1>&2
         set _EXITCODE=1
         goto args_done
     )
@@ -232,7 +233,7 @@ if "%__ARG:~0,1%"=="-" (
     ) else if "%__ARG%"=="run" ( set _COMPILE=1& set _RUN=1
     ) else if "%__ARG%"=="test" ( set _COMPILE=1& set _PACK=1& set _TEST=1
     ) else (
-        echo %_ERROR_LABEL% Unknown subcommand %__ARG% 1>&2
+        echo %_ERROR_LABEL% Unknown subcommand "%__ARG%" 1>&2
         set _EXITCODE=1
         goto args_done
     )
@@ -281,17 +282,17 @@ echo Usage: %__BEG_O%%_BASENAME% { ^<option^> ^| ^<subcommand^> }%__END%
 echo.
 echo   %__BEG_P%Options:%__END%
 echo     %__BEG_O%-cached%__END%     select main class with cached startup time
-echo     %__BEG_O%-debug%__END%      display commands executed by this script
+echo     %__BEG_O%-debug%__END%      print commands executed by this script
 echo     %__BEG_O%-jvmci%__END%      add JVMCI options
 echo     %__BEG_O%-native%__END%     generate both JVM files and native image
-echo     %__BEG_O%-timer%__END%      display total elapsed time
-echo     %__BEG_O%-verbose%__END%    display progress messages
+echo     %__BEG_O%-timer%__END%      print total execution time
+echo     %__BEG_O%-verbose%__END%    print progress messages
 echo.
 echo   %__BEG_P%Subcommands:%__END%
 echo     %__BEG_O%clean%__END%       delete generated files
 echo     %__BEG_O%compile%__END%     compile Java source files
 echo     %__BEG_O%doc%__END%         generate HTML documentation
-echo     %__BEG_O%help%__END%        display this help message
+echo     %__BEG_O%help%__END%        print this help message
 echo     %__BEG_O%lint%__END%        analyze Java source files with %__BEG_N%CheckStyle%__END%
 echo     %__BEG_O%run%__END%         execute main program "%__BEG_O%%_MAIN_CLASS%%__END%"
 echo     %__BEG_O%test%__END%        execute JMH benchmarks
@@ -325,7 +326,7 @@ goto :eof
 
 @rem see https://github.com/checkstyle/checkstyle/releases/
 :checkstyle
-set "__CHECKSTYLE_DIR=%LOCALAPPDATA%\Checkstyle"
+set "__CHECKSTYLE_DIR=%USERPROFILE%\.graal"
 if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
 set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
@@ -367,7 +368,7 @@ if not defined __SOURCE_FILES (
     goto :eof
 )
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES% 1>&2
-) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%LOCALAPPDATA%=%%LOCALAPPDATA%%%!" 1>&2
+) else if %_VERBOSE%==1 ( echo Analyze %__N% Java source files with CheckStyle configuration "!__XML_FILE:%USERPROFILE%=%%USERPROFILE%%%!" 1>&2
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
@@ -387,7 +388,7 @@ if %_ACTION_REQUIRED%==0 goto :eof
 call :compile_java
 if not %_EXITCODE%==0 goto :eof
 
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% xcopy /y "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% xcopy /y /s "%_SOURCE_DIR%\main\resources\*" "%_CLASSES_DIR%\" 1>&2
 ) else if %_VERBOSE%==1 ( echo Copy resource files to directory "!_CLASSES_DIR:%_ROOT_DIR%=!" 1>&2
 )
 if exist "%_SOURCE_DIR%\main\resources\*" (
@@ -581,7 +582,7 @@ goto :eof
 :run_jvm
 set __MAIN_ARGS=
 
-set __JAVA_OPTS=--illegal-access=warn -cp "%_CLASSES_DIR%"
+set __JAVA_OPTS=-cp "%_CLASSES_DIR%"
 if %_DEBUG%==1 (
     set "__GRAAL_LOG_FILE=%_TARGET_DIR%\graal_log.txt"
     set __JAVA_OPTS=%__JAVA_OPTS% -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="!__GRAAL_LOG_FILE!"

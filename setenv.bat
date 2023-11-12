@@ -228,11 +228,11 @@ set "_DRIVE_NAME=!__DRIVE_NAMES:~0,2!"
 if /i "%_DRIVE_NAME%"=="%__GIVEN_PATH:~0,2%" goto :eof
 
 if %_DEBUG%==1 ( echo %_DEBUG_LABEL% subst "%_DRIVE_NAME%" "%__GIVEN_PATH%" 1>&2
-) else if %_VERBOSE%==1 ( echo Assign drive %_DRIVE_NAME% to path "%__GIVEN_PATH%" 1>&2
+) else if %_VERBOSE%==1 ( echo Assign drive %_DRIVE_NAME% to path "!__GIVEN_PATH:%USERPROFILE%=%%USERPROFILE%%!" 1>&2
 )
 subst "%_DRIVE_NAME%" "%__GIVEN_PATH%"
 if not %ERRORLEVEL%==0 (
-    echo %_ERROR_LABEL% Failed to assign drive %_DRIVE_NAME% to path "%__GIVEN_PATH%" 1>&2
+    echo %_ERROR_LABEL% Failed to assign drive %_DRIVE_NAME% to path "!__GIVEN_PATH:%USERPROFILE%=%%USERPROFILE%%!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -282,11 +282,17 @@ if defined __CMAKE_CMD (
     set "_CMAKE_HOME=%CMAKE_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable CMAKE_HOME 1>&2
 ) else (
-    set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"
-    if not defined _CMAKE_HOME (
-        set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"
+    set __PATH=C:\opt
+    if exist "!__PATH!\cmake\" ( set "_CMAKE_HOME=!__PATH!\cmake"
+    ) else (
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"    
+        if not defined _CMAKE_HOME (
+            set "__PATH=%ProgramFiles%"
+            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\cmake*" 2^>NUL') do set "_CMAKE_HOME=!__PATH!\%%f"
+        )
+    )
+    if defined _CMAKE_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default GNU CMake installation directory "!_CMAKE_HOME!" 1>&2
     )
 )
 if not exist "%_CMAKE_HOME%\bin\cmake.exe" (
@@ -325,7 +331,7 @@ if defined __JAVAC_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GRAAL_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!__PATH!\jdk-graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAALVM_HOME=!__PATH!\%%f"
+    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\jdk-graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAALVM_HOME=!__PATH!\%%f"
     if not defined _GRAALVM_HOME (
         set "__PATH=%ProgramFiles%"
         for /f "delims=" %%f in ('dir /ad /b "!__PATH!\jdk-graalvm-ce-%__JAVA_VERSION%*" 2^>NUL') do set "_GRAALVM_HOME=!__PATH!\%%f"
@@ -336,11 +342,11 @@ if not exist "%_GRAALVM_HOME%\bin\javac.exe" (
     set _EXITCODE=1
     goto :eof
 )
-if not exist "%_GRAALVM_HOME%\bin\polyglot.cmd" (
-    echo %_ERROR_LABEL% Executable polyglot.cmd not found ^("%_GRAALVM_HOME%"^) 1>&2
-    set _EXITCODE=1
-    goto :eof
-)
+@rem if not exist "%_GRAALVM_HOME%\bin\polyglot.cmd" (
+@rem     echo %_ERROR_LABEL% Executable polyglot.cmd not found ^("%_GRAALVM_HOME%"^) 1>&2
+@rem     set _EXITCODE=1
+@rem     goto :eof
+@rem )
 goto :eof
 
 @rem input parameter: %1=javac file path
@@ -396,7 +402,7 @@ if defined __MVN_CMD (
     set __PATH=C:\opt
     if exist "!__PATH!\apache-maven\" ( set "_MAVEN_HOME=!__PATH!\apache-maven"
     ) else (
-        for /f %%f in ('dir /ad /b "!__PATH!\apache-maven-*" 2^>NUL') do set "_MAVEN_HOME=!__PATH!\%%f"
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\apache-maven-*" 2^>NUL') do set "_MAVEN_HOME=!__PATH!\%%f"
     )
     if defined _MAVEN_HOME (
         if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Maven installation directory "!_MAVEN_HOME!" 1>&2
@@ -427,11 +433,17 @@ if defined __MAKE_CMD (
     set "_MSYS_HOME=%MSYS_HOME%"
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable MSYS_HOME 1>&2
 ) else (
-    set "__PATH=%ProgramFiles%"
-    for /f "delims=" %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
-    if not defined _MSYS_HOME (
-        set __PATH=C:\opt
-        for /f %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
+    set __PATH=C:\opt
+    if exist "!__PATH!\msys64\" ( set "_MSYS_HOME=!__PATH!\msys64"
+    ) else (
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
+        if not defined _MSYS_HOME (
+            set "__PATH=%ProgramFiles%"
+            for /f "delims=" %%f in ('dir /ad /b "!__PATH!\msys*" 2^>NUL') do set "_MSYS_HOME=!__PATH!\%%f"
+        )
+    )
+    if defined _MSYS_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default MYS2 installation directory "!_MSYS_HOME!" 1>&2
     )
 )
 if not exist "%_MSYS_HOME%\usr\bin\make.exe" (
@@ -473,6 +485,9 @@ if defined __PYTHON_CMD (
             set "__PATH=%ProgramFiles%"
             for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
         )
+    )
+    if defined _PYTHON_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Python 3 installation directory "!_PYTHON_HOME!" 1>&2
     )
 )
 if not exist "%_PYTHON_HOME%\python.exe" (
@@ -693,7 +708,13 @@ if defined WABT_HOME (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable WABT_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    for /f %%f in ('dir /ad /b "!__PATH!\wabt-1*" 2^>NUL') do set "_WABT_HOME=!__PATH!\%%f"
+    if exist "!__PATH!\wabt\" ( set "_WABT_HOME=!__PATH!\wabt"
+    ) else (
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\wabt-1*" 2^>NUL') do set "_WABT_HOME=!__PATH!\%%f"
+    )
+    if defined _WABT_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default WABT installation directory "!_WABT_HOME!" 1>&2
+    )
 )
 if not exist "%_WABT_HOME%\bin\wat2wasm.exe" (
     echo %_WARNING_LABEL% Wat2WASM executable not found ^("%_WABT_HOME%"^) 1>&2
@@ -725,13 +746,16 @@ if defined __GIT_CMD (
     if %_DEBUG%==1 echo %_DEBUG_LABEL% Using environment variable GIT_HOME 1>&2
 ) else (
     set __PATH=C:\opt
-    if exist "!__PATH!\Git\" ( set _GIT_HOME=!__PATH!\Git
+    if exist "!__PATH!\Git\" ( set "_GIT_HOME=!__PATH!\Git"
     ) else (
         for /f %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
         if not defined _GIT_HOME (
             set "__PATH=%ProgramFiles%"
             for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
         )
+    )
+    if defined _GIT_HOME (
+        if %_DEBUG%==1 echo %_DEBUG_LABEL% Using default Git installation directory "!_GIT_HOME!" 1>&2
     )
 )
 if not exist "%_GIT_HOME%\bin\git.exe" (
@@ -757,6 +781,11 @@ if %ERRORLEVEL%==0 (
     for /f "tokens=1,2,*" %%i in ('"%JAVA_HOME%\bin\javac.exe" -version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% javac %%j,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%JAVA_HOME%\bin:javac.exe"
 )
+where /q "%GRAALVM_HOME%\bin:polyglot.cmd"
+if %ERRORLEVEL%==0 (
+    for /f "tokens=1-4,*" %%i in ('call "%GRAALVM_HOME%\bin\polyglot.cmd" --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% polyglot %%m,"
+    set __WHERE_ARGS=%__WHERE_ARGS% "%GRAALVM_HOME%\bin:polyglot.cmd"
+)
 where /q "%PYTHON_HOME%:python.exe"
 if %ERRORLEVEL%==0 (
     for /f "tokens=1,*" %%i in ('"%PYTHON_HOME%\python.exe" --version 2^>^&1') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% python %%j,"
@@ -769,17 +798,17 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%MSYS_HOME%\usr\bin:make.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('"%MSYS_HOME%\usr\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE1=%__VERSIONS_LINE1% make %%k,"
+    for /f "tokens=1-3,*" %%i in ('"%MSYS_HOME%\usr\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE2=%__VERSIONS_LINE% make %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSYS_HOME%\usr\bin:make.exe"
 )
 where /q "%LLVM_HOME%\bin:clang.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('"%LLVM_HOME%\bin\clang.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% clang %%k,"
+    for /f "tokens=1-3,*" %%i in ('"%LLVM_HOME%\bin\clang.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% clang %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%LLVM_HOME%\bin:clang.exe"
 )
 where /q "%LLVM_HOME%\bin:opt.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1,2,3,*" %%i in ('"%LLVM_HOME%\bin\opt.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
+    for /f "tokens=1-3,*" %%i in ('"%LLVM_HOME%\bin\opt.exe" --version 2^>^&1 ^| findstr version') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% opt %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%LLVM_HOME%\bin:opt.exe"
 )
 where /q "%MSVC_BIN_DIR%:cl.exe"
@@ -802,7 +831,6 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" ( set __BIN_DIR=Bin\amd64
 )
 where /q "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%:msbuild.exe"
 if %ERRORLEVEL%==0 (
-    "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%\msbuild.exe" -version | findstr /b [0-9]
     for /f "delims=" %%i in ('"%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%\msbuild.exe" -version ^| findstr /b [0-9]') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% msbuild %%i"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSVS_HOME%\MSBuild\Current\%__BIN_DIR%:msbuild.exe"
 )
