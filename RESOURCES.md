@@ -27,10 +27,12 @@ For convenience resources are organized in several topics : [General](#general),
 - [A guide to GraalVM &ndash; a next-generation JVM][blog_chuyko] by Dimitri Chuyko, December 2022.
 - [GraalVM: running C/C++ application safely in the Java world](https://www.adyen.com/blog/graalvm-running-c-applications--in-the-cloud) by Chang-Iun Wang, November 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [GraalVM for JDK 21 is here!](https://medium.com/graalvm/graalvm-for-jdk-21-is-here-ee01177dd12d)  by Alina Yurenko, September 2023.
   - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
   - [GraalVM 22.2][blog_graalvm_22_2] by Alina Yurenko, July 2022.
   - [GraalVM 22.1][blog_graalvm_22_1] by Alina Yurenko, April 2022.
   - [GraalVM 22.0 is here!][blog_graalvm_22_0] by Alina Yurenko, January 2022.
+  - [Using GraalVM and Native Image on Windows 10](https://medium.com/graalvm/using-graalvm-and-native-image-on-windows-10-9954dc071311) by Olga Gupalo, September 2021.
   - [GraalVM 21.2: Lots of native image usability improvements][blog_graalvm_21_2] by Oleg Selajev, July 2021.
   - [GraalVM 21.1 is here!][blog_graalvm_21_1] by Oleg Selajev, April 2021.
   - [GraalVM 21.0: Introducing a New Way to Run Java][blog_run_java], January 2021.
@@ -126,7 +128,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/November 2023* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/January 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
