@@ -320,7 +320,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.12.2
 [cl_cli]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
 [cmake_downloads]: https://cmake.org/download/
-[cmake_relntoes]: https://cmake.org/cmake/help/v3.28/release/3.28.html
+[cmake_relnotes]: https://cmake.org/cmake/help/v3.28/release/3.28.html
 [cpp_examples]: https://github.com/michelou/cpp-examples
 [dart_examples]: https://github.com/michelou/dart-examples
 [deno_examples]: https://github.com/michelou/deno-examples
@@ -337,7 +337,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [graalvm17_releases]: https://github.com/graalvm/labs-openjdk-17/releases
 [graalvm17_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9
 [graalvm21_releases]: https://github.com/graalvm/labs-openjdk-21/releases
-[graalvm21_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-21.0.1
+[graalvm21_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-21.0.2
 [haskell_examples]: https://github.com/michelou/haskell-examples
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
 [kafka_examples]: https://github.com/michelou/kafka-examples
@@ -345,6 +345,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [linux_opt]: https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/opt.html
 [llvm_clang]: https://clang.llvm.org/docs/ClangCommandLineReference.html#introduction
 [llvm_examples]: https://github.com/michelou/llvm-examples
+[m2_examples]: https://github.com/michelou/m2-examples
 [man1_awk]: https://www.linux.org/docs/man1/awk.html
 [man1_diff]: https://www.linux.org/docs/man1/diff.html
 [man1_file]: https://www.linux.org/docs/man1/file.html
