@@ -47,7 +47,7 @@ TOUCH      = touch
 endif
 
 ## https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
-JMH_VERSION = 1.36
+JMH_VERSION = 1.37
 
 JMH_CORE_LIB_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-core-$(JMH_VERSION).jar")
 JMH_ANN_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-generator-annprocess-$(JMH_VERSION).jar")

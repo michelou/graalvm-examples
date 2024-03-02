@@ -10,14 +10,15 @@ set _DEBUG=0
 set _EXITCODE=0
 
 @rem files README.md, RESOURCES.md, etc.
-set _LAST_MODIFIED_OLD=michelou/)/December 2023
-set _LAST_MODIFIED_NEW=michelou/)/January 2024
+set _LAST_MODIFIED_OLD=michelou/)/January 2024
+set _LAST_MODIFIED_NEW=michelou/)/March 2024
 
-set _LAST_DOWNLOAD_OLD=(\*December 2023\*)
-set _LAST_DOWNLOAD_NEW=(*January 2024*)
+set _LAST_DOWNLOAD_OLD=(\*January 2024\*)
+set _LAST_DOWNLOAD_NEW=(*March 2024*)
 
 @rem https://superuser.com/questions/909127/findstr-dos-commands-multiple-string-argument
-set _MD_EXCLUDES=:\graal :\mx _LOCAL
+set _EXCLUDE_TOPDIRS=bin demos doc graal graaljs mx
+set _EXCLUDE_SUBDIRS=_LOCAL labsjdk-ce-
 
 call :env
 if not %_EXITCODE%==0 goto end
@@ -58,6 +59,8 @@ if not exist "%GIT_HOME%\usr\bin\grep.exe" (
     set _EXITCODE=1
     goto :eof
 )
+set "_CYGPATH_CMD=%GIT_HOME%\usr\bin\cygpath.exe"
+set "_FIND_CMD=%GIT_HOME%\usr\bin\find.exe"
 set "_GREP_CMD=%GIT_HOME%\usr\bin\grep.exe"
 set "_SED_CMD=%GIT_HOME%\usr\bin\sed.exe"
 set "_UNIX2DOS_CMD=%GIT_HOME%\usr\bin\unix2dos.exe"
@@ -66,10 +69,6 @@ goto :eof
 :env_colors
 @rem ANSI colors in standard Windows 10 shell
 @rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _RESET=[0m
-set _BOLD=[1m
-set _UNDERSCORE=[4m
-set _INVERSE=[7m
 
 @rem normal foreground colors
 set _NORMAL_FG_BLACK=[30m
@@ -107,6 +106,12 @@ set _STRONG_BG_RED=[101m
 set _STRONG_BG_GREEN=[102m
 set _STRONG_BG_YELLOW=[103m
 set _STRONG_BG_BLUE=[104m
+
+@rem we define _RESET in last position to avoid crazy console output with type command
+set _BOLD=[1m
+set _INVERSE=[7m
+set _UNDERSCORE=[4m
+set _RESET=[0m
 goto :eof
 
 @rem input parameter: %*
@@ -173,16 +178,30 @@ echo     %__BEG_O%run%__END%          replace old patterns with new ones
 goto :eof
 
 :run
-set __N=0
-for /f "delims=" %%f in ('dir /b /s "%_ROOT_DIR%\*.md" ^| findstr /v "%_MD_EXCLUDES%"') do (
+for /f "delims=" %%f in ('"%_CYGPATH_CMD%" %_ROOT_DIR%\') do set "__ROOT_DIR=%%~f"
+
+set __FIND_EXCLUDES=
+for %%i in (%_EXCLUDE_TOPDIRS%) do (
+    set __FIND_EXCLUDES=!__FIND_EXCLUDES! -not -path "%__ROOT_DIR%%%i/*"
+)
+for %%i in (%_EXCLUDE_SUBDIRS%) do (
+    set __FIND_EXCLUDES=!__FIND_EXCLUDES! -not -path "*/*%%i*/*"
+)
+set __N_MD=0
+if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_FIND_CMD%" "%__ROOT_DIR%" -type f -name "*.md" %__FIND_EXCLUDES% 1>&2
+for /f "delims=" %%f in ('%_FIND_CMD% "%__ROOT_DIR%" -type f -name "*.md" %__FIND_EXCLUDES%') do (
     set "__INPUT_FILE=%%f"
-    if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_GREP_CMD%" -q "%_LAST_MODIFIED_OLD%" "!__INPUT_FILE!" 1>&2
+    if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_GREP_CMD%" -q "%_LAST_MODIFIED_OLD%" "!__INPUT_FILE!" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Check file "!__INPUT_FILE!" 1>&2
+    )
     call "%_GREP_CMD%" -q "%_LAST_MODIFIED_OLD%" "!__INPUT_FILE!"
     if !ERRORLEVEL!==0 (
-        if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_SED_CMD%" -i "s@%_LAST_MODIFIED_OLD%@%_LAST_MODIFIED_NEW%@g" "!__INPUT_FILE!" 1>&2
+        if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_SED_CMD%" -i "s@%_LAST_MODIFIED_OLD%@%_LAST_MODIFIED_NEW%@g" "!__INPUT_FILE!" 1>&2
+        ) else if %_VERBOSE%==1 ( echo    Replace pattern "%_LAST_MODIFIED_OLD%" by "%_LAST_MODIFIED_NEW%" 1>&2
+        )
         call "%_SED_CMD%" -i "s@%_LAST_MODIFIED_OLD%@%_LAST_MODIFIED_NEW%@g" "!__INPUT_FILE!"
         call "%_UNIX2DOS_CMD%" -q "!__INPUT_FILE!"
-        set /a __N+=1
+        set /a __N_MD+=1
     )
     if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_GREP_CMD%" -q "%_LAST_DOWNLOAD_OLD%" "!__INPUT_FILE!" 1>&2
     call "%_GREP_CMD%" -q "%_LAST_DOWNLOAD_OLD%" "!__INPUT_FILE!"
@@ -190,10 +209,10 @@ for /f "delims=" %%f in ('dir /b /s "%_ROOT_DIR%\*.md" ^| findstr /v "%_MD_EXCLU
         if %_DEBUG%==1 echo %_DEBUG_LABEL% "%_SED_CMD%" -i "s@%_LAST_DOWNLOAD_OLD%@%_LAST_DOWNLOAD_NEW%@g" "!__INPUT_FILE!" 1>&2
         call "%_SED_CMD%" -i "s@%_LAST_DOWNLOAD_OLD%@%_LAST_DOWNLOAD_NEW%@g" "!__INPUT_FILE!"
         call "%_UNIX2DOS_CMD%" -q "!__INPUT_FILE!"
-        if !__N!==!__OLD_N! set /a __N+=1
+        if !__N_MD!==0 set /a __N_MD+=1
     )
 )
-call :message %__N% "Markdown"
+call :message %__N_MD% "Markdown"
 goto :eof
 
 @rem input parameters: %1=nr of updates, %2=file name

@@ -15,7 +15,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.43][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.44][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM for JDK 17 LTS][graalvm17_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm17_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -31,7 +31,7 @@ Optionally one may also install the following software:
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*January 2024*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*March 2024*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
@@ -143,7 +143,7 @@ We execute command [**`setenv.bat`**](setenv.bat) once to setup our development 
 Tool versions:
    javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.43.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.44.0.windows.1
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -156,9 +156,9 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
-   javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
+   javac 11.0.22, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.43.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.44.0.windows.1
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe
    C:\opt\Python-3.11.1\python.exe
@@ -309,7 +309,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/January 2024* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/March 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
