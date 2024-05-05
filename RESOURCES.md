@@ -1,4 +1,4 @@
-# <span id="top">GraalVM Resources</span> <span style="size:30%;"><a href="README.md">↩</a></span>
+# <span id="top">GraalVM Resources</span> <span style="font-size:90%;">[↩](README.md#top)</span>
 
 <table style="font-family:Helvetica,Arial;line-height:1.6;">
   <tr>
@@ -26,6 +26,7 @@ For convenience resources are organized in several topics : [General](#general),
 - [Building native images in Java with GraalVM][blog_vega] by Dan Vega, February 2023.
 - [A guide to GraalVM &ndash; a next-generation JVM][blog_chuyko] by Dimitri Chuyko, December 2022.
 - [GraalVM: running C/C++ application safely in the Java world](https://www.adyen.com/blog/graalvm-running-c-applications--in-the-cloud) by Chang-Iun Wang, November 2022.
+- [Révolutionner Java Avec GraalVM Native Image](https://www.infoq.com/fr/articles/native-java-graalvm/) by Alina Yurenko and Jean-Michel Doudoux, April 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
   - [GraalVM for JDK 21 is here!](https://medium.com/graalvm/graalvm-for-jdk-21-is-here-ee01177dd12d)  by Alina Yurenko, September 2023.
   - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
@@ -73,6 +74,7 @@ For convenience resources are organized in several topics : [General](#general),
 
 ### <span id="ni-articles">Articles</span>
 
+- [Improvements to Native Image JFR support in GraalVM for JDK 20](https://developers.redhat.com/articles/2023/06/13/improvements-native-image-jfr-support-graalvm-jdk-20#) by Robert Toyonaga, June 2023.
 - [Super-fast Java with Spring Boot Native](https://blog.tratif.com/2023/01/17/super-fast-java-with-spring-boot-native/) by Jakub Radica, January 2023.
 - [Using Unsafe safely in GraalVM Native Image](https://developers.redhat.com/articles/2022/05/09/using-unsafe-safely-graalvm-native-image) by Ashutosh Mehra, May 2022.
 - [Create a Native Image Binary Executable for a Polyglot Java Application using GraalVM](https://technology.amis.nl/2019/10/28/create-a-native-image-binary-executable-for-a-polyglot-java-application-using-graalvm/), by Lucas Jellema, October 28, 2019.
@@ -128,7 +130,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/March 2024* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/May 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

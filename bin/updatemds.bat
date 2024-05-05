@@ -10,11 +10,11 @@ set _DEBUG=0
 set _EXITCODE=0
 
 @rem files README.md, RESOURCES.md, etc.
-set _LAST_MODIFIED_OLD=michelou/)/January 2024
-set _LAST_MODIFIED_NEW=michelou/)/March 2024
+set _LAST_MODIFIED_OLD=michelou/)/April 2024
+set _LAST_MODIFIED_NEW=michelou/)/May 2024
 
-set _LAST_DOWNLOAD_OLD=(\*January 2024\*)
-set _LAST_DOWNLOAD_NEW=(*March 2024*)
+set _LAST_DOWNLOAD_OLD=(\*April 2024\*)
+set _LAST_DOWNLOAD_NEW=(*May 2024*)
 
 @rem https://superuser.com/questions/909127/findstr-dos-commands-multiple-string-argument
 set _EXCLUDE_TOPDIRS=bin demos doc graal graaljs mx

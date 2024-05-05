@@ -89,7 +89,7 @@ Usage: $BASENAME { <option> | <subcommand> }
   Options:
     -cached      select main class with cached startup time
     -debug       show commands executed by this script
-    -timer       display total elapsed time
+    -timer       display total execution time
     -verbose     display progress messages
 
   Subcommands:
