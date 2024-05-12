@@ -97,10 +97,6 @@ goto :eof
 :env_colors
 @rem ANSI colors in standard Windows 10 shell
 @rem see https://gist.github.com/mlocati/#file-win10colors-cmd
-set _RESET=[0m
-set _BOLD=[1m
-set _UNDERSCORE=[4m
-set _INVERSE=[7m
 
 @rem normal foreground colors
 set _NORMAL_FG_BLACK=[30m
@@ -138,6 +134,12 @@ set _STRONG_BG_RED=[101m
 set _STRONG_BG_GREEN=[102m
 set _STRONG_BG_YELLOW=[103m
 set _STRONG_BG_BLUE=[104m
+
+@rem we define _RESET in last position to avoid crazy console output with type command
+set _BOLD=[1m
+set _UNDERSCORE=[4m
+set _INVERSE=[7m
+set _RESET=[0m
 goto :eof
 
 @rem input parameter: %*
@@ -480,7 +482,7 @@ if defined __PYTHON_CMD (
     set __PATH=C:\opt
     if exist "!__PATH!\Python\" ( set "_PYTHON_HOME=!__PATH!\Python"
     ) else (
-        for /f %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
         if not defined _PYTHON_HOME (
             set "__PATH=%ProgramFiles%"
             for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Python-3*" 2^>NUL') do set "_PYTHON_HOME=!__PATH!\%%f"
@@ -651,11 +653,11 @@ for /f "tokens=1,2,*" %%f in ('subst ^| findstr /b "%__DRIVE_NAME%" 2^>NUL') do 
 )
 if not defined __ASSIGNED_PATH (
     if %_DEBUG%==1 ( echo %_DEBUG_LABEL% subst "%__DRIVE_NAME%" "%_SUBST_PATH%" 1>&2
-    ) else if %_VERBOSE%==1 ( echo Assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
+    ) else if %_VERBOSE%==1 ( echo Assign drive %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
     )
     subst "%__DRIVE_NAME%" "%_SUBST_PATH%"
     if not !ERRORLEVEL!==0 (
-        echo %_ERROR_LABEL% Failed to assign dirve %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
+        echo %_ERROR_LABEL% Failed to assign drive %__DRIVE_NAME% to path "%_SUBST_PATH%" 1>&2
         set _EXITCODE=1
         goto :eof
     )
@@ -748,7 +750,7 @@ if defined __GIT_CMD (
     set __PATH=C:\opt
     if exist "!__PATH!\Git\" ( set "_GIT_HOME=!__PATH!\Git"
     ) else (
-        for /f %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
+        for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
         if not defined _GIT_HOME (
             set "__PATH=%ProgramFiles%"
             for /f "delims=" %%f in ('dir /ad /b "!__PATH!\Git*" 2^>NUL') do set "_GIT_HOME=!__PATH!\%%f"
@@ -798,7 +800,7 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%MSYS_HOME%\usr\bin:make.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-3,*" %%i in ('"%MSYS_HOME%\usr\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE2=%__VERSIONS_LINE% make %%k,"
+    for /f "tokens=1-3,*" %%i in ('"%MSYS_HOME%\usr\bin\make.exe" --version 2^>^&1 ^| findstr Make') do set "__VERSIONS_LINE2=%__VERSIONS_LINE2% make %%k,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSYS_HOME%\usr\bin:make.exe"
 )
 where /q "%LLVM_HOME%\bin:clang.exe"
@@ -846,7 +848,9 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%GIT_HOME%\bin:git.exe"
 if %ERRORLEVEL%==0 (
-   for /f "tokens=1,2,*" %%i in ('"%GIT_HOME%\bin\git.exe" --version') do set "__VERSIONS_LINE4=%__VERSIONS_LINE4% git %%k,"
+    for /f "tokens=1,2,*" %%i in ('"%GIT_HOME%\bin\git.exe" --version') do (
+        for /f "delims=. tokens=1,2,3,*" %%a in ("%%k") do set "__VERSIONS_LINE4=%__VERSIONS_LINE4% git %%a.%%b.%%c,"
+    )
     set __WHERE_ARGS=%__WHERE_ARGS% "%GIT_HOME%\bin:git.exe"
 )
 where /q "%GIT_HOME%\usr\bin:diff.exe"

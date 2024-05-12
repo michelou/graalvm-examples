@@ -25,8 +25,10 @@ Optionally one may also install the following software:
 
 - [Checkstyle 10.16][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
 - [CMake 3.29][cmake_downloads] ([*release notes*][cmake_relnotes])
+- [ConEmu][conemu_downloads] ([*release notes*][conemu_relnotes])
 - [GraalVM for JDK 21 LTS][graalvm21_releases] ([*release notes*][graalvm21_relnotes])
 - [UPX 4.2][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
+- [Visual Studio Code 1.89][vscode_downloads] ([*release notes*][vscode_relnotes])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
@@ -35,11 +37,13 @@ For instance our development environment looks as follows (*May 2024*) <sup id="
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
+C:\opt\ConEmu\                                        <i>( 26 MB)</i>
 C:\opt\Git\                                           <i>(367 MB)</i>
 C:\opt\jdk-graalvm-ce-17.0.9_9.1\                     <i>(592 MB)</i>
 C:\opt\jdk-graalvm-ce-21.0.1_12.1\                    <i>(585 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx\                                           <i>( &lt;1 MB)</i>
+C:\opt\VSCode\                                        <i>(352 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 <a href="https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables#variables-that-are-recognized-only-in-the-user-context" rel="external">%USERPROFILE%</a>\.checkstyle\                            <i>( 16 MB)</i>
@@ -143,7 +147,7 @@ We execute command [**`setenv.bat`**](setenv.bat) once to setup our development 
 Tool versions:
    javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.0
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -158,7 +162,7 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 Tool versions:
    javac 11.0.22, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.0.windows.1
+   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.0
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe
    C:\opt\Python-3.11.1\python.exe
@@ -227,6 +231,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 </dd>
 <dd>
 <pre style="font-size:80%;">
+<a href="https://github.com/Maximus5/ConEmu/releases/tag/v23.07.24" rel="external">ConEmuPack.230724.7z</a>                                          <i>(  5 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-builds/releases" rel="external">graalvm-community-java21-windows-amd64-dev.zip</a><sup><b> (*)</b></sup>             <i>(298 MB)</i>
 <a href="https://github.com/graalvm/graalvm-ce-dev-builds/releases" rel="external">graalvm-community-jdk-17.0.8_windows-x64_bin.zip</a><sup><b> (*)</b></sup>           <i>(297 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
@@ -236,6 +241,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.2.2-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
+<a href="https://code.visualstudio.com/Download#" rel="external">VSCode-win32-x64-1.89.1.zip</a>                                   <i>(131 MB)</i>
 </pre>
 <span style="font-size:80%;"><sup><b>(*)</b></sup> The tool <a href="https://www.graalvm.org/latest/reference-manual/native-image/" rel="external"><code><b>native-image</b></code></a> was initially installed separately with <b>GraalVM</b> distributions and is now included in <b>GraalVM for JDK</b> distributions (see article <a href="https://medium.com/graalvm/a-new-graalvm-release-and-new-free-license-4aab483692f5">"New GraalVM Release and new Free Licence!"</a>).</span>
 </dd></dl>
@@ -322,6 +328,8 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [cmake_downloads]: https://cmake.org/download/
 [cmake_relnotes]: https://cmake.org/cmake/help/v3.29/release/3.29.html
 [cobol_examples]: https://github.com/michelou/cobol-examples
+[conemu_downloads]: https://github.com/Maximus5/ConEmu/releases
+[conemu_relnotes]: https://conemu.github.io/blog/2023/07/24/Build-230724.html
 [cpp_examples]: https://github.com/michelou/cpp-examples
 [dart_examples]: https://github.com/michelou/dart-examples
 [deno_examples]: https://github.com/michelou/deno-examples
@@ -369,6 +377,8 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [upx_downloads]: https://github.com/upx/upx/releases
 [vs2010_downloads]: https://visualstudio.microsoft.com/vs/older-downloads/
 [vs2010_relnotes]: https://docs.microsoft.com/en-us/visualstudio/releasenotes/vs2010-version-history
+[vscode_downloads]: https://code.visualstudio.com/#alt-downloads
+[vscode_relnotes]: https://code.visualstudio.com/updates/
 [windows_limitation]: https://support.microsoft.com/en-gb/help/830473/command-prompt-cmd-exe-command-line-string-limitation
 [windows_sdk]: https://www.microsoft.com/en-us/download/details.aspx?id=8279
 [windows_subst]: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst
