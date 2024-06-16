@@ -1,10 +1,9 @@
-# <span id="top">Building GraalVM on Windows</span> <span style="size:30%;"><a href="README.md">↩</a></span>
+# <span id="top">Building GraalVM on Windows</span> <span style="font-size:90%;">[↩](README.md#top)</span>
 
 <table style="font-family:Helvetica,Arial;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM logo"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/" rel="external">GraalVM</a> software distribution on a Windows machine.
-  </td>
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents the build of <a href="https://www.graalvm.org/" rel="external">GraalVM</a> software distribution on a Windows machine.</td>
   </tr>
 </table>
 

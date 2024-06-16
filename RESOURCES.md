@@ -3,8 +3,7 @@
 <table style="font-family:Helvetica,Arial;line-height:1.6;">
   <tr>
   <td style="border:0;padding:0 10px 0 0;min-width:120px;"><a href="https://www.graalvm.org/" rel="external"><img src="https://www.graalvm.org/resources/img/graalvm.png" width="120" alt="GraalVM project"/></a></td>
-  <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/" rel="external">GraalVM</a> related resources that caught our attention.
-  </td>
+  <td style="border:0;padding:0;vertical-align:text-top;">This document presents <a href="https://www.graalvm.org/" rel="external">GraalVM</a> related resources that caught our attention.</td>
   </tr>
 </table>
 
