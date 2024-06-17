@@ -119,6 +119,8 @@ For convenience resources are organized in several topics : [General](#general),
 ### <span id="sulong-talks">Talks</span>
 
 - [Sulong: An experience report of using the "other end" of LLVM in GraalVM](https://llvm.org/devmtg/2019-04/talks.html#Talk_13) by Roland Schatz and Josef Eisl, 2019 European LLVM Developers Meeting, 2019.
+- [Sulong: Fast LLVM IR Execution on the JVM with Truffle and Graal](https://archive.fosdem.org/2016/schedule/event/llvm_sulong/) by Manuel Rigger, January 2016.
+
 <!--
 ## Footnotes
 
@@ -129,7 +131,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/May 2024* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/June 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->

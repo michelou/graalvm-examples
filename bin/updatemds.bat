@@ -10,11 +10,11 @@ set _DEBUG=0
 set _EXITCODE=0
 
 @rem files README.md, RESOURCES.md, etc.
-set _LAST_MODIFIED_OLD=michelou/)/April 2024
-set _LAST_MODIFIED_NEW=michelou/)/May 2024
+set _LAST_MODIFIED_OLD=michelou/)/May 2024
+set _LAST_MODIFIED_NEW=michelou/)/June 2024
 
-set _LAST_DOWNLOAD_OLD=(\*April 2024\*)
-set _LAST_DOWNLOAD_NEW=(*May 2024*)
+set _LAST_DOWNLOAD_OLD=(\*May 2024\*)
+set _LAST_DOWNLOAD_NEW=(*June 2024*)
 
 @rem https://superuser.com/questions/909127/findstr-dos-commands-multiple-string-argument
 set _EXCLUDE_TOPDIRS=bin demos doc graal graaljs mx
@@ -109,8 +109,8 @@ set _STRONG_BG_BLUE=[104m
 
 @rem we define _RESET in last position to avoid crazy console output with type command
 set _BOLD=[1m
-set _INVERSE=[7m
 set _UNDERSCORE=[4m
+set _INVERSE=[7m
 set _RESET=[0m
 goto :eof
 
