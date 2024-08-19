@@ -19,7 +19,7 @@ getHome() {
 }
 
 debug() {
-    local DEBUG_LABEL="[46m[DEBUG][0m"
+    local DEBUG_LABEL="[44m[DEBUG][0m"
     $DEBUG && echo "$DEBUG_LABEL $1" 1>&2
 }
 
@@ -52,11 +52,10 @@ args() {
     for arg in "$@"; do
         case "$arg" in
         ## options
-        -cached)  CACHED=true ;;
-        -debug)   DEBUG=true ;;
-        -help)    HELP=true ;;
-        -timer)   TIMER=true ;;
-        -verbose) VERBOSE=true ;;
+        -debug)       DEBUG=true ;;
+        -help)        HELP=true ;;
+        -timer)       TIMER=true ;;
+        -verbose)     VERBOSE=true ;;
         -*)
             error "Unknown option $arg"
             EXITCODE=1 && return 0
@@ -64,8 +63,8 @@ args() {
         ## subcommands
         clean)   CLEAN=true ;;
         compile) COMPILE=true ;;
+		doc)     DOC=true ;;
         help)    HELP=true ;;
-        lint)    LINT=true ;;
         run)     COMPILE=true && RUN=true ;;
         *)
             error "Unknown subcommand $arg"
@@ -73,14 +72,9 @@ args() {
             ;;
         esac
     done
-    PKG_NAME=org.graalvm.example
-    $CACHED && MAIN_NAME=HelloCachedTime|| MAIN_NAME=HelloStartupTime
-    MAIN_CLASS="$PKG_NAME.$MAIN_NAME"
-
-    debug "Options    : CACHED=$CACHED TIMER=$TIMER VERBOSE=$VERBOSE"
+    debug "Options    : TIMER=$TIMER VERBOSE=$VERBOSE"
     debug "Subcommands: CLEAN=$CLEAN COMPILE=$COMPILE HELP=$HELP RUN=$RUN"
     debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME"
-    debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
     $TIMER && TIMER_START=$(date +"%s")
 }
@@ -90,7 +84,6 @@ help() {
 Usage: $BASENAME { <option> | <subcommand> }
 
   Options:
-    -cached      select main class with cached startup time
     -debug       print commands executed by this script
     -timer       print total execution time
     -verbose     print progress messages
@@ -98,9 +91,7 @@ Usage: $BASENAME { <option> | <subcommand> }
   Subcommands:
     clean        delete generated files
     compile      compile Java source files
-    doc          generate HTML documentation
     help         print this help message
-    lint         analyze Java source files with CheckStyle
     run          execute main class "$MAIN_CLASS"
 EOS
 }
@@ -108,42 +99,13 @@ EOS
 clean() {
     if [[ -d "$TARGET_DIR" ]]; then
         if $DEBUG; then
-            debug "Delete directory \"$(mixed_path $TARGET_DIR)\""
+            debug "Delete directory $TARGET_DIR"
         elif $VERBOSE; then
             echo "Delete directory \"${TARGET_DIR/$ROOT_DIR\//}\"" 1>&2
         fi
-        rm -rf "$(mixed_path $TARGET_DIR)"
-        if [[ $? -ne 0 ]]; then
-            error "Failed to delete directory \"${TARGET_DIR/$ROOT_DIR\//}\""
-            EXITCODE=1
-            return 0
-        fi
+        rm -rf "$TARGET_DIR"
+        [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
     fi
-}
-
-lint() {
-    local source_files=
-    local n=0
-    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
-        source_files="$source_files $(mixed_path $f)"
-        n=$((n + 1))
-    done
-    if $DEBUG; then
-        debug "$JAVA_CMD -jar \"$(mixed_path $JAR_FILE)\" -c=$(mixed_path $XML_FILE) $source_files"
-    elif $VERBOSE; then
-        echo "Analyze Java source files with CheckStyle" 1>&2
-    fi
-    eval "$JAVA_CMD" -jar "$(mixed_path $JAR_FILE)" -c="$(mixed_path $XML_FILE)" $source_files
-    if [[ $? -ne 0 ]]; then
-        error "Failed to analyze Java source files with CheckStyle"
-        EXITCODE=1
-        return 0
-    fi
-}
-
-compile() {
-    compile_java
-    [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
 }
 
 action_required() {
@@ -151,7 +113,7 @@ action_required() {
     local search_path=$2
     local search_pattern=$3
     local latest=
-    for f in $(find $search_path -name $search_pattern 2>/dev/null); do
+    for f in $(find $search_path -type f -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
     if [[ -z "$latest" ]]; then
@@ -167,13 +129,13 @@ action_required() {
     fi
 }
 
-compile_java() {
+compile() {
     [[ -d "$CLASSES_DIR" ]] || mkdir -p "$CLASSES_DIR"
 
     local timestamp_file="$TARGET_DIR/.latest-build"
 
     local required=0
-    required=$(action_required "$timestamp_file" "$JAVA_SOURCE_DIR/" "*.java")
+    required=$(action_required "$timestamp_file" "$MAIN_SOURCE_DIR/" "*.java")
     [[ $required -eq 1 ]] || return 1
 
     local opts_file="$TARGET_DIR/javac_opts.txt"
@@ -183,31 +145,21 @@ compile_java() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
+    for f in $(find "$MAIN_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
         n=$((n + 1))
     done
-    if [[ $n -eq 0 ]]; then
-        warning "No Java source file found"
-        return 1
-    fi
-    local s=; [[ $n -gt 1 ]] && s="s"
-    local n_files="$n Java source file$s"
     if $DEBUG; then
         debug "$JAVAC_CMD @$(mixed_path $opts_file) @$(mixed_path $sources_file)"
     elif $VERBOSE; then
-        echo "Compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
+        echo "Compile $n Java source files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
     fi
     eval "$JAVAC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
     if [[ $? -ne 0 ]]; then
-        error "Failed to compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\""
+        error "Compilation of $n Java source files failed"
         cleanup 1
     fi
     touch "$timestamp_file"
-}
-
-doc() {
-    echo "doc"
 }
 
 mixed_path() {
@@ -220,9 +172,46 @@ mixed_path() {
     fi
 }
 
+doc() {
+    [[ -d "$TARGET_DOCS_DIR" ]] || mkdir -p "$TARGET_DOCS_DIR"
+
+    local doc_timestamp_file="$TARGET_DOCS_DIR/.latest-build"
+
+    local is_required="$(action_required "$doc_timestamp_file" "$MAIN_SOURCE_DIR/" "*.java")"
+    [[ $is_required -eq 0 ]] && return 1
+
+    local sources_file="$TARGET_DIR/javadoc_sources.txt"
+    [[ -f "$sources_file" ]] && rm -rf "$sources_file"
+    for f in $(find "$SOURCE_DIR/main/java/" -type f -name "*.java" 2>/dev/null); do
+        echo $(mixed_path $f) >> "$sources_file"
+    done
+    local opts_file="$TARGET_DIR/javadoc_opts.txt"
+    echo -d "$(mixed_path $TARGET_DOCS_DIR)" -doctitle "$PROJECT_NAME" -footer "$PROJECT_URL" -top "$PROJECT_VERSION" > "$opts_file"
+    if $DEBUG; then
+        debug "$JAVADOC_CMD @$(mixed_path $opts_file) @$(mixed_path $sources_file)"
+    elif $VERBOSE; then
+        echo "Generate HTML documentation into directory \"${TARGET_DOCS_DIR/$ROOT_DIR\//}\"" 1>&2
+    fi
+    eval "$JAVADOC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
+    if [[ $? -ne 0 ]]; then
+        error "Generation of HTML documentation failed"
+        cleanup 1
+    fi
+    if $DEBUG; then
+        debug "HTML documentation saved into directory \"$TARGET_DOCS_DIR\""
+    elif $VERBOSE; then
+        echo "HTML documentation saved into directory \"${TARGET_DOCS_DIR/$ROOT_DIR\//}\"" 1>&2
+    fi
+    touch "$doc_timestamp_file"
+}
+
 run() {
-    $DEBUG && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS $MAIN_ARGS"
-    eval "$JAVA_CMD" -cp "$(mixed_path $CLASSES_DIR)" $MAIN_CLASS $MAIN_ARGS
+    ##$DEBUG && debug "cp \"$TARGET_DIR/$MAIN_CLASS.wasm\" \"$CLASSES_DIR\""
+    ##cp "$TARGET_DIR/$MAIN_CLASS.wasm" "$CLASSES_DIR"
+
+    $DEBUG && debug "$JAVA_CMD -cp $CLASSES_DIR $MAIN_CLASS"
+    eval "$JAVA_CMD" -cp "$CLASSES_DIR" $MAIN_CLASS
+    [[ $? -eq 0 ]] || ( EXITCODE=1 && return 0 )
 }
 
 ##############################################################################
@@ -235,21 +224,20 @@ EXITCODE=0
 ROOT_DIR="$(getHome)"
 
 SOURCE_DIR="$ROOT_DIR/src"
-JAVA_SOURCE_DIR="$SOURCE_DIR/main/java"
+MAIN_SOURCE_DIR="$SOURCE_DIR/main/java"
 TARGET_DIR="$ROOT_DIR/target"
-BIN_DIR="$TARGET_DIR/bin"
+TARGET_DOCS_DIR="$TARGET_DIR/docs"
 CLASSES_DIR="$TARGET_DIR/classes"
 
-CACHED=false
 CLEAN=false
 COMPILE=false
 DEBUG=false
 DOC=false
 HELP=false
-LINT=false
-MAIN_CLASS="Polyglot"
+MAIN_CLASS="dev.danvega.Application"
 MAIN_ARGS=
 RUN=false
+TARGET=js
 TIMER=false
 VERBOSE=false
 
@@ -260,21 +248,20 @@ cygwin=false
 mingw=false
 msys=false
 darwin=false
+linux=false
 case "$(uname -s)" in
     CYGWIN*) cygwin=true ;;
     MINGW*)  mingw=true ;;
     MSYS*)   msys=true ;;
-    Darwin*) darwin=true
+    Darwin*) darwin=true ;;   
+    Linux*)  linux=true 
 esac
 unset CYGPATH_CMD
 PSEP=":"
 if $cygwin || $mingw || $msys; then
     CYGPATH_CMD="$(which cygpath 2>/dev/null)"
-    PSEP=";"
     [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
-    DIFF_CMD="$GIT_HOME/usr/bin/diff.exe"
-else
-    DIFF_CMD="$(which diff)"
+    PSEP=";"
 fi
 if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
     error "GraalVM installation not found"
@@ -282,25 +269,11 @@ if [[ ! -x "$GRAALVM_HOME/bin/javac" ]]; then
 fi
 JAVA_CMD="$GRAALVM_HOME/bin/java"
 JAVAC_CMD="$GRAALVM_HOME/bin/javac"
-
-if [[ ! -x "$GRAALVM_HOME/lib/llvm/bin/lli" ]]; then
-    error "lli command not found"
-    cleanup 1
-fi
-LLI_CMD="$GRAALVM_HOME/lib/llvm/bin/lli"
-CLANG_CMD="$GRAALVM_HOME/lib/llvm/bin/clang"
+JAVADOC_CMD="$GRAALVM_HOME/bin/javadoc"
 
 PROJECT_NAME="$(basename $ROOT_DIR)"
-PROJECT_URL="github.com/$USER/graal-examples"
+PROJECT_URL="github.com/$USER/graalvm-examples"
 PROJECT_VERSION="1.0-SNAPSHOT"
-
-CHECKSTYLE_VERSION=10.16.0
-CHECKSTYLE_DIR="$HOME/.graal"
-
-JAR_NAME=checkstyle-$CHECKSTYLE_VERSION-all.jar
-JAR_URL=https://github.com/checkstyle/checkstyle/releases/download/checkstyle-$CHECKSTYLE_VERSION/$JAR_NAME
-JAR_FILE="$CHECKSTYLE_DIR/$JAR_NAME"
-XML_FILE="$CHECKSTYLE_DIR/graal_checks.xml"
 
 args "$@"
 [[ $EXITCODE -eq 0 ]] || cleanup 1
@@ -312,9 +285,6 @@ $HELP && help && cleanup
 
 if $CLEAN; then
     clean || cleanup 1
-fi
-if $LINT; then
-    lint || cleanup 1
 fi
 if $COMPILE; then
     compile || cleanup 1

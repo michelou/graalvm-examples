@@ -48,12 +48,16 @@ endif
 
 ## https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 JMH_VERSION = 1.37
+## https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
+JOPT_VERSION = 5.0.4
+## https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+MATH3_VERSION = 3.6.1
 
 JMH_CORE_LIB_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-core-$(JMH_VERSION).jar")
 JMH_ANN_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-generator-annprocess-$(JMH_VERSION).jar")
 ## 2 JMH depencencies: jopt-simple 5.0.4, commons-math3 3.2
-JOPT_SIMPLE_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/net/sf/jopt-simple" -name "jopt-simple-5.0.4.jar")
-COMMONS_MATH_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/apache/commons" -name "commons-math3-3.2.jar")
+JOPT_SIMPLE_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/net/sf/jopt-simple" -name "jopt-simple-$(JOPT_VERSION).jar")
+COMMONS_MATH_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/apache/commons" -name "commons-math3-$(MATH3_VERSION).jar")
 ## JUnit 4 depends on Hamcrest 1.3
 HAMCREST_JAR     = $(shell $(FIND) "$(LOCAL_REPO)/org/hamcrest" -name "hamcrest-core-1.3.jar")
 JUNIT_JAR        = $(shell $(FIND) "$(LOCAL_REPO)/junit/junit" -name "junit-4.13.2.jar")

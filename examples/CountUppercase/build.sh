@@ -179,7 +179,7 @@ action_required() {
     local search_path=$2
     local search_pattern=$3
     local latest=
-    for f in $(find $search_path -name $search_pattern 2>/dev/null); do
+    for f in $(find $search_path -type f -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
     if [[ -z "$latest" ]]; then
@@ -215,7 +215,7 @@ doc() {
 
     local sources_file="$TARGET_DIR/javadoc_sources.txt"
     [[ -f "$sources_file" ]] && rm -rf "$sources_file"
-    for f in $(find $SOURCE_DIR/main/java/ -name *.java 2>/dev/null); do
+    for f in $(find "$SOURCE_DIR/main/java/" -type f -name "*.java" 2>/dev/null); do
         echo $(mixed_path $f) >> "$sources_file"
     done
     local opts_file="$TARGET_DIR/javadoc_opts.txt"
@@ -256,11 +256,11 @@ EXITCODE=0
 
 ROOT_DIR="$(getHome)"
 
-SOURCE_DIR=$ROOT_DIR/src
-JAVA_SOURCE_DIR=$SOURCE_DIR/main/java
-TARGET_DIR=$ROOT_DIR/target
-TARGET_DOCS_DIR=$TARGET_DIR/docs
-CLASSES_DIR=$TARGET_DIR/classes
+SOURCE_DIR="$ROOT_DIR/src"
+JAVA_SOURCE_DIR="$SOURCE_DIR/main/java"
+TARGET_DIR="$ROOT_DIR/target"
+TARGET_DOCS_DIR="$TARGET_DIR/docs"
+CLASSES_DIR="$TARGET_DIR/classes"
 
 CLEAN=false
 COMPILE=false
@@ -312,7 +312,7 @@ PROJECT_NAME="$(basename $ROOT_DIR)"
 PROJECT_URL="github.com/$USER/graal-examples"
 PROJECT_VERSION="1.0-SNAPSHOT"
 
-CHECKSTYLE_VERSION=10.16.0
+CHECKSTYLE_VERSION=10.17.0
 CHECKSTYLE_DIR="$HOME/.graal"
 
 JAR_NAME=checkstyle-$CHECKSTYLE_VERSION-all.jar

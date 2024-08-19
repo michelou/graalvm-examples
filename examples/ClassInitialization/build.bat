@@ -110,6 +110,12 @@ if not exist "%GRAALVM_HOME%\bin\native-image.cmd" (
 )
 set "_NATIVE_IMAGE_CMD=%GRAALVM_HOME%\bin\native-image.cmd"
 set "_LLI_CMD=%GRAALVM_HOME%\lib\llvm\bin\lli.exe"
+
+@rem we use the newer PowerShell version if available
+where /q pwsh.exe
+if %ERRORLEVEL%==0 ( set _PWSH_CMD=pwsh.exe
+) else ( set _PWSH_CMD=powershell.exe
+)
 goto :eof
 
 :env_colors
@@ -163,9 +169,9 @@ goto :eof
 @rem output parameters: _CHECKSTYLE_VERSION
 :props
 @rem value may be overwritten if file build.properties exists
-set _CHECKSTYLE_VERSION=10.16.0
+set _CHECKSTYLE_VERSION=10.17.0
 
-for %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
+for /f "delims=" %%i in ("%~dp0\.") do set "_PROJECT_NAME=%%~ni"
 set _PROJECT_URL=github.com/%USERNAME%/graalvm-examples
 set _PROJECT_VERSION=1.0-SNAPSHOT
 
@@ -265,7 +271,7 @@ if %_DEBUG%==1 (
     echo %_DEBUG_LABEL% Variables  : "MSVS_HOME=%MSVS_HOME%" 1>&2
     echo %_DEBUG_LABEL% Variables  : _MAIN_CLASS=%_MAIN_CLASS% 1>&2
 )
-if %_TIMER%==1 for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set _TIMER_START=%%i
+if %_TIMER%==1 for /f "delims=" %%i in ('call "%_PWSH_CMD%" -c "(Get-Date)"') do set _TIMER_START=%%i
 goto :eof
 
 :help
@@ -328,7 +334,7 @@ goto :eof
 
 @rem see https://github.com/checkstyle/checkstyle/releases/
 :checkstyle
-set "__CHECKSTYLE_DIR=%USERPROFILE%\.graal"
+set "__CHECKSTYLE_DIR=%LOCALAPPDATA%\Checkstyle"
 if not exist "%__CHECKSTYLE_DIR%" mkdir "%__CHECKSTYLE_DIR%"
 
 set "__XML_FILE=%__CHECKSTYLE_DIR%\graal_checks.xml"
@@ -345,10 +351,10 @@ if not exist "%__PS1_FILE%" call :checkstyle_ps1 "%__PS1_FILE%"
 
 set __PS1_VERBOSE[0]=
 set __PS1_VERBOSE[1]=-Verbose
-if %_DEBUG%==1 ( echo %_DEBUG_LABEL% powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -Outfile '%__JAR_FILE%'" 1>&2
+if %_DEBUG%==1 ( echo %_DEBUG_LABEL% call "%_PWSH_CMD%" -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -Outfile '%__JAR_FILE%'" 1>&2
 ) else if %_VERBOSE%==1 ( echo Download file "%__JAR_NAME%" 1>&2
 )
-powershell -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
+call "%_PWSH_CMD%" -c "& '%__PS1_FILE%' -Uri '%__JAR_URL%' -OutFile '%__JAR_FILE%' !__PS1_VERBOSE[%_VERBOSE%]!"
 if not %ERRORLEVEL%==0 (
     echo %_ERROR_LABEL% Failed to download file "%__JAR_NAME%" 1>&2
     set _EXITCODE=1
@@ -374,6 +380,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XM
 )
 call "%_JAVA_CMD%" -jar "%__JAR_FILE%" -c="%__XML_FILE%" %__SOURCE_FILES%
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Found errors while analyzing %__N% Java source files with CheckStyle 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -452,11 +459,11 @@ goto action_path
 
 :action_next
 set __TARGET_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "gci -path '%__TARGET_FILE%' -ea Stop | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+for /f "usebackq" %%i in (`call "%_PWSH_CMD%" -c "gci -path '%__TARGET_FILE%' -ea Stop | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
      set __TARGET_TIMESTAMP=%%i
 )
 set __SOURCE_TIMESTAMP=00000000000000
-for /f "usebackq" %%i in (`powershell -c "$files=@(gci -recurse -path %__PATH_ARRAY% -ea SilentlyContinue); if($files.length -eq 0){exit}; $files | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
+for /f "usebackq" %%i in (`call "%_PWSH_CMD%" -c "$files=@(gci -recurse -path %__PATH_ARRAY% -ea SilentlyContinue); if($files.length -eq 0){exit}; $files | sort LastWriteTime | select -last 1 -expandProperty LastWriteTime | Get-Date -uformat %%Y%%m%%d%%H%%M%%S" 2^>NUL`) do (
     set __SOURCE_TIMESTAMP=%%i
 )
 call :newer %__SOURCE_TIMESTAMP% %__TARGET_TIMESTAMP%
@@ -644,6 +651,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAVA_CMD%" %__TEST_JAVA_OPTS% startupTim
 @rem call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% cachedTime
 call "%_JAVA_CMD%" %__TEST_JAVA_OPTS% startupTime
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to execute JMH benchmark ^(JVM^) 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -734,6 +742,7 @@ if %_DEBUG%==1 ( echo %_DEBUG_LABEL% "%_JAR_CMD%" %__JAR_OPTS% 1>&2
 )
 call "%_JAR_CMD%" %__JAR_OPTS%
 if not %ERRORLEVEL%==0 (
+    echo %_ERROR_LABEL% Failed to create Java archive file "!_BENCH_JAR_FILE:%_ROOT_DIR%=!" 1>&2
     set _EXITCODE=1
     goto :eof
 )
@@ -833,7 +842,7 @@ goto :eof
 set __START=%~1
 set __END=%~2
 
-for /f "delims=" %%i in ('powershell -c "$interval = New-TimeSpan -Start '%__START%' -End '%__END%'; Write-Host $interval"') do set _DURATION=%%i
+for /f "delims=" %%i in ('call "%_PWSH_CMD%" -c "$interval = New-TimeSpan -Start '%__START%' -End '%__END%'; Write-Host $interval"') do set _DURATION=%%i
 goto :eof
 
 @rem #########################################################################
@@ -841,7 +850,7 @@ goto :eof
 
 :end
 if %_TIMER%==1 (
-    for /f "delims=" %%i in ('powershell -c "(Get-Date)"') do set __TIMER_END=%%i
+    for /f "delims=" %%i in ('call "%_PWSH_CMD%" -c "(Get-Date)"') do set __TIMER_END=%%i
     call :duration "%_TIMER_START%" "!__TIMER_END!"
     echo Total execution time: !_DURATION! 1>&2
 )

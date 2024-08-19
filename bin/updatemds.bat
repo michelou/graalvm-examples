@@ -10,14 +10,14 @@ set _DEBUG=0
 set _EXITCODE=0
 
 @rem files README.md, RESOURCES.md, etc.
-set _LAST_MODIFIED_OLD=michelou/)/May 2024
-set _LAST_MODIFIED_NEW=michelou/)/June 2024
+set _LAST_MODIFIED_OLD=michelou/)/June 2024
+set _LAST_MODIFIED_NEW=michelou/)/August 2024
 
-set _LAST_DOWNLOAD_OLD=(\*May 2024\*)
-set _LAST_DOWNLOAD_NEW=(*June 2024*)
+set _LAST_DOWNLOAD_OLD=(\*June 2024\*)
+set _LAST_DOWNLOAD_NEW=(*August 2024*)
 
 @rem https://superuser.com/questions/909127/findstr-dos-commands-multiple-string-argument
-set _EXCLUDE_TOPDIRS=bin demos doc graal graaljs mx
+set _EXCLUDE_TOPDIRS=bin demos doc graal graaljs mx shelajev-workshop
 set _EXCLUDE_SUBDIRS=_LOCAL labsjdk-ce-
 
 call :env

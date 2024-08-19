@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [COBOL][cobol_examples], [Dart][dart_examples], [Deno][deno_examples], [Docker][docker_examples], [Erlang][erlang_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kafka][kafka_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Modula-2][m2_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples] and [WiX Toolset][wix_examples] are other topics we are continuously monitoring.
+[Ada][ada_examples], [Akka][akka_examples], [C++][cpp_examples], [COBOL][cobol_examples], [Dart][dart_examples], [Deno][deno_examples], [Docker][docker_examples], [Erlang][erlang_examples], [Flix][flix_examples], [Golang][golang_examples], [Haskell][haskell_examples], [Kafka][kafka_examples], [Kotlin][kotlin_examples], [LLVM][llvm_examples], [Modula-2][m2_examples], [Node.js][nodes_examples], [Rust][rust_examples], [Scala 3][scala3_examples], [Spark][spark_examples], [Spring][spring_examples], [TruffleSqueak][trufflesqueak_examples], [WiX Toolset][wix_examples] and [Zig][zig_examples] are other topics we are continuously monitoring.
 
 > **&#9755;** Read the document <a href="https://www.graalvm.org/why-graalvm/">"Why GraalVM?"</a> from the <a href="https://www.graalvm.org//" rel="external">GraalVM</a> documentation to know more about the <a href="https://www.graalvm.org/" rel="external">GraalVM</a> benefits.
 
@@ -17,7 +17,7 @@
 
 This project relies on the following external software for the **Microsoft Windows** platform:
 
-- [Git 2.45][git_downloads] ([*release notes*][git_relnotes])
+- [Git 2.46][git_downloads] ([*release notes*][git_relnotes])
 - [GraalVM for JDK 17 LTS][graalvm17_releases] <sup id="anchor_01"><a href="#footnote_01">1</a></sup> ([*release notes*][graalvm17_relnotes])
 - [Microsoft Visual Studio 10][vs2010_downloads] ([*release notes*][vs2010_relnotes])
 - [Microsoft Windows SDK 7.1][windows_sdk]
@@ -25,27 +25,27 @@ This project relies on the following external software for the **Microsoft Windo
 
 Optionally one may also install the following software:
 
-- [Checkstyle 10.16][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
-- [CMake 3.29][cmake_downloads] ([*release notes*][cmake_relnotes])
+- [Checkstyle 10.17][checkstyle_downloads] ([*release notes*][checkstyle_relnotes])
+- [CMake 3.30][cmake_downloads] ([*release notes*][cmake_relnotes])
 - [ConEmu][conemu_downloads] ([*release notes*][conemu_relnotes])
 - [GraalVM for JDK 21 LTS][graalvm21_releases] ([*release notes*][graalvm21_relnotes])
 - [UPX 4.2][upx_downloads] <sup id="anchor_02"><a href="#footnote_02">2</a></sup> ([*changelog*][upx_changelog])
-- [Visual Studio Code 1.89][vscode_downloads] ([*release notes*][vscode_relnotes])
+- [Visual Studio Code 1.92][vscode_downloads] ([*release notes*][vscode_relnotes])
 
 > **&#9755;** ***Installation policy***<br/>
 > When possible we install software from a [Zip archive][zip_archive] rather than via a Windows installer. In our case we defined **`C:\opt\`** as the installation directory for optional software tools (*in reference to* the [**`/opt/`**][linux_opt] directory on Unix).
 
-For instance our development environment looks as follows (*June 2024*) <sup id="anchor_03">[3](#footnote_03)</sup>:
+For instance our development environment looks as follows (*August 2024*) <sup id="anchor_03">[3](#footnote_03)</sup>:
 
 <!-- https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
 <pre style="font-size:80%;">
 C:\opt\ConEmu\                                        <i>( 26 MB)</i>
-C:\opt\Git\                                           <i>(367 MB)</i>
+C:\opt\Git\                                           <i>(388 MB)</i>
 C:\opt\jdk-graalvm-ce-17.0.9_9.1\                     <i>(592 MB)</i>
 C:\opt\jdk-graalvm-ce-21.0.1_12.1\                    <i>(585 MB)</i>
 C:\opt\Python-3.11.1\                                 <i>( 82 MB)</i>
 C:\opt\upx\                                           <i>( &lt;1 MB)</i>
-C:\opt\VSCode\                                        <i>(352 MB)</i>
+C:\opt\VSCode\                                        <i>(370 MB)</i>
 C:\Program Files\Microsoft SDKs\Windows\v7.1\         <i>(333 MB)</i>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\  <i>(555 MB)</i>
 <a href="https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables#variables-that-are-recognized-only-in-the-user-context" rel="external">%USERPROFILE%</a>\.checkstyle\                            <i>( 16 MB)</i>
@@ -148,8 +148,8 @@ We execute command [**`setenv.bat`**](setenv.bat) once to setup our development 
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
    javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
-   cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.1
+   cl 19.29.30137, msbuild 16.11.2.50704, link 14.29.30137.0,
+   nmake 14.29.30137.0, git 2.46.0, diff 3.10, bash 5.2.26(1)
 
 <b>&gt; <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/where_1">where</a> cl java link</b>
 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl.exe
@@ -163,8 +163,8 @@ Command [**`setenv.bat`**](./setenv.bat)**` -verbose`** also displays the tool p
 <b>&gt; <a href="setenv.bat">setenv</a> -verbose</b>
 Tool versions:
    javac 11.0.22, python 3.11.1, pylint 2.15.8, mx 6.14.12
-   cl 19.29.30137, msbuild 16.11.2.50704,
-   link 14.29.30137.0, nmake 14.29.30137.0, git 2.45.1
+   cl 19.29.30137, msbuild 16.11.2.50704, link 14.29.30137.0,
+   nmake 14.29.30137.0, git 2.46.0, diff 3.10, bash 5.2.26(1)
 Tool paths:
    C:\opt\graalvm-ce-java11-22.3.2\bin\javac.exe
    C:\opt\Python-3.11.1\python.exe
@@ -191,7 +191,7 @@ Environment variables:
    "PYTHON_HOME=C:\opt\Python-3.11.1"
    "WABT_HOME=C:\opt\wabt-1.0.23"
 Path associations:
-   G:\: => C:\Users\michelou\workspace-perso\graalvm-examples
+   G:\: => %USERPROFILE%\workspace-perso\graalvm-examples
 </pre>
 
 ### **`graal\build.bat`**
@@ -239,11 +239,11 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8442">GRMSDKX_EN_DVD.iso</a>                                            <i>(570 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-17/releases">labsjdk-ce-17.0.9+9-jvmci-23.0-b22-windows-amd64.tar.gz</a>       <i>(190 MB)</i>
 <a href="https://github.com/graalvm/labs-openjdk-21/releases">labsjdk-ce-21.0.1+12-jvmci-23.1-b22-windows-amd64.tar.gz</a>      <i>(181 MB)</i>
-<a href="https://git-scm.com/download/win">PortableGit-2.45.1-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
+<a href="https://git-scm.com/download/win">PortableGit-2.46.0-64-bit.7z.exe</a>                              <i>( 41 MB)</i>
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.2.2-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
-<a href="https://code.visualstudio.com/Download#" rel="external">VSCode-win32-x64-1.89.1.zip</a>                                   <i>(131 MB)</i>
+<a href="https://code.visualstudio.com/Download#" rel="external">VSCode-win32-x64-1.92.1.zip</a>                                   <i>(131 MB)</i>
 </pre>
 <span style="font-size:80%;"><sup><b>(*)</b></sup> The tool <a href="https://www.graalvm.org/latest/reference-manual/native-image/" rel="external"><code><b>native-image</b></code></a> was initially installed separately with <b>GraalVM</b> distributions and is now included in <b>GraalVM for JDK</b> distributions (see article <a href="https://medium.com/graalvm/a-new-graalvm-release-and-new-free-license-4aab483692f5">"New GraalVM Release and new Free Licence!"</a>).</span>
 </dd></dl>
@@ -317,7 +317,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/June 2024* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/August 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -325,10 +325,10 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [ada_examples]: https://github.com/michelou/ada-examples#top
 [akka_examples]: https://github.com/michelou/akka-examples#top
 [checkstyle_downloads]: https://github.com/checkstyle/checkstyle/releases
-[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.16.0
+[checkstyle_relnotes]: https://github.com/checkstyle/checkstyle/releases/tag/checkstyle-10.17.0
 [cl_cli]: https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=vs-2019
 [cmake_downloads]: https://cmake.org/download/
-[cmake_relnotes]: https://cmake.org/cmake/help/v3.29/release/3.29.html
+[cmake_relnotes]: https://cmake.org/cmake/help/v3.30/release/3.30.html
 [cobol_examples]: https://github.com/michelou/cobol-examples#top
 [conemu_downloads]: https://github.com/Maximus5/ConEmu/releases
 [conemu_relnotes]: https://conemu.github.io/blog/2023/07/24/Build-230724.html
@@ -341,7 +341,7 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [git_downloads]: https://git-scm.com/download/win
 [git_cli]: https://git-scm.com/docs/git
 [git_releases]: https://git-scm.com/download/win
-[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.45.1.txt
+[git_relnotes]: https://raw.githubusercontent.com/git/git/master/Documentation/RelNotes/2.46.0.txt
 [github_markdown]: https://github.github.com/gfm/
 [golang_examples]: https://github.com/michelou/golang-examples#top
 [graalvm]: https://www.graalvm.org/
@@ -386,4 +386,5 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [windows_sdk]: https://www.microsoft.com/en-us/download/details.aspx?id=8279
 [windows_subst]: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/subst
 [wix_examples]: https://github.com/michelou/wix-examples#top
+[zig_examples]: https://github.com/michelou/zig-examples#top
 [zip_archive]: https://www.howtogeek.com/178146/htg-explains-everything-you-need-to-know-about-zipped-files/

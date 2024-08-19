@@ -206,7 +206,8 @@ for /f "tokens=1,2,*" %%f in ('subst') do (
     set "__SUBST_DRIVE=%%f"
     set "__SUBST_DRIVE=!__SUBST_DRIVE:~0,2!"
     set "__SUBST_PATH=%%h"
-    if "!__SUBST_DRIVE!"=="!__GIVEN_PATH:~0,2!" (
+    @rem Windows local file systems are not case sensitive (by default)
+    if /i "!__SUBST_DRIVE!"=="!__GIVEN_PATH:~0,2!" (
         set _DRIVE_NAME=!__SUBST_DRIVE:~0,2!
         if %_DEBUG%==1 ( echo %_DEBUG_LABEL% Select drive !_DRIVE_NAME! for which a substitution already exists 1>&2
         ) else if %_VERBOSE%==1 ( echo Select drive !_DRIVE_NAME! for which a substitution already exists 1>&2
@@ -671,7 +672,7 @@ goto :eof
 set _SDK_HOME=
 
 set "__SDK_PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows"
-for /f %%i in ('dir /ad /b "%__SDK_PATH%\v*"') do set "_SDK_HOME=%__SDK_PATH%\%%i"
+for /f "delims=" %%i in ('dir /ad /b "%__SDK_PATH%\v*"') do set "_SDK_HOME=%__SDK_PATH%\%%i"
 if not exist "%_SDK_HOME%" (
     echo %_ERROR_LABEL% Could not find installation directory for Microsoft Windows SDK 7.1 1>&2
     echo        ^(see https://github.com/oracle/graal/blob/master/compiler/README.md^) 1>&2
@@ -843,7 +844,7 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%MSVC_BIN_DIR%:nmake.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-7,*" %%i in ('"%MSVC_BIN_DIR%\nmake.exe" /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE3=%__VERSIONS_LINE3% nmake %%o,"
+    for /f "tokens=1-7,*" %%i in ('"%MSVC_BIN_DIR%\nmake.exe" /? 2^>^&1 ^| findstr Version') do set "__VERSIONS_LINE4=%__VERSIONS_LINE4% nmake %%o,"
     set __WHERE_ARGS=%__WHERE_ARGS% "%MSVC_BIN_DIR%:nmake.exe"
 )
 where /q "%GIT_HOME%\bin:git.exe"
@@ -860,7 +861,11 @@ if %ERRORLEVEL%==0 (
 )
 where /q "%GIT_HOME%\bin:bash.exe"
 if %ERRORLEVEL%==0 (
-    for /f "tokens=1-3,4,*" %%i in ('"%GIT_HOME%\bin\bash.exe" --version ^| findstr bash') do set "__VERSIONS_LINE4=%__VERSIONS_LINE4% bash %%l"
+    for /f "tokens=1-3,4,5,*" %%i in ('"%GIT_HOME%\bin\bash.exe" --version ^| findstr bash') do (
+        set "__VERSION=%%l"
+        setlocal enabledelayedexpansion
+        set "__VERSIONS_LINE4=%__VERSIONS_LINE4% bash !__VERSION:-release=!"
+    )
     set __WHERE_ARGS=%__WHERE_ARGS% "%GIT_HOME%\bin:bash.exe"
 )
 echo Tool versions:

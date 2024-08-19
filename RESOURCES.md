@@ -27,6 +27,7 @@ For convenience resources are organized in several topics : [General](#general),
 - [GraalVM: running C/C++ application safely in the Java world](https://www.adyen.com/blog/graalvm-running-c-applications--in-the-cloud) by Chang-Iun Wang, November 2022.
 - [Révolutionner Java Avec GraalVM Native Image](https://www.infoq.com/fr/articles/native-java-graalvm/) by Alina Yurenko and Jean-Michel Doudoux, April 2022.
 - [GraalVM team blog](https://medium.com/graalvm/about) on Medium.
+  - [What’s new in Truffle 24.0 and Graal Languages][blog_graalvm_24_0] by Alina Yurenko, March 2024.
   - [GraalVM for JDK 21 is here!](https://medium.com/graalvm/graalvm-for-jdk-21-is-here-ee01177dd12d)  by Alina Yurenko, September 2023.
   - [GraalVM 22.3][blog_graalvm_22_3] by Alina Yurenko, October 2022.
   - [GraalVM 22.2][blog_graalvm_22_2] by Alina Yurenko, July 2022.
@@ -131,7 +132,7 @@ For convenience resources are organized in several topics : [General](#general),
 -->
 ***
 
-*[mics](https://lampwww.epfl.ch/~michelou/)/June 2024* [**&#9650;**](#top)
+*[mics](https://lampwww.epfl.ch/~michelou/)/August 2024* [**&#9650;**](#top)
 <span id="bottom">&nbsp;</span>
 
 <!-- link refs -->
@@ -150,6 +151,7 @@ For convenience resources are organized in several topics : [General](#general),
 [blog_graalvm_22_1]: https://medium.com/graalvm/graalvm-22-1-developer-experience-improvements-apple-silicon-builds-and-more-b7ac9a0f6066
 [blog_graalvm_22_2]: https://medium.com/graalvm/graalvm-22-2-smaller-jdk-size-improved-memory-usage-better-library-support-and-more-cb34b5b68ec0
 [blog_graalvm_22_3]: https://medium.com/graalvm/graalvm-22-3-is-here-jdk-19-builds-jlink-support-new-monitoring-features-and-more-f6e2b2eeff95
+[blog_graalvm_24_0]: https://medium.com/graalvm/whats-new-in-truffle-and-graal-languages-40027a59c401
 [blog_grunert]: https://www.vandebron.tech/blog/building-native-images-and-compiling-with-graalvm-and-sbt
 [blog_sasidharan]: https://deepu.tech/polyglot-showdown-with-graalvm/
 [blog_ushio]: https://tsuyoshiushio.medium.com/playing-with-graalvm-on-windows-10-8be837007b33

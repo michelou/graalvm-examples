@@ -122,7 +122,7 @@ action_required() {
     local search_path=$2
     local search_pattern=$3
     local latest=
-    for f in $(find $search_path -name $search_pattern 2>/dev/null); do
+    for f in $(find $search_path -type f -name $search_pattern 2>/dev/null); do
         [[ $f -nt $latest ]] && latest=$f
     done
     if [ -z "$latest" ]; then
@@ -154,7 +154,7 @@ compile_java() {
     local sources_file="$TARGET_DIR/javac_sources.txt"
     [[ -f "$sources_file" ]] && rm "$sources_file"
     local n=0
-    for f in $(find $JAVA_SOURCE_DIR/ -name *.java 2>/dev/null); do
+    for f in $(find "$JAVA_SOURCE_DIR/" -type f -name "*.java" 2>/dev/null); do
         echo $f >> "$sources_file"
         n=$((n + 1))
     done
@@ -191,13 +191,13 @@ EXITCODE=0
 
 ROOT_DIR="$(getHome)"
 
-SOURCE_DIR=$ROOT_DIR/src
-C_SOURCE_DIR=$SOURCE_DIR/main/c
-JAVA_SOURCE_DIR=$SOURCE_DIR/main/java
-JS_SOURCE_DIR=$SOURCE_DIR/main/js
-TARGET_DIR=$ROOT_DIR/target
-BIN_DIR=$TARGET_DIR/bin
-CLASSES_DIR=$TARGET_DIR/classes
+SOURCE_DIR="$ROOT_DIR/src"
+C_SOURCE_DIR="$SOURCE_DIR/main/c"
+JAVA_SOURCE_DIR="$SOURCE_DIR/main/java"
+JS_SOURCE_DIR="$SOURCE_DIR/main/js"
+TARGET_DIR="$ROOT_DIR/target"
+BIN_DIR="$TARGET_DIR/bin"
+CLASSES_DIR="$TARGET_DIR/classes"
 
 CACHED=false
 CLEAN=false
@@ -240,7 +240,7 @@ CLANG_CMD="$LLVM_TOOLCHAIN/clang"
 JS_CMD="$GRAALVM_HOME/bin/js"
 
 PROJECT_NAME="$(basename $ROOT_DIR)"
-PROJECT_URL="github.com/$USER/graal-examples"
+PROJECT_URL="github.com/$USER/graalvm-examples"
 PROJECT_VERSION="1.0-SNAPSHOT"
 
 args "$@"
