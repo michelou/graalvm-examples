@@ -1,5 +1,5 @@
 ##
-## Copyright (c) 2018-2024 Stéphane Micheloud
+## Copyright (c) 2018-2025 Stéphane Micheloud
 ##
 ## Licensed under the MIT License.
 ##
@@ -12,8 +12,10 @@ TARGET_DIR  = target
 CLASSES_DIR = $(TARGET_DIR)/classes
 
 LOG_FILE    = $(TARGET_DIR)/graal_log.txt
-JAVAC_FLAGS = -deprecation -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)"
-JAVA_FLAGS  = -classpath "$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
+
+CPATH       = $(JAVAX_INJECT_JAR)$(PSEP)$(JMH_CORE_LIB_JAR)$(PSEP)$(JMH_ANN_LIB_JAR)$(PSEP)$(JOPT_SIMPLE_JAR)$(PSEP)$(COMMONS_MATH3_JAR)$(PSEP)$(MICRONAUT_CORE_JAR)$(PSEP)$(MICRONAUT_INJECT_JAR)$(PSEP)$(MICRONAUT_PICOCLI_JAR)$(PSEP)$(PICOCLI_JAR)
+JAVAC_FLAGS = -deprecation -classpath "$(CPATH)"
+JAVA_FLAGS  = -classpath "$(CPATH)$(PSEP)$(CLASSES_DIR)" -Diterations=5 -Dgraal.ShowConfiguration=info -Dgraal.PrintCompilation=true -Dgraal.LogFile="$(LOG_FILE)"
 
 ##############################################################################
 ## main rules
@@ -24,7 +26,7 @@ TARGET   = $(TARGET_DIR)/.latest-build
 OPTS_FILE    = $(TARGET_DIR)/javac_opts.txt
 SOURCES_FILE = $(TARGET_DIR)/javac_sources.txt
 
-MAIN_CLASS = Main
+MAIN_CLASS = primes.PrimesCommand
 MAIN_ARGS ?= 
 
 all: build
@@ -83,7 +85,7 @@ doc: $(DOC_TARGET)
 ## lint rules
 
 ## https://github.com/checkstyle/checkstyle/releases
-CHECKSTYLE_VERSION = 10.17.0
+CHECKSTYLE_VERSION = 10.21.1
 CHECKSTYLE_DIR     = $(HOME)/.checkstyle
 
 CHECKSTYLE_SOURCES = $(shell $(FIND) "$(SOURCE_DIR)" -type f -name "*.java")

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2018-2024 Stéphane Micheloud
+# Copyright (c) 2018-2025 Stéphane Micheloud
 #
 # Licensed under the MIT License.
 #
@@ -20,7 +20,7 @@ getHome() {
 
 debug() {
     local DEBUG_LABEL="[46m[DEBUG][0m"
-    $DEBUG && echo "$DEBUG_LABEL $1" 1>&2
+    [[ $DEBUG -eq 1 ]] && echo "$DEBUG_LABEL $1" 1>&2
 }
 
 warning() {
@@ -37,7 +37,7 @@ error() {
 cleanup() {
     [[ $1 =~ ^[0-1]$ ]] && EXITCODE=$1
 
-    if $TIMER; then
+    if [[ $TIMER -eq 1 ]]; then
         local TIMER_END=$(date +'%s')
         local duration=$((TIMER_END - TIMER_START))
         echo "Total elapsed time: $(date -d @$duration +'%H:%M:%S')" 1>&2
@@ -47,26 +47,26 @@ cleanup() {
 }
 
 args() {
-    [[ $# -eq 0 ]] && HELP=true && return 1
+    [[ $# -eq 0 ]] && HELP=1 && return 1
 
     for arg in "$@"; do
         case "$arg" in
         ## options
-        -cached)  CACHED=true ;;
-        -debug)   DEBUG=true ;;
-        -help)    HELP=true ;;
-        -timer)   TIMER=true ;;
-        -verbose) VERBOSE=true ;;
+        -cached)  CACHED=1 ;;
+        -debug)   DEBUG=1 ;;
+        -help)    HELP=1 ;;
+        -timer)   TIMER=1 ;;
+        -verbose) VERBOSE=1 ;;
         -*)
             error "Unknown option $arg"
             EXITCODE=1 && return 0
             ;;
         ## subcommands
-        clean)   CLEAN=true ;;
-        compile) COMPILE=true ;;
-        help)    HELP=true ;;
-        lint)    LINT=true ;;
-        run)     COMPILE=true && RUN=true ;;
+        clean)   CLEAN=1 ;;
+        compile) COMPILE=1 ;;
+        help)    HELP=1 ;;
+        lint)    LINT=1 ;;
+        run)     COMPILE=1 && RUN=1 ;;
         *)
             error "Unknown subcommand $arg"
             EXITCODE=1 && return 0
@@ -74,7 +74,7 @@ args() {
         esac
     done
     PKG_NAME=org.graalvm.example
-    $CACHED && MAIN_NAME=HelloCachedTime|| MAIN_NAME=HelloStartupTime
+    [[ $CACHED -eq 1 ]] && MAIN_NAME=HelloCachedTime|| MAIN_NAME=HelloStartupTime
     MAIN_CLASS="$PKG_NAME.$MAIN_NAME"
 
     debug "Options    : CACHED=$CACHED TIMER=$TIMER VERBOSE=$VERBOSE"
@@ -82,7 +82,7 @@ args() {
     debug "Variables  : GRAALVM_HOME=$GRAALVM_HOME"
     debug "Variables  : MAIN_CLASS=$MAIN_CLASS MAIN_ARGS=$MAIN_ARGS"
     # See http://www.cyberciti.biz/faq/linux-unix-formatting-dates-for-display/
-    $TIMER && TIMER_START=$(date +"%s")
+    [[ $TIMER -eq 1 ]] && TIMER_START=$(date +"%s")
 }
 
 help() {
@@ -107,9 +107,9 @@ EOS
 
 clean() {
     if [[ -d "$TARGET_DIR" ]]; then
-        if $DEBUG; then
+        if [[ $DEBUG -eq 1 ]]; then
             debug "Delete directory \"$(mixed_path $TARGET_DIR)\""
-        elif $VERBOSE; then
+        elif [[ $VERBOSE -eq 1 ]]; then
             echo "Delete directory \"${TARGET_DIR/$ROOT_DIR\//}\"" 1>&2
         fi
         rm -rf "$(mixed_path $TARGET_DIR)"
@@ -128,9 +128,9 @@ lint() {
         source_files="$source_files $(mixed_path $f)"
         n=$((n + 1))
     done
-    if $DEBUG; then
+    if [[ $DEBUG -eq 1 ]]; then
         debug "$JAVA_CMD -jar \"$(mixed_path $JAR_FILE)\" -c=$(mixed_path $XML_FILE) $source_files"
-    elif $VERBOSE; then
+    elif [[ $VERBOSE -eq 1 ]]; then
         echo "Analyze Java source files with CheckStyle" 1>&2
     fi
     eval "$JAVA_CMD" -jar "$(mixed_path $JAR_FILE)" -c="$(mixed_path $XML_FILE)" $source_files
@@ -193,9 +193,9 @@ compile_java() {
     fi
     local s=; [[ $n -gt 1 ]] && s="s"
     local n_files="$n Java source file$s"
-    if $DEBUG; then
+    if [[ $DEBUG -eq 1 ]]; then
         debug "$JAVAC_CMD @$(mixed_path $opts_file) @$(mixed_path $sources_file)"
-    elif $VERBOSE; then
+    elif [[ $VERBOSE -eq 1 ]]; then
         echo "Compile $n_files to directory \"${CLASSES_DIR/$ROOT_DIR\//}\"" 1>&2
     fi
     eval "$JAVAC_CMD" "@$(mixed_path $opts_file)" "@$(mixed_path $sources_file)"
@@ -213,7 +213,7 @@ doc() {
 mixed_path() {
     if [[ -x "$CYGPATH_CMD" ]]; then
         $CYGPATH_CMD -am $1
-    elif $mingw || $msys; then
+    elif [[ $(($mingw + $msys)) -gt 0 ]]; then
         echo $1 | sed 's|/|\\\\|g'
     else
         echo $1
@@ -221,7 +221,7 @@ mixed_path() {
 }
 
 run() {
-    $DEBUG && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS $MAIN_ARGS"
+    [[ $DEBUG -eq 1 ]] && debug "$JAVA_CMD -cp \"$(mixed_path $CLASSES_DIR)\" $MAIN_CLASS $MAIN_ARGS"
     eval "$JAVA_CMD" -cp "$(mixed_path $CLASSES_DIR)" $MAIN_CLASS $MAIN_ARGS
 }
 
@@ -240,35 +240,39 @@ TARGET_DIR="$ROOT_DIR/target"
 BIN_DIR="$TARGET_DIR/bin"
 CLASSES_DIR="$TARGET_DIR/classes"
 
-CACHED=false
-CLEAN=false
-COMPILE=false
-DEBUG=false
-DOC=false
-HELP=false
-LINT=false
-MAIN_CLASS="Polyglot"
+## We refrain from using `true` and `false` which are Bash commands
+## (see https://man7.org/linux/man-pages/man1/false.1.html)
+CACHED=0
+CLEAN=0
+COMPILE=0
+DEBUG=0
+DOC=0
+HELP=0
+LINT=0
+MAIN_CLASS="ClassInitialization"
 MAIN_ARGS=
-RUN=false
-TIMER=false
-VERBOSE=false
+RUN=0
+TIMER=0
+VERBOSE=0
 
 COLOR_START="[32m"
 COLOR_END="[0m"
 
-cygwin=false
-mingw=false
-msys=false
-darwin=false
+cygwin=0
+mingw=0
+msys=0
+darwin=0
+linux=0
 case "$(uname -s)" in
-    CYGWIN*) cygwin=true ;;
-    MINGW*)  mingw=true ;;
-    MSYS*)   msys=true ;;
-    Darwin*) darwin=true
+    CYGWIN*) cygwin=1 ;;
+    MINGW*)  mingw=1 ;;
+    MSYS*)   msys=1 ;;
+    Darwin*) darwin=1 ;;
+    Linux*)  linux=1 
 esac
 unset CYGPATH_CMD
 PSEP=":"
-if $cygwin || $mingw || $msys; then
+if [[ $(($cygwin + $mingw + $msys)) -gt 0 ]]; then
     CYGPATH_CMD="$(which cygpath 2>/dev/null)"
     PSEP=";"
     [[ -n "$GRAALVM_HOME" ]] && GRAALVM_HOME="$(mixed_path $GRAALVM_HOME)"
@@ -294,7 +298,8 @@ PROJECT_NAME="$(basename $ROOT_DIR)"
 PROJECT_URL="github.com/$USER/graal-examples"
 PROJECT_VERSION="1.0-SNAPSHOT"
 
-CHECKSTYLE_VERSION=10.16.0
+## https://github.com/checkstyle/checkstyle/releases
+CHECKSTYLE_VERSION=10.21.1
 CHECKSTYLE_DIR="$HOME/.graal"
 
 JAR_NAME=checkstyle-$CHECKSTYLE_VERSION-all.jar
@@ -308,21 +313,21 @@ args "$@"
 ##############################################################################
 ## Main
 
-$HELP && help && cleanup
+[[ $HELP -eq 1 ]] && help && cleanup
 
-if $CLEAN; then
+if [[ $CLEAN -eq 1 ]]; then
     clean || cleanup 1
 fi
-if $LINT; then
+if [[ $LINT -eq 1 ]]; then
     lint || cleanup 1
 fi
-if $COMPILE; then
+if [[ $COMPILE -eq 1 ]]; then
     compile || cleanup 1
 fi
-if $DOC; then
+if [[ $DOC -eq 1 ]]; then
     doc || cleanup 1
 fi
-if $RUN; then
+if [[ $RUN -eq 1 ]]; then
     run || cleanup 1
 fi
 cleanup

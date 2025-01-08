@@ -46,21 +46,38 @@ RM         = rm
 TOUCH      = touch
 endif
 
+## https://mvnrepository.com/artifact/javax.inject/javax.inject
+JAVAX_INJECT_VERSION = 1
 ## https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 JMH_VERSION = 1.37
 ## https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
 JOPT_VERSION = 5.0.4
 ## https://mvnrepository.com/artifact/org.apache.commons/commons-math3
 MATH3_VERSION = 3.6.1
+## https://mvnrepository.com/artifact/io.micronaut/micronaut-core
+MICRONAUT_VERSION = 4.7.10
+##
+MICRONAUT_PICOCLI_VERSION = 1.2.1
+## https://mvnrepository.com/artifact/info.picocli/picocli
+PICOCLI_VERSION=4.7.6
 
-JMH_CORE_LIB_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-core-$(JMH_VERSION).jar")
-JMH_ANN_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-generator-annprocess-$(JMH_VERSION).jar")
+JAVAX_INJECT_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/javax/inject" -name "javax.inject-$(JAVAX_INJECT_VERSION).jar")
+
+JMH_CORE_LIB_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-core-$(JMH_VERSION).jar")
+JMH_ANN_LIB_JAR   = $(shell $(FIND) "$(LOCAL_REPO)/org/openjdk/jmh" -name "jmh-generator-annprocess-$(JMH_VERSION).jar")
 ## 2 JMH depencencies: jopt-simple 5.0.4, commons-math3 3.2
-JOPT_SIMPLE_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/net/sf/jopt-simple" -name "jopt-simple-$(JOPT_VERSION).jar")
-COMMONS_MATH_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/apache/commons" -name "commons-math3-$(MATH3_VERSION).jar")
+JOPT_SIMPLE_JAR   = $(shell $(FIND) "$(LOCAL_REPO)/net/sf/jopt-simple" -name "jopt-simple-$(JOPT_VERSION).jar")
+COMMONS_MATH3_JAR = $(shell $(FIND) "$(LOCAL_REPO)/org/apache/commons" -name "commons-math3-$(MATH3_VERSION).jar")
+
+MICRONAUT_CORE_JAR    = $(shell $(FIND) "$(LOCAL_REPO)/io/micronaut" -name "micronaut-core-$(MICRONAUT_VERSION).jar")
+MICRONAUT_INJECT_JAR  = $(shell $(FIND) "$(LOCAL_REPO)/io/micronaut" -name "micronaut-inject-$(MICRONAUT_VERSION).jar")
+MICRONAUT_PICOCLI_JAR = $(shell $(FIND) "$(LOCAL_REPO)/io/micronaut/configuration" -name "micronaut-picocli-$(MICRONAUT_PICOCLI_VERSION).jar")
+
+PICOCLI_JAR       = $(shell $(FIND) "$(LOCAL_REPO)/info/picocli" -name "picocli-$(PICOCLI_VERSION).jar")
+
 ## JUnit 4 depends on Hamcrest 1.3
-HAMCREST_JAR     = $(shell $(FIND) "$(LOCAL_REPO)/org/hamcrest" -name "hamcrest-core-1.3.jar")
-JUNIT_JAR        = $(shell $(FIND) "$(LOCAL_REPO)/junit/junit" -name "junit-4.13.2.jar")
+HAMCREST_JAR      = $(shell $(FIND) "$(LOCAL_REPO)/org/hamcrest" -name "hamcrest-core-1.3.jar")
+JUNIT_JAR         = $(shell $(FIND) "$(LOCAL_REPO)/junit/junit" -name "junit-4.13.2.jar")
 
 MAVEN_REPO = https://repo1.maven.org/maven2
 
@@ -68,6 +85,16 @@ deps:
 	$(eval MVN_OPTS := -quiet)
 	$(eval WGET_OPTS := --user-agent="Mozilla/5.0" --no-check-certificate --directory-prefix="$(TMP)")
 	@$(ECHO) "## Check Maven dependencies on $(MAVEN_REPO)"
+ifeq (,$(wildcard $(JAVAX_INJECT_JAR)))
+	$(eval GROUP_ID := javax.inject)
+	$(eval ARTIFACT_ID := javax.inject)
+	$(eval VERSION := $(JAVAX_INJECT_VERSION))
+	$(eval JAR_FILE := $(TMP)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(eval URL := $(MAVEN_REPO)/$(subst .,/,$(GROUP_ID))/$(ARTIFACT_ID)/$(VERSION)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
+	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
+	$(eval JAVAX_INJECT_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
+endif
 ifeq (,$(wildcard $(JMH_CORE_LIB_JAR)))
 	$(eval GROUP_ID := org.openjdk.jmh)
 	$(eval ARTIFACT_ID := jmh-core)
@@ -107,6 +134,46 @@ ifeq (,$(wildcard $(JOPT_SIMPLE_JAR)))
 	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
 	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
 	$(eval JOPT_SIMPLE_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
+endif
+ifeq (,$(wildcard $(COMMONS_MATH3_JAR)))
+	$(eval GROUP_ID := org.apache.commons)
+	$(eval ARTIFACT_ID := commons-math3)
+	$(eval VERSION := $(MATH3_VERSION))
+	$(eval JAR_FILE := $(TMP)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(eval URL := $(MAVEN_REPO)/$(subst .,/,$(GROUP_ID))/$(ARTIFACT_ID)/$(VERSION)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
+	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
+	$(eval COMMONS_MATH3_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
+endif
+ifeq (,$(wildcard $(MICRONAUT_CORE_JAR)))
+	$(eval GROUP_ID := io.micronaut)
+	$(eval ARTIFACT_ID := micronaut-core)
+	$(eval VERSION := $(MICRONAUT_VERSION))
+	$(eval JAR_FILE := $(TMP)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(eval URL := $(MAVEN_REPO)/$(subst .,/,$(GROUP_ID))/$(ARTIFACT_ID)/$(VERSION)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
+	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
+	$(eval MICRONAUT_CORE_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
+endif
+ifeq (,$(wildcard $(MICRONAUT_INJECT_JAR)))
+	$(eval GROUP_ID := io.micronaut)
+	$(eval ARTIFACT_ID := micronaut-inject)
+	$(eval VERSION := $(MICRONAUT_VERSION))
+	$(eval JAR_FILE := $(TMP)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(eval URL := $(MAVEN_REPO)/$(subst .,/,$(GROUP_ID))/$(ARTIFACT_ID)/$(VERSION)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
+	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
+	$(eval MICRONAUT_INJECT_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
+endif
+ifeq (,$(wildcard $(PICOCLI_JAR)))
+	$(eval GROUP_ID := info.picocli)
+	$(eval ARTIFACT_ID := picocli)
+	$(eval VERSION := $(PICOCLI_VERSION))
+	$(eval JAR_FILE := $(TMP)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(eval URL := $(MAVEN_REPO)/$(subst .,/,$(GROUP_ID))/$(ARTIFACT_ID)/$(VERSION)/$(ARTIFACT_ID)-$(VERSION).jar)
+	$(WGET) $(WGET_OPTS) $(URL) || $(error Failed to download $(ARTIFACT_ID)-$(VERSION).jar)
+	$(MVN) $(MVN_OPTS) install:install-file -Dfile="$(JAR_FILE)" -DgroupId=$(GROUP_ID) -DartifactId=$(ARTIFACT_ID) -Dversion=$(VERSION) -Dpackaging=jar
+	$(eval PICOCLI_JAR := $(shell $(FIND) "$(LOCAL_REPO)/$(subst .,/,$(GROUP_ID))" -name $(ARTIFACT_ID)-$(VERSION).jar))
 endif
 
 ##############################################################################

@@ -30,12 +30,12 @@ set _JMH_VERSION=1.37
 @rem https://mvnrepository.com/artifact/net.sf.jopt-simple/jopt-simple
 set _JOPT_VERSION=5.0.4
 @rem https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-set _LOG4J_VERSION=2.23.1
+set _LOG4J_VERSION=2.24.3
 @rem https://mvnrepository.com/artifact/org.apache.commons/commons-math3
 set _MATH3_VERSION=3.6.1
 @rem https://mvnrepository.com/artifact/io.micronaut/micronaut-core
 @rem https://docs.micronaut.io/latest/api/
-set _MICRONAUT_VERSION=4.6.1
+set _MICRONAUT_VERSION=4.7.10
 @rem https://mvnrepository.com/artifact/info.picocli/picocli
 set _PICOCLI_VERSION=4.7.6
 @rem https://mvnrepository.com/artifact/com.guicedee.services/slf4j
