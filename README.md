@@ -147,7 +147,7 @@ We execute command [**`setenv.bat`**](setenv.bat) once to setup our development 
 <pre style="font-size:80%;">
 <b>&gt; <a href="setenv.bat">setenv</a></b>
 Tool versions:
-   javac 11.0.19, python 3.11.1, pylint 2.15.8, mx 6.14.12
+   javac 11.0.22, python 3.11.1, pylint 2.15.8, mx 6.14.12
    cl 19.29.30137, msbuild 16.11.2.50704, link 14.29.30137.0,
    nmake 14.29.30137.0, git 2.47.1, diff 3.10, bash 5.2.37(1)
 
@@ -243,7 +243,7 @@ In our case we downloaded the following installation files (see <a href="#proj_d
 <a href="https://www.python.org/downloads/windows/">python-3.11.1.amd64.msi</a>                                       <i>( 19 MB)</i>
 <a href="https://github.com/upx/upx/releases">upx-4.2.2-win64.zip</a>                                           <i>( &lt;1 MB)</i>
 <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=4422">VC-Compiler-KB2519277.exe</a>                                     <i>(121 MB)</i>
-<a href="https://code.visualstudio.com/Download#" rel="external">VSCode-win32-x64-1.96.2.zip</a>                                   <i>(131 MB)</i>
+<a href="https://code.visualstudio.com/Download#" rel="external">VSCode-win32-x64-1.96.4.zip</a>                                   <i>(131 MB)</i>
 </pre>
 <span style="font-size:80%;"><sup><b>(*)</b></sup> The tool <a href="https://www.graalvm.org/latest/reference-manual/native-image/" rel="external"><code><b>native-image</b></code></a> was initially installed separately with <b>GraalVM</b> distributions and is now included in <b>GraalVM for JDK</b> distributions (see article <a href="https://medium.com/graalvm/a-new-graalvm-release-and-new-free-license-4aab483692f5">"New GraalVM Release and new Free Licence!"</a>).</span>
 </dd></dl>
@@ -346,9 +346,9 @@ Oracle has retired JDK 11 support starting with GraalVM 23.0 (to be released in 
 [golang_examples]: https://github.com/michelou/golang-examples#top
 [graalvm]: https://www.graalvm.org/
 [graalvm_dev_releases]: https://github.com/graalvm/graalvm-ce-dev-builds/releases
-[graalvm17_releases]: https://github.com/graalvm/labs-openjdk-17/releases
+[graalvm17_releases]: https://github.com/graalvm/graalvm-ce-builds/releases
 [graalvm17_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9
-[graalvm21_releases]: https://github.com/graalvm/labs-openjdk-21/releases
+[graalvm21_releases]: https://github.com/graalvm/graalvm-ce-builds/releases
 [graalvm21_relnotes]: https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-21.0.2
 [haskell_examples]: https://github.com/michelou/haskell-examples#top
 [javac_cli]: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
